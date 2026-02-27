@@ -26,10 +26,10 @@
                     <a href="{{ url('/daftar') }}" class="text-white hover:text-blue-200 transition">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="text-white hover:text-blue-200 transition">Dokumen</a>
                     <a href="{{ url('/inbox') }}" class="text-white hover:text-blue-200 transition">Notifikasi</a>
-                    <a href="{{ url('/profil') }}" class="text-white hover:text-blue-200 transition">Profil</a>
                     @elseif($isSuperadmin || $isAdminPMBM)
                         <a href="{{ url('/siswa') }}" class="text-white hover:text-blue-200 transition">Data Pendaftaran</a>
                     @endif
+                    <a href="{{ url('/profil') }}" class="text-white hover:text-blue-200 transition">Profil</a>
                 @else
                     <a href="{{ url('/auth/login') }}" class="text-white hover:text-blue-200 transition">Masuk</a>
                 @endif
@@ -51,10 +51,10 @@
                     <a href="{{ url('/daftar') }}" class="block text-white hover:text-blue-200 transition py-2">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="block text-white hover:text-blue-200 transition py-2">Dokumen</a>
                     <a href="{{ url('/inbox') }}" class="block text-white hover:text-blue-200 transition py-2">Notifikasi</a>
-                    <a href="{{ url('/profil') }}" class="block text-white hover:text-blue-200 transition py-2">Profil</a>
                 @elseif($isSuperadmin || $isAdminPMBM)
                     <a href="{{ url('/siswa') }}" class="block text-white hover:text-blue-200 transition py-2">Data Pendaftaran</a>
                 @endif
+                <a href="{{ url('/profil') }}" class="block text-white hover:text-blue-200 transition py-2">Profil</a>
             @else
                 <a href="{{ url('/auth/login') }}" class="block text-white hover:text-blue-200 transition py-2">Masuk</a>
             @endif

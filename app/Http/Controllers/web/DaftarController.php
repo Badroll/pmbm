@@ -168,4 +168,39 @@ class DaftarController extends Controller
     }
 
 
+    public function siswa(Request $request){
+        $loginUser = $request->loginUser;
+        $req = $request->all();
+
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])){
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+
+        $siswa = mSiswa::all();
+
+        $viewData = [
+            "siswa" => $siswa,
+        ];
+        //dd($viewData);
+        return view("siswa", $viewData);
+    }
+
+    public function siswaDetail(Request $request, $siswaId){
+        $loginUser = $request->loginUser;
+        $req = $request->all();
+
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])){
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+
+        $siswa = mSiswa::find($siswaId);
+
+        $viewData = [
+            "siswa" => $siswa,
+        ];
+        //dd($viewData);
+        return view("siswa-detail", $viewData);
+    }
+
+
 }

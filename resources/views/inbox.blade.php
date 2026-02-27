@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Inbox & Notifikasi - PMBM')
+@section('title', 'Notifikasi - PMBM')
 @section('content')
 
 <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">

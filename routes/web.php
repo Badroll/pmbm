@@ -52,6 +52,11 @@ Route::middleware("loggedin")->group(function () {
         Route::get("/", [WebController::class, "inbox"]);
     });
 
+    Route::prefix("siswa")->group(function () {
+        Route::get("/", [DaftarController::class, "siswa"]);
+        Route::get("/{siswaId}", [DaftarController::class, "siswaDetail"]);
+    });
+
     Route::get("/kartu", function () {
         return view("kartu");
     });

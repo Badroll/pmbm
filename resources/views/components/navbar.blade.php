@@ -2,6 +2,10 @@
     $isLoggedIn = Session::has("SESSION_U_ID");
     $sessionUserId = Session::get("SESSION_U_ID");
     $sessionUserRole = Session::get("SESSION_U_ROLE");
+    $isSuperadmin = $sessionUserRole == "ROLE_SUPERADMIN";
+    $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
+    $isAdminPMBM = $sessionUserRole == "ROLE_ADMIN_PMBM";
+    $isSiswa= $sessionUserRole == "ROLE_SISWA";
 ?>
 
 <!-- Navbar -->
@@ -18,12 +22,16 @@
             <div class="hidden md:flex space-x-8">
                 <a href="{{ url('/') }}" class="text-white hover:text-blue-200 transition">Beranda</a>
                 @if($isLoggedIn)
-                <a href="{{ url('/daftar') }}" class="text-white hover:text-blue-200 transition">Pendaftaran</a>
-                <a href="{{ url('/kartu') }}" class="text-white hover:text-blue-200 transition">Dokumen</a>
-                <a href="{{ url('/inbox') }}" class="text-white hover:text-blue-200 transition">Notifikasi</a>
-                <a href="{{ url('/profil') }}" class="text-white hover:text-blue-200 transition">Profil</a>
+                    @if($isSiswa)
+                    <a href="{{ url('/daftar') }}" class="text-white hover:text-blue-200 transition">Pendaftaran</a>
+                    <a href="{{ url('/kartu') }}" class="text-white hover:text-blue-200 transition">Dokumen</a>
+                    <a href="{{ url('/inbox') }}" class="text-white hover:text-blue-200 transition">Notifikasi</a>
+                    <a href="{{ url('/profil') }}" class="text-white hover:text-blue-200 transition">Profil</a>
+                    @elseif($isSuperadmin || $isAdminPMBM)
+                        <a href="{{ url('/siswa') }}" class="text-white hover:text-blue-200 transition">Data Pendaftaran</a>
+                    @endif
                 @else
-                <a href="{{ url('/auth/login') }}" class="text-white hover:text-blue-200 transition">Masuk</a>
+                    <a href="{{ url('/auth/login') }}" class="text-white hover:text-blue-200 transition">Masuk</a>
                 @endif
             </div>
 
@@ -39,12 +47,16 @@
         <div class="px-4 py-3 space-y-3">
             <a href="{{ url('/') }}" class="block text-white hover:text-blue-200 transition py-2">Beranda</a>
             @if($isLoggedIn)
-            <a href="{{ url('/daftar') }}" class="block text-white hover:text-blue-200 transition py-2">Pendaftaran</a>
-            <a href="{{ url('/kartu') }}" class="block text-white hover:text-blue-200 transition py-2">Dokumen</a>
-            <a href="{{ url('/inbox') }}" class="block text-white hover:text-blue-200 transition py-2">Notifikasi</a>
-            <a href="{{ url('/profil') }}" class="block text-white hover:text-blue-200 transition py-2">Profil</a>
+                @if($isSiswa)
+                    <a href="{{ url('/daftar') }}" class="block text-white hover:text-blue-200 transition py-2">Pendaftaran</a>
+                    <a href="{{ url('/kartu') }}" class="block text-white hover:text-blue-200 transition py-2">Dokumen</a>
+                    <a href="{{ url('/inbox') }}" class="block text-white hover:text-blue-200 transition py-2">Notifikasi</a>
+                    <a href="{{ url('/profil') }}" class="block text-white hover:text-blue-200 transition py-2">Profil</a>
+                @elseif($isSuperadmin || $isAdminPMBM)
+                    <a href="{{ url('/siswa') }}" class="block text-white hover:text-blue-200 transition py-2">Data Pendaftaran</a>
+                @endif
             @else
-            <a href="{{ url('/auth/login') }}" class="block text-white hover:text-blue-200 transition py-2">Masuk</a>
+                <a href="{{ url('/auth/login') }}" class="block text-white hover:text-blue-200 transition py-2">Masuk</a>
             @endif
         </div>
     </div>

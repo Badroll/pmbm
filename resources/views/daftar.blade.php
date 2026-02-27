@@ -193,10 +193,12 @@
                         label="Tempat Kelahiran"
                         name="tempat_lahir"
                         id="tempat_lahir"
-                        :options="$refKota->map(fn($o) => [
-                            'value' => $o->KOTA_ID,
-                            'label' => $o->KOTA_JENIS . ' ' . $o->KOTA_NAMA,
-                        ])->values()"
+                        :options="$refKota->map(function ($o) {
+                            return [
+                                'value' => $o->KOTA_ID,
+                                'label' => $o->KOTA_JENIS . ' ' . $o->KOTA_NAMA,
+                            ];
+                        })->values()"
                         placeholder="-- Pilih Kota --"
                     />
 
@@ -246,10 +248,12 @@
                         label="Provinsi"
                         name="provinsi"
                         id="provinsi"
-                        :options="$refProvinsi->map(fn($o) => [
-                            'value' => $o->PROV_ID,
-                            'label' => $o->PROV_NAMA,
-                        ])->values()"
+                        :options="$refProvinsi->map(function ($o) {
+                            return [
+                                'value' => $o->PROV_ID,
+                                'label' => $o->PROV_NAMA,
+                            ];
+                        })->values()"
                         placeholder="-- Pilih Provinsi --"
                     />
 
@@ -650,7 +654,9 @@
 <script>
 
 window.allKota = @json(
-    $refKota->groupBy('PROV_ID')->map(function($items) {
+    $refKota
+        ->groupBy('PROV_ID')
+        ->map(function($items) {
         return $items->map(function($o) {
             return [
                 'value' => $o->KOTA_ID,
@@ -663,23 +669,27 @@ window.allKota = @json(
 window.allKecamatan = @json(
     $refKecamatan
         ->groupBy('KOTA_ID')
-        ->map(fn($items)=>
-            $items->map(fn($o)=>[
-                'value' => $o->KEC_ID,
-                'label' => $o->KEC_NAMA,
-            ])->values()
-        )
+        ->map(function ($items) {
+            return $items->map(function ($o) {
+                return [
+                    'value' => $o->KEC_ID,
+                    'label' => $o->KEC_NAMA,
+                ];
+            })->values();
+        })
 );
 
 window.allKelurahan = @json(
     $refKelurahan
         ->groupBy('KEC_ID')
-        ->map(fn($items)=>
-            $items->map(fn($o)=>[
-                'value'=>$o->KEL_ID,
-                'label'=>$o->KEL_NAMA,
-            ])->values()
-        )
+        ->map(function ($items) {
+            return $items->map(function ($o) {
+                return [
+                    'value' => $o->KEL_ID,
+                    'label' => $o->KEL_NAMA,
+                ];
+            })->values();
+        })
 );
 
 // File Upload Preview & Remove

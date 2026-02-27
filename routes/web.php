@@ -44,6 +44,7 @@ Route::middleware("loggedin")->group(function () {
     
     Route::prefix("daftar")->group(function () {
         Route::get("/", [DaftarController::class, "daftar"]);
+        Route::post("/", [DaftarController::class, "doDaftar"]);
     });
 
     Route::get("/inbox", function () {

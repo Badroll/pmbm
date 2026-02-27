@@ -324,35 +324,6 @@ function romawi($number){
 }
 
 
-function prakagGrupNama($grup, $reverse = false){
-    $map = [
-        "AH" => "ASMAUL HUSNA",
-        "SD" => "SHALAT DHUHA",
-        "SW" => "SHALAT WAJIB",
-        "DZ" => "DZIKIR",
-        "BQ" => "BACA QUR'AN",
-        "SJ" => "SHALAT JENAZAH",
-        "YT" => "PEMBACAAN TAHLIL",
-        //"PT" => "PEMBACAAN TAHLIL",
-        "DH" => "DO'A HARIAN",
-        "PS" => "PEMBACAAN SHOLAWAT",
-        "KI" => "KETERTIBAN IBADAH",
-        "WD" => "WUDHU",
-    ];
-    if($reverse) $map = array_flip($map);
-    return $map[$grup] ?? "";
-}
-
-
-function nilaiToGrade($avg) {
-    if ($avg >= 94 && $avg <= 100) return "A";
-    if ($avg >= 87 && $avg <= 93)  return "B";
-    if ($avg >= 80 && $avg <= 86)  return "C";
-    if ($avg >= 73 && $avg <= 79)  return "D";
-    return "D";
-}
-
-
 function copyR2File($filename, $folder = 'public')
 {
     if (!$filename || $filename == "-") return '';

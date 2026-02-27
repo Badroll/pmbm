@@ -24,7 +24,7 @@
             <p class="text-blue-100">Tahun Ajaran 2026/2027</p>
         </div>
 
-        <form id="registration-form" action="#" method="POST" enctype="multipart/form-data" class="bg-white shadow-lg rounded-b-lg">
+        <form id="registration-form" action="{{ url('daftar') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-lg rounded-b-lg">
             @csrf
             
             <!-- Section 1: Data Pribadi -->
@@ -60,7 +60,7 @@
                                id="nisn" 
                                name="nisn" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="10 digit NISN"
+                               placeholder="NISN"
                                maxlength="10"
                                pattern="[0-9]{10}"
                                required>
@@ -96,7 +96,7 @@
                                id="nama_ayah" 
                                name="nama_ayah" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Kota kelahiran"
+                               placeholder="Nama Ayah"
                                required>
                         @error('nama_ayah')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -112,7 +112,7 @@
                                id="nama_ibu" 
                                name="nama_ibu" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Kota kelahiran"
+                               placeholder="Nama Rumisih"
                                required>
                         @error('nama_ibu')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -120,20 +120,110 @@
                     </div>
                     
                     <!-- Tempat Lahir -->
+                    {{--
                     <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <label for="tempat_lahir" class="block text-sm font-semibold text-gray-700 mb-2">
                             Tempat Lahir <span class="text-red-500">*</span>
                         </label>
-                        <select id="jenis_kelamin" 
-                                name="jenis_kelamin" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                            <option value="">-- Pilih--</option>
-                        </select>
-                        @error('jenis_kelamin')
+
+                        <div x-data="{
+                                open: false,
+                                search: '',
+                                selected: null,
+                                options: [],
+                                filtered: [],
+                                init() {
+                                    this.options = JSON.parse(this.$el.dataset.options)
+                                    this.filtered = this.options
+                                    this.$watch('search', value => {
+                                        if (value === '') {
+                                            this.filtered = this.options
+                                        } else {
+                                            this.filtered = this.options.filter(o =>
+                                                o.label.toLowerCase().includes(value.toLowerCase())
+                                            )
+                                        }
+                                    })
+                                }
+                            }"
+                            data-options="{{ json_encode($refKota->map(fn($k) => ['value' => $k->KOTA_ID, 'label' => $k->KOTA_JENIS . ' ' . $k->KOTA_NAMA])) }}"
+                            class="relative">
+
+                            <input type="hidden" id="tempat_lahir" name="tempat_lahir" value="" required>
+
+                            <button type="button"
+                                @click="open = !open; $nextTick(() => { if(open) $refs.searchInput.focus() })"
+                                class="w-full flex items-center justify-between px-4 py-3 bg-white border rounded-lg transition"
+                                :class="open ? 'border-blue-500 ring-2 ring-blue-500' : 'border-gray-300'">
+                                <span :class="selected ? 'text-gray-900' : 'text-gray-400'"
+                                    x-text="selected ? selected.label : '-- Pilih --'"></span>
+                                <svg class="w-4 h-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
+                            <div x-show="open"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                @click.outside="open = false"
+                                class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+
+                                <div class="p-2 border-b border-gray-100">
+                                    <input type="text"
+                                        x-model="search"
+                                        x-ref="searchInput"
+                                        placeholder="Cari kota..."
+                                        @click.stop
+                                        class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+
+                                <ul class="max-h-52 overflow-y-auto py-1">
+                                    <template x-for="option in filtered" :key="option.value">
+                                        <li @click="
+                                                selected = option; 
+                                                open = false; 
+                                                search = '';
+                                                filtered = options;
+                                                document.getElementById('tempat_lahir').value = option.value;
+                                                document.getElementById('tempat_lahir').dispatchEvent(new Event('change'));
+                                            "
+                                            class="px-4 py-2 text-sm cursor-pointer transition"
+                                            :class="selected?.value === option.value
+                                                ? 'bg-blue-50 text-blue-700 font-medium'
+                                                : 'text-gray-700 hover:bg-gray-50'">
+                                            <span x-text="option.label"></span>
+                                        </li>
+                                    </template>
+
+                                    <li x-show="filtered.length === 0"
+                                        class="px-4 py-2 text-sm text-gray-400 text-center italic">
+                                        Kota tidak ditemukan
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        @error('tempat_lahir')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    --}}
+
+                    <x-select-searchable
+                        label="Tempat Kelahiran"
+                        name="tempat_lahir"
+                        id="tempat_lahir"
+                        :options="$refKota->map(fn($o) => [
+                            'value' => $o->KOTA_ID,
+                            'label' => $o->KOTA_JENIS . ' ' . $o->KOTA_NAMA,
+                        ])->values()"
+                        placeholder="-- Pilih Kota --"
+                    />
 
                     <!-- Tanggal Lahir -->
                     <div>
@@ -152,17 +242,17 @@
 
                     <!-- No HP -->
                     <div>
-                        <label for="no_hp" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <label for="no_wa" class="block text-sm font-semibold text-gray-700 mb-2">
                             No. WhatsApp aktif <span class="text-red-500">*</span>
                         </label>
                         <input type="tel" 
-                               id="no_hp" 
-                               name="no_hp" 
+                               id="no_wa" 
+                               name="no_wa" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="08xxxxxxxxxx"
                                pattern="[0-9]{10,13}"
                                required>
-                        @error('no_hp')
+                        @error('no_wa')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -178,65 +268,40 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Provinsi <span class="text-red-500">*</span>
-                        </label>
-                        <select id="jenis_kelamin" 
-                                name="jenis_kelamin" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                            <option value="">-- Pilih--</option>
-                        </select>
-                        @error('jenis_kelamin')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <x-select-searchable
+                        label="Provinsi"
+                        name="provinsi"
+                        id="provinsi"
+                        :options="$refProvinsi->map(fn($o) => [
+                            'value' => $o->PROV_ID,
+                            'label' => $o->PROV_NAMA,
+                        ])->values()"
+                        placeholder="-- Pilih Provinsi --"
+                    />
 
-                    <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Kabupaten <span class="text-red-500">*</span>
-                        </label>
-                        <select id="jenis_kelamin" 
-                                name="jenis_kelamin" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                            <option value="">-- Pilih--</option>
-                        </select>
-                        @error('jenis_kelamin')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <x-select-searchable
+                        label="Kota/Kabupaten"
+                        name="kota"
+                        id="kota"
+                        :options="collect()"
+                        placeholder="-- Pilih Kota/Kabupaten --"
+                    />
 
-                    <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Kecamatan <span class="text-red-500">*</span>
-                        </label>
-                        <select id="jenis_kelamin" 
-                                name="jenis_kelamin" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                            <option value="">-- Pilih--</option>
-                        </select>
-                        @error('jenis_kelamin')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <x-select-searchable
+                        label="Kecamatan"
+                        name="kecamatan"
+                        id="kecamatan"
+                        :options="collect()"
+                        placeholder="-- Pilih Kecamatan --"
+                    />
 
-                    <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Kelurahan/Desa <span class="text-red-500">*</span>
-                        </label>
-                        <select id="jenis_kelamin" 
-                                name="jenis_kelamin" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                            <option value="">-- Pilih--</option>
-                        </select>
-                        @error('jenis_kelamin')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <x-select-searchable
+                        label="Kelurahan"
+                        name="kelurahan"
+                        id="kelurahan"
+                        :options="collect()"
+                        placeholder="-- Pilih Kelurahan/Desa --"
+                    />
 
                     <!-- Alamat -->
                     <div class="md:col-span-2">
@@ -368,7 +433,7 @@
 
                     <div>
                         <label for="nilai_52_bind" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Matematika <span class="text-red-500">*</span>
+                            Bahasa Indonesia <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
                                id="nilai_52_bind" 
@@ -386,7 +451,7 @@
 
                     <div>
                         <label for="nilai_52_pai" class="block text-sm font-semibold text-gray-700 mb-2">
-                            IPA <span class="text-red-500">*</span>
+                            PAI / Aqidah Akhlak <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
                                id="nilai_52_pai" 
@@ -402,7 +467,7 @@
                         @enderror
                     </div>
 
-                    <!-- Sub Section Nilai Kelas 5 Semester 2 -->
+                    <!-- Sub Section Nilai Kelas 6 Semester 1 -->
                     <div class="md:col-span-2 mt-4">
                         <div class="flex items-center">
                             <div class="h-px bg-gray-300 flex-1"></div>
@@ -414,73 +479,73 @@
                     </div>
 
                     <div>
-                        <label for="nilai_52_mtk" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <label for="nilai_61_mtk" class="block text-sm font-semibold text-gray-700 mb-2">
                             Matematika <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
-                               id="nilai_52_mtk" 
-                               name="nilai_52_mtk" 
+                               id="nilai_61_mtk" 
+                               name="nilai_61_mtk" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: 85.50"
                                step="0.01"
                                min="0"
                                max="100"
                                required>
-                        @error('nilai_52_mtk')
+                        @error('nilai_61_mtk')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div>
-                        <label for="nilai_52_ipa" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <label for="nilai_61_ipa" class="block text-sm font-semibold text-gray-700 mb-2">
                             IPA <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
-                               id="nilai_52_ipa" 
-                               name="nilai_52_ipa" 
+                               id="nilai_61_ipa" 
+                               name="nilai_61_ipa" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: 85.50"
                                step="0.01"
                                min="0"
                                max="100"
                                required>
-                        @error('nilai_52_ipa')
+                        @error('nilai_61_ipa')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div>
-                        <label for="nilai_52_bind" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Matematika <span class="text-red-500">*</span>
+                        <label for="nilai_61_bind" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Bahasa Indonesia <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
-                               id="nilai_52_bind" 
-                               name="nilai_52_bind" 
+                               id="nilai_61_bind" 
+                               name="nilai_61_bind" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: 85.50"
                                step="0.01"
                                min="0"
                                max="100"
                                required>
-                        @error('nilai_52_bind')
+                        @error('nilai_61_bind')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div>
-                        <label for="nilai_52_pai" class="block text-sm font-semibold text-gray-700 mb-2">
-                            IPA <span class="text-red-500">*</span>
+                        <label for="nilai_61_pai" class="block text-sm font-semibold text-gray-700 mb-2">
+                            PAI / Aqidah Akhlak <span class="text-red-500">*</span>
                         </label>
                         <input type="number" 
-                               id="nilai_52_pai" 
-                               name="nilai_52_pai" 
+                               id="nilai_61_pai" 
+                               name="nilai_61_pai" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: 85.50"
                                step="0.01"
                                min="0"
                                max="100"
                                required>
-                        @error('nilai_52_pai')
+                        @error('nilai_61_pai')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -606,37 +671,37 @@
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
                             <div class="flex flex-col items-center">
                                 <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
-                                <label for="ijazah" class="cursor-pointer">
+                                <label for="file_pas_foto" class="cursor-pointer">
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
                                     <input type="file" 
-                                           id="ijazah" 
-                                           name="ijazah" 
+                                           id="file_pas_foto" 
+                                           name="file_pas_foto" 
                                            class="hidden" 
                                            accept="image/jpeg,image/png,image/jpg"
                                            required>
                                 </label>
                                 <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Max: 3MB)</p>
                             </div>
-                            <div id="preview-ijazah" class="mt-4 hidden">
+                            <div id="preview-file_pas_foto" class="mt-4 hidden">
                                 <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-file-alt text-blue-600"></i>
-                                        <span id="nama-ijazah" class="text-sm text-gray-700"></span>
+                                        <span id="nama-file_pas_foto" class="text-sm text-gray-700"></span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button type="button" onclick="previewFile('ijazah')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                        <button type="button" onclick="previewFile('file_pas_foto')" class="text-blue-600 hover:text-blue-800 text-sm">
                                             <i class="fas fa-eye mr-1"></i>Lihat
                                         </button>
-                                        <button type="button" onclick="removeFile('ijazah')" class="text-red-600 hover:text-red-800 text-sm">
+                                        <button type="button" onclick="removeFile('file_pas_foto')" class="text-red-600 hover:text-red-800 text-sm">
                                             <i class="fas fa-trash mr-1"></i>Hapus
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @error('ijazah')
+                        @error('file_pas_foto')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -648,37 +713,37 @@
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
                             <div class="flex flex-col items-center">
                                 <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
-                                <label for="ijazah" class="cursor-pointer">
+                                <label for="file_skl" class="cursor-pointer">
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
                                     <input type="file" 
-                                           id="ijazah" 
-                                           name="ijazah" 
+                                           id="file_skl" 
+                                           name="file_skl" 
                                            class="hidden" 
                                            accept="application/pdf,image/jpeg,image/png,image/jpg"
                                            required>
                                 </label>
                                 <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Max: 3MB)</p>
                             </div>
-                            <div id="preview-ijazah" class="mt-4 hidden">
+                            <div id="preview-file_skl" class="mt-4 hidden">
                                 <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-file-alt text-blue-600"></i>
-                                        <span id="nama-ijazah" class="text-sm text-gray-700"></span>
+                                        <span id="nama-file_skl" class="text-sm text-gray-700"></span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button type="button" onclick="previewFile('ijazah')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                        <button type="button" onclick="previewFile('file_skl')" class="text-blue-600 hover:text-blue-800 text-sm">
                                             <i class="fas fa-eye mr-1"></i>Lihat
                                         </button>
-                                        <button type="button" onclick="removeFile('ijazah')" class="text-red-600 hover:text-red-800 text-sm">
+                                        <button type="button" onclick="removeFile('file_skl')" class="text-red-600 hover:text-red-800 text-sm">
                                             <i class="fas fa-trash mr-1"></i>Hapus
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @error('ijazah')
+                        @error('file_skl')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -719,8 +784,43 @@
 
 @push('scripts')
 <script>
+
+window.allKota = @json(
+    $refKota->groupBy('PROV_ID')->map(function($items) {
+        return $items->map(function($o) {
+            return [
+                'value' => $o->KOTA_ID,
+                'label' => $o->KOTA_JENIS . ' ' . $o->KOTA_NAMA,
+            ];
+        })->values();
+    })
+);
+
+window.allKecamatan = @json(
+    $refKecamatan
+        ->groupBy('KOTA_ID')
+        ->map(fn($items)=>
+            $items->map(fn($o)=>[
+                'value' => $o->KEC_ID,
+                'label' => $o->KEC_NAMA,
+            ])->values()
+        )
+);
+
+window.allKelurahan = @json(
+    $refKelurahan
+        ->groupBy('KEC_ID')
+        ->map(fn($items)=>
+            $items->map(fn($o)=>[
+                'value'=>$o->KEL_ID,
+                'label'=>$o->KEL_NAMA,
+            ])->values()
+        )
+);
+
+    
 // File Upload Preview & Remove
-const fileInputs = ['pas_foto', 'ijazah', 'kartu_keluarga', 'akta_kelahiran'];
+const fileInputs = ['pas_foto', 'skl'];
 
 fileInputs.forEach(inputId => {
     const input = document.getElementById(inputId);
@@ -729,7 +829,9 @@ fileInputs.forEach(inputId => {
             const file = e.target.files[0];
             if (file) {
                 // Validate file size (max 5MB for documents, 2MB for photos)
-                const maxSize = inputId === 'pas_foto' ? 2 * 1024 * 1024 : 5 * 1024 * 1024;
+                const maxSize = inputId === 'pas_foto' ?
+                    2 * 1024 * 1024 
+                    : 5 * 1024 * 1024;
                 if (file.size > maxSize) {
                     alert(`Ukuran file terlalu besar. Maksimal ${inputId === 'pas_foto' ? '2MB' : '5MB'}`);
                     e.target.value = '';
@@ -778,33 +880,48 @@ function removeFile(inputId) {
     updateProgress();
 }
 
+
 // Progress bar calculation
 function updateProgress() {
     const form = document.getElementById('registration-form');
     const requiredInputs = form.querySelectorAll('[required]');
+
     let filledCount = 0;
-    
+    let totalCount = 0;
+
+    const radioGroups = {};
+
     requiredInputs.forEach(input => {
-        if (input.type === 'checkbox') {
+        if (input.type === 'radio') {
+            if (!radioGroups[input.name]) {
+                radioGroups[input.name] = form.querySelectorAll(`input[name="${input.name}"][required]`);
+                totalCount++;
+
+                const checked = form.querySelector(`input[name="${input.name}"]:checked`);
+                if (checked) filledCount++;
+            }
+        } 
+        else if (input.type === 'checkbox') {
+            totalCount++;
             if (input.checked) filledCount++;
-        } else if (input.type === 'file') {
+        } 
+        else if (input.type === 'file') {
+            totalCount++;
             if (input.files.length > 0) filledCount++;
-        } else if (input.value.trim() !== '') {
-            filledCount++;
+        } 
+        else {
+            totalCount++;
+            if (input.value.trim() !== '') filledCount++;
         }
     });
-    
-    const percentage = Math.round((filledCount / requiredInputs.length) * 100);
+
+    const percentage = Math.round((filledCount / totalCount) * 100);
+
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-percentage');
-    
-    if (progressBar) {
-        progressBar.style.width = percentage + '%';
-    }
-    
-    if (progressText) {
-        progressText.textContent = percentage;
-    }
+
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (progressText) progressText.textContent = percentage;
 }
 
 // Auto-update progress on input change
@@ -819,21 +936,151 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initial progress update
     updateProgress();
+
+    const provInput = document.getElementById('provinsi')
+    const kotaWrapper = document.querySelector('[data-select-id="kota"]')
+    if (!provInput || !kotaWrapper) return
+    provInput.addEventListener('change', () => {
+        const provId = provInput.value
+        const kotaData = window.allKota[provId] ?? []
+        
+        // isi
+        updateSelect('kota', kotaData)
+
+        // reset bawahnya
+        updateSelect('kecamatan', [])
+        updateSelect('kelurahan', [])
+    })
+
+    const kotaInput = document.getElementById('kota')
+    if (kotaInput) {
+        kotaInput.addEventListener('change', () => {
+            const kotaId = kotaInput.value
+            const kecData = window.allKecamatan[kotaId] ?? []
+            
+            // fill
+            updateSelect('kecamatan', kecData)
+
+            // reset kelurahan
+            updateSelect('kelurahan', [])
+        })
+    }
+
+    const kecInput = document.getElementById('kecamatan')
+    if (kecInput) {
+        kecInput.addEventListener('change', () => {
+            const kecId = kecInput.value
+            const kelData = window.allKelurahan[kecId] ?? []
+
+            // fill
+            updateSelect('kelurahan', kelData)
+        })
+    }
+
 });
 
+function updateSelect(target, options){
+    window.dispatchEvent(new CustomEvent('update-options',{
+        detail:{ target, options }
+    }))
+}
+
+
 // Form validation before submit
-document.getElementById('registration-form').addEventListener('submit', function(e) {
-    const persetujuan = document.getElementById('persetujuan');
+// // manual way
+// document.getElementById('registration-form').addEventListener('submit', function(e) {
+//     const persetujuan = document.getElementById('persetujuan');
     
+//     if (!persetujuan.checked) {
+//         e.preventDefault();
+//         alert('Anda harus menyetujui pernyataan sebelum mengirim formulir');
+//         return false;
+//     }
+    
+//     // Additional validation can be added here
+//     return true;
+// });
+
+// js way
+document.getElementById('registration-form').addEventListener('submit', async function(e) {
+    e.preventDefault()
+
+    const form = this
+    const persetujuan = document.getElementById('persetujuan')
+
     if (!persetujuan.checked) {
-        e.preventDefault();
-        alert('Anda harus menyetujui pernyataan sebelum mengirim formulir');
-        return false;
+        Swal.fire({
+            icon: 'warning',
+            title: 'Perhatian',
+            text: 'Anda harus menyetujui pernyataan sebelum mengirim formulir'
+        })
+        return
     }
-    
-    // Additional validation can be added here
-    return true;
-});
+
+    // 🔥 KONFIRMASI
+    const confirm = await Swal.fire({
+        icon: 'question',
+        title: 'Kirim Pengajuan?',
+        html: 'Pastikan data sudah benar.<br><b>Data tidak dapat diubah setelah dikirim.</b>',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, kirim',
+        cancelButtonText: 'Batal'
+    })
+
+    if (!confirm.isConfirmed) return
+
+    const formData = new FormData(form)
+    console.log(formData)
+    //return
+
+    try {
+
+        Swal.fire({
+            title: 'Mengirim...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        })
+
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            body: formData
+        })
+
+        const data = await res.json()
+
+        Swal.close()
+        if (data.STATUS !== 'SUCCESS') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: data.MESSAGE
+            })
+            return
+        }
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Berhasil mendaftar dengan nomor '+data.PAYLOAD+'',
+            text: data.MESSAGE
+        })
+
+        // form.reset()
+        // go to detail pendaftaran
+
+    } catch (err) {
+        console.log(err)
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Terjadi kesalahan'
+        })
+    }
+})
+
 
 </script>
 @endpush

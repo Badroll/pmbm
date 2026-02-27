@@ -7,14 +7,14 @@
 <!-- Banner Utama -->
 <section id="beranda"
     class="relative text-white py-20 px-4 bg-cover bg-center"
-    style="background-image: url('{{ asset('images/madrasah1.jpg') }}');">
+    style="background-image: url('{{ asset('images/banner.jpeg') }}');">
 
     <!-- Overlay biar teks tetap kebaca -->
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
     <div class="relative max-w-7xl mx-auto text-center">
         <div class="mb-8">
-            <i class="fas fa-school text-6xl mb-4"></i>
+            <!-- <i class="fas fa-school text-6xl mb-4"></i> -->
         </div>
         <h1 class="text-4xl md:text-5xl font-bold mb-4">
             Penerimaan Murid Baru Madrasah

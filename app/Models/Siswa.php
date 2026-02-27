@@ -83,4 +83,8 @@ class Siswa extends Model
         return self::where("U_ID", $userId)->first();
     }
 
+    public static function getByNo($no){
+        return self::where("SISWA_NO", $no)->first();
+    }
+
 }

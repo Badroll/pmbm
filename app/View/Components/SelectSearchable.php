@@ -6,14 +6,28 @@ use Illuminate\View\Component;
 
 class SelectSearchable extends Component
 {
+    public $label;
+    public $name;
+    public $id;
+    public $options;
+    public $placeholder;
+    public $searchPlaceholder;
+
     public function __construct(
-        public string $label,
-        public string $name,
-        public string $id,
-        public $options,        // collection atau array
-        public string $placeholder = '-- Pilih --',
-        public string $searchPlaceholder = 'Cari...',
-    ) {}
+        $label,
+        $name,
+        $id,
+        $options,
+        $placeholder = '-- Pilih --',
+        $searchPlaceholder = 'Cari...'
+    ) {
+        $this->label = $label;
+        $this->name = $name;
+        $this->id = $id;
+        $this->options = $options;
+        $this->placeholder = $placeholder;
+        $this->searchPlaceholder = $searchPlaceholder;
+    }
 
     public function render()
     {

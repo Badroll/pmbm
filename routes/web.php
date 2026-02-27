@@ -45,10 +45,11 @@ Route::middleware("loggedin")->group(function () {
     Route::prefix("daftar")->group(function () {
         Route::get("/", [DaftarController::class, "daftar"]);
         Route::post("/", [DaftarController::class, "doDaftar"]);
+        Route::put("/", [DaftarController::class, "updateDaftar"]);
     });
 
-    Route::get("/inbox", function () {
-        return view("inbox");
+    Route::prefix("inbox")->group(function () {
+        Route::get("/", [WebController::class, "inbox"]);
     });
 
     Route::get("/kartu", function () {

@@ -2,7 +2,24 @@
 @section('title', 'Form Pendaftaran - PMBM')
 @section('content')
 
-<!-- Progress Bar -->
+@php
+    $isEdit = isset($siswa);
+    $formAction = url('daftar');
+    $siswaStatus = $isEdit ? $siswa->SISWA_STATUS : null;
+    $isLocked = in_array($siswaStatus, ['STATUS_TERVERIFIKASI', 'STATUS_MENUNGGU', 'STATUS_LOLOS', 'STATUS_DITERIMA', 'STATUS_CADANGAN', 'STATUS_TERDAFTAR']);
+
+    $statusConfig = [
+        'STATUS_PENDING'        => ['label' => 'Pendaftaran Terkirim',  'color' => 'blue',      'icon' => 'fa-clock'],
+        'STATUS_TERVERIFIKASI'  => ['label' => 'Terverifikasi',         'color' => 'green',     'icon' => 'fa-check-circle'],
+        'STATUS_MENUNGGU'       => ['label' => 'Menunggu Hasil Tes',    'color' => 'yellow',    'icon' => 'fa-clock'],
+        'STATUS_LOLOS'          => ['label' => 'Lolos Seleksi',         'color' => 'green',     'icon' => 'fa-trophy'],
+    ];
+
+    $currentStatus = $siswaStatus ? ($statusConfig[$siswaStatus] ?? ['label' => $siswaStatus, 'color' => 'gray', 'icon' => 'fa-info-circle']) : null;
+@endphp
+
+<!-- Progress Bar — sembunyikan jika locked -->
+@if(!$isLocked)
 <div class="bg-white shadow-sm sticky top-16 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between mb-2">
@@ -14,18 +31,67 @@
         </div>
     </div>
 </div>
+@endif
 
 <!-- Form Container -->
 <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-lg p-8 text-white">
-            <h1 class="text-3xl font-bold mb-2">Formulir Pendaftaran Siswa Baru</h1>
+            <h1 class="text-3xl font-bold mb-2">Formulir Pendaftaran Murid Baru</h1>
             <p class="text-blue-100">Tahun Ajaran 2026/2027</p>
         </div>
 
-        <form id="registration-form" action="{{ url('daftar') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-lg rounded-b-lg">
+        {{-- ── STATUS BANNER ── --}}
+        @if($isEdit && $currentStatus)
+            @php
+                $c = $currentStatus['color'];
+                $bgClass    = "bg-{$c}-50";
+                $borderClass= "border-{$c}-300";
+                $iconClass  = "text-{$c}-500";
+                $textClass  = "text-{$c}-800";
+                $badgeClass = "bg-{$c}-100 text-{$c}-700";
+            @endphp
+            <div class="border {{ $borderClass }} {{ $bgClass }} px-6 py-4 flex items-start gap-4">
+                <i class="fas {{ $currentStatus['icon'] }} text-2xl {{ $iconClass }} mt-0.5 flex-shrink-0"></i>
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="font-semibold {{ $textClass }} text-base">Status Pendaftaran:</span>
+                        <span class="text-sm font-bold px-3 py-1 rounded-full {{ $badgeClass }}">
+                            {{ $currentStatus['label'] }}
+                        </span>
+                    </div>
+                    @if($isLocked)
+                        <p class="mt-1 text-sm {{ $textClass }} opacity-80">
+                            Data pendaftaran Anda sudah <strong>{{ $currentStatus['label'] }}</strong> dan tidak dapat diubah lagi.
+                            Hubungi panitia jika ada pertanyaan.
+                        </p>
+                    @else
+                        <p class="mt-1 text-sm {{ $textClass }} opacity-80">
+                            Anda masih dapat mengubah data pendaftaran selama status belum terverifikasi.
+                        </p>
+                    @endif
+                </div>
+            </div>
+        @endif
+
+        <form id="registration-form" 
+            action="{{ $formAction }}" 
+            method="POST" 
+            enctype="multipart/form-data" 
+            class="bg-white shadow-lg rounded-b-lg">
             @csrf
+            @if($isEdit)
+                @method('PUT')
+            @endif
+
+            {{-- Overlay locked — pointer-events & visual --}}
+            @if($isLocked)
+            <div class="relative">
+                {{-- invisible overlay to block all inputs --}}
+                <div class="absolute inset-0 z-10 cursor-not-allowed" title="Form sudah terkunci"></div>
+                <div class="opacity-60 pointer-events-none select-none">
+            @endif
             
             <!-- Section 1: Data Pribadi -->
             <div class="p-8 border-b border-gray-200">
@@ -43,6 +109,7 @@
                         <input type="text" 
                                id="nama_lengkap" 
                                name="nama_lengkap" 
+                               value="{{ old('nama_lengkap', $isEdit ? $siswa->SISWA_NAMA : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Masukkan nama lengkap sesuai ijazah"
                                required>
@@ -59,6 +126,7 @@
                         <input type="text" 
                                id="nisn" 
                                name="nisn" 
+                               value="{{ old('nisn', $isEdit ? $siswa->SISWA_NISN : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="NISN"
                                maxlength="10"
@@ -79,8 +147,8 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 required>
                             <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
+                            <option value="L" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_P' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('jenis_kelamin')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -95,6 +163,7 @@
                         <input type="text" 
                                id="nama_ayah" 
                                name="nama_ayah" 
+                               value="{{ old('nama_ayah', $isEdit ? $siswa->SISWA_AYAH : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Nama Ayah"
                                required>
@@ -111,6 +180,7 @@
                         <input type="text" 
                                id="nama_ibu" 
                                name="nama_ibu" 
+                               value="{{ old('nama_ibu', $isEdit ? $siswa->SISWA_IBU : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Nama Rumisih"
                                required>
@@ -118,101 +188,6 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                    
-                    <!-- Tempat Lahir -->
-                    {{--
-                    <div>
-                        <label for="tempat_lahir" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Tempat Lahir <span class="text-red-500">*</span>
-                        </label>
-
-                        <div x-data="{
-                                open: false,
-                                search: '',
-                                selected: null,
-                                options: [],
-                                filtered: [],
-                                init() {
-                                    this.options = JSON.parse(this.$el.dataset.options)
-                                    this.filtered = this.options
-                                    this.$watch('search', value => {
-                                        if (value === '') {
-                                            this.filtered = this.options
-                                        } else {
-                                            this.filtered = this.options.filter(o =>
-                                                o.label.toLowerCase().includes(value.toLowerCase())
-                                            )
-                                        }
-                                    })
-                                }
-                            }"
-                            data-options="{{ json_encode($refKota->map(fn($k) => ['value' => $k->KOTA_ID, 'label' => $k->KOTA_JENIS . ' ' . $k->KOTA_NAMA])) }}"
-                            class="relative">
-
-                            <input type="hidden" id="tempat_lahir" name="tempat_lahir" value="" required>
-
-                            <button type="button"
-                                @click="open = !open; $nextTick(() => { if(open) $refs.searchInput.focus() })"
-                                class="w-full flex items-center justify-between px-4 py-3 bg-white border rounded-lg transition"
-                                :class="open ? 'border-blue-500 ring-2 ring-blue-500' : 'border-gray-300'">
-                                <span :class="selected ? 'text-gray-900' : 'text-gray-400'"
-                                    x-text="selected ? selected.label : '-- Pilih --'"></span>
-                                <svg class="w-4 h-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-
-                            <div x-show="open"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                @click.outside="open = false"
-                                class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg">
-
-                                <div class="p-2 border-b border-gray-100">
-                                    <input type="text"
-                                        x-model="search"
-                                        x-ref="searchInput"
-                                        placeholder="Cari kota..."
-                                        @click.stop
-                                        class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-
-                                <ul class="max-h-52 overflow-y-auto py-1">
-                                    <template x-for="option in filtered" :key="option.value">
-                                        <li @click="
-                                                selected = option; 
-                                                open = false; 
-                                                search = '';
-                                                filtered = options;
-                                                document.getElementById('tempat_lahir').value = option.value;
-                                                document.getElementById('tempat_lahir').dispatchEvent(new Event('change'));
-                                            "
-                                            class="px-4 py-2 text-sm cursor-pointer transition"
-                                            :class="selected?.value === option.value
-                                                ? 'bg-blue-50 text-blue-700 font-medium'
-                                                : 'text-gray-700 hover:bg-gray-50'">
-                                            <span x-text="option.label"></span>
-                                        </li>
-                                    </template>
-
-                                    <li x-show="filtered.length === 0"
-                                        class="px-4 py-2 text-sm text-gray-400 text-center italic">
-                                        Kota tidak ditemukan
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        @error('tempat_lahir')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    --}}
 
                     <x-select-searchable
                         label="Tempat Kelahiran"
@@ -233,6 +208,7 @@
                         <input type="date" 
                                id="tanggal_lahir" 
                                name="tanggal_lahir" 
+                               value="{{ old('tanggal_lahir', $isEdit ? $siswa->SISWA_TGL_LAHIR : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                required>
                         @error('tanggal_lahir')
@@ -248,6 +224,7 @@
                         <input type="tel" 
                                id="no_wa" 
                                name="no_wa" 
+                               value="{{ old('no_wa', $isEdit ? $siswa->SISWA_WA : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="08xxxxxxxxxx"
                                pattern="[0-9]{10,13}"
@@ -257,13 +234,10 @@
                         @enderror
                     </div>
 
-                    <!-- Sub Section Nilai Kelas 5 Semester 2 -->
                     <div class="md:col-span-2 mt-4">
                         <div class="flex items-center">
                             <div class="h-px bg-gray-300 flex-1"></div>
-                            <span class="px-3 text-sm font-semibold text-gray-600">
-                                Alamat
-                            </span>
+                            <span class="px-3 text-sm font-semibold text-gray-600">Alamat</span>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                     </div>
@@ -313,7 +287,7 @@
                                   rows="3"
                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                   placeholder="Masukkan alamat lengkap"
-                                  required></textarea>
+                                  required>{{ old('alamat', $isEdit ? $siswa->SISWA_ALAMAT : '') }}</textarea>
                         @error('alamat')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -337,6 +311,7 @@
                         <input type="text" 
                                id="asal_sekolah" 
                                name="asal_sekolah" 
+                               value="{{ old('asal_sekolah', $isEdit ? $siswa->SISWA_SEKOLAH : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: SMP Negeri 1 Semarang"
                                required>
@@ -355,10 +330,12 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 required>
                             <option value="">-- Pilih Tahun --</option>
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
+                            @foreach(['2026','2025','2024','2023'] as $yr)
+                                <option value="{{ $yr }}" 
+                                    {{ old('tahun_lulus', $isEdit ? $siswa->SISWA_SEKOLAH_TAHUN_LULUS : '') == $yr ? 'selected' : '' }}>
+                                    {{ $yr }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('tahun_lulus')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -373,183 +350,75 @@
                         <input type="number" 
                                id="nilai_rata" 
                                name="nilai_rata" 
+                               value="{{ old('nilai_rata', $isEdit ? $siswa->SISWA_NILAI_RATA : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
+                               step="0.01" min="0" max="100"
                                required>
                         @error('nilai_rata')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Sub Section Nilai Kelas 5 Semester 2 -->
+                    <!-- Nilai Kelas 5 Sem 2 -->
                     <div class="md:col-span-2 mt-4">
                         <div class="flex items-center">
                             <div class="h-px bg-gray-300 flex-1"></div>
-                            <span class="px-3 text-sm font-semibold text-gray-600">
-                                Nilai rapor kelas 5 semester 2
-                            </span>
+                            <span class="px-3 text-sm font-semibold text-gray-600">Nilai rapor kelas 5 semester 2</span>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                     </div>
 
                     <div>
-                        <label for="nilai_52_mtk" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Matematika <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_52_mtk" 
-                               name="nilai_52_mtk" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_52_mtk')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_52_mtk" class="block text-sm font-semibold text-gray-700 mb-2">Matematika <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_52_mtk" name="nilai_52_mtk" value="{{ old('nilai_52_mtk', $isEdit ? $siswa->SISWA_NILAI_52_MTK : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_52_mtk')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_52_ipa" class="block text-sm font-semibold text-gray-700 mb-2">
-                            IPA <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_52_ipa" 
-                               name="nilai_52_ipa" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_52_ipa')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_52_ipa" class="block text-sm font-semibold text-gray-700 mb-2">IPA <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_52_ipa" name="nilai_52_ipa" value="{{ old('nilai_52_ipa', $isEdit ? $siswa->SISWA_NILAI_52_IPA : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_52_ipa')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_52_bind" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Bahasa Indonesia <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_52_bind" 
-                               name="nilai_52_bind" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_52_bind')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_52_bind" class="block text-sm font-semibold text-gray-700 mb-2">Bahasa Indonesia <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_52_bind" name="nilai_52_bind" value="{{ old('nilai_52_bind', $isEdit ? $siswa->SISWA_NILAI_52_BIND : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_52_bind')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_52_pai" class="block text-sm font-semibold text-gray-700 mb-2">
-                            PAI / Aqidah Akhlak <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_52_pai" 
-                               name="nilai_52_pai" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_52_pai')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_52_pai" class="block text-sm font-semibold text-gray-700 mb-2">PAI / Aqidah Akhlak <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_52_pai" name="nilai_52_pai" value="{{ old('nilai_52_pai', $isEdit ? $siswa->SISWA_NILAI_52_PAI : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_52_pai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
 
-                    <!-- Sub Section Nilai Kelas 6 Semester 1 -->
+                    <!-- Nilai Kelas 6 Sem 1 -->
                     <div class="md:col-span-2 mt-4">
                         <div class="flex items-center">
                             <div class="h-px bg-gray-300 flex-1"></div>
-                            <span class="px-3 text-sm font-semibold text-gray-600">
-                                Nilai rapor kelas 6 semester 1
-                            </span>
+                            <span class="px-3 text-sm font-semibold text-gray-600">Nilai rapor kelas 6 semester 1</span>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                     </div>
 
                     <div>
-                        <label for="nilai_61_mtk" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Matematika <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_61_mtk" 
-                               name="nilai_61_mtk" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_61_mtk')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_61_mtk" class="block text-sm font-semibold text-gray-700 mb-2">Matematika <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_61_mtk" name="nilai_61_mtk" value="{{ old('nilai_61_mtk', $isEdit ? $siswa->SISWA_NILAI_61_MTK : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_61_mtk')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_61_ipa" class="block text-sm font-semibold text-gray-700 mb-2">
-                            IPA <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_61_ipa" 
-                               name="nilai_61_ipa" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_61_ipa')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_61_ipa" class="block text-sm font-semibold text-gray-700 mb-2">IPA <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_61_ipa" name="nilai_61_ipa" value="{{ old('nilai_61_ipa', $isEdit ? $siswa->SISWA_NILAI_61_IPA : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_61_ipa')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_61_bind" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Bahasa Indonesia <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_61_bind" 
-                               name="nilai_61_bind" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_61_bind')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_61_bind" class="block text-sm font-semibold text-gray-700 mb-2">Bahasa Indonesia <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_61_bind" name="nilai_61_bind" value="{{ old('nilai_61_bind', $isEdit ? $siswa->SISWA_NILAI_61_BIND : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_61_bind')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                     <div>
-                        <label for="nilai_61_pai" class="block text-sm font-semibold text-gray-700 mb-2">
-                            PAI / Aqidah Akhlak <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" 
-                               id="nilai_61_pai" 
-                               name="nilai_61_pai" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: 85.50"
-                               step="0.01"
-                               min="0"
-                               max="100"
-                               required>
-                        @error('nilai_61_pai')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <label for="nilai_61_pai" class="block text-sm font-semibold text-gray-700 mb-2">PAI / Aqidah Akhlak <span class="text-red-500">*</span></label>
+                        <input type="number" id="nilai_61_pai" name="nilai_61_pai" value="{{ old('nilai_61_pai', $isEdit ? $siswa->SISWA_NILAI_61_PAI : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" required>
+                        @error('nilai_61_pai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
-
                 </div>
             </div>
 
@@ -561,29 +430,22 @@
                 </div>
                 
                 <div class="mb-4">
-                    <!-- <label class="block text-sm font-semibold text-gray-700 mb-4">
-                        Pilih Jalur Pendaftaran <span class="text-red-500">*</span>
-                    </label> -->
+                    @php $jalurSelected = old('jalur_pendaftaran', $isEdit ? $siswa->SISWA_JALUR : ''); @endphp
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Jalur Reguler -->
                         <label class="jalur-card cursor-pointer">
-                            <input type="radio" name="jalur_pendaftaran" value="reguler" class="hidden jalur-input" required>
+                            <input type="radio" name="jalur_pendaftaran" value="JALUR_REGULER" {{ $jalurSelected === 'JALUR_REGULER' ? 'checked' : '' }} class="hidden jalur-input" required>
                             <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                 <div class="flex flex-col items-center text-center">
                                     <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                        </svg>
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Reguler</h3>
-                                    <!-- <p class="text-sm text-gray-600">Pendaftaran umum berdasarkan nilai rapor</p> -->
                                 </div>
                                 <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                        </svg>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
                                 </div>
                             </div>
@@ -591,22 +453,17 @@
 
                         <!-- Jalur Prestasi -->
                         <label class="jalur-card cursor-pointer">
-                            <input type="radio" name="jalur_pendaftaran" value="prestasi" class="hidden jalur-input" required>
+                            <input type="radio" name="jalur_pendaftaran" value="JALUR_PRESTASI" {{ $jalurSelected === 'JALUR_PRESTASI' ? 'checked' : '' }} class="hidden jalur-input" required>
                             <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                 <div class="flex flex-col items-center text-center">
                                     <div class="bg-yellow-100 text-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                                        </svg>
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Prestasi</h3>
-                                    <!-- <p class="text-sm text-gray-600">Untuk siswa berprestasi akademik & non-akademik</p> -->
                                 </div>
                                 <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                        </svg>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
                                 </div>
                             </div>
@@ -614,22 +471,17 @@
 
                         <!-- Jalur Afirmasi -->
                         <label class="jalur-card cursor-pointer">
-                            <input type="radio" name="jalur_pendaftaran" value="afirmasi" class="hidden jalur-input" required>
+                            <input type="radio" name="jalur_pendaftaran" value="JALUR_AFIRMASI" {{ $jalurSelected === 'JALUR_AFIRMASI' ? 'checked' : '' }} class="hidden jalur-input" required>
                             <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                 <div class="flex flex-col items-center text-center">
                                     <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                        </svg>
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Afirmasi</h3>
-                                    <!-- <p class="text-sm text-gray-600">Untuk siswa afirmasi</p> -->
                                 </div>
                                 <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                        </svg>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
                                 </div>
                             </div>
@@ -648,7 +500,6 @@
                     background-color: #eff6ff;
                     box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2);
                 }
-                
                 .jalur-input:checked + .jalur-option .checkmark-wrapper {
                     opacity: 1;
                 }
@@ -662,8 +513,7 @@
                 </div>
 
                 <div class="space-y-6">
-
-                    <!-- Upload Ijazah -->
+                    {{-- Foto --}}
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Foto <span class="text-red-500">*</span>
@@ -675,15 +525,27 @@
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
-                                    <input type="file" 
-                                           id="file_pas_foto" 
-                                           name="file_pas_foto" 
-                                           class="hidden" 
-                                           accept="image/jpeg,image/png,image/jpg"
-                                           required>
+                                    <input type="file" id="file_pas_foto" name="file_pas_foto" class="hidden" 
+                                        accept="image/jpeg,image/png,image/jpg"
+                                        {{ !$isEdit ? 'required' : '' }}>
                                 </label>
                                 <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Max: 3MB)</p>
                             </div>
+
+                            @if($isEdit && $siswa->SISWA_FILE_FOTO)
+                                <div class="mt-4" id="existing-file_pas_foto">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_FOTO) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti foto</p>
+                                </div>
+                            @endif
+
                             <div id="preview-file_pas_foto" class="mt-4 hidden">
                                 <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                                     <div class="flex items-center space-x-3">
@@ -706,6 +568,7 @@
                         @enderror
                     </div>
 
+                    {{-- SKL --}}
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             SKL <span class="text-blue-400">(opsional)</span>
@@ -717,48 +580,43 @@
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
-                                    <input type="file" 
-                                           id="file_skl" 
-                                           name="file_skl" 
-                                           class="hidden" 
-                                           accept="application/pdf,image/jpeg,image/png,image/jpg"
-                                           required>
+                                    <input type="file" id="file_skl" name="file_skl" class="hidden" 
+                                        accept="application/pdf,image/jpeg,image/png,image/jpg">
                                 </label>
                                 <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Max: 3MB)</p>
                             </div>
-                            <div id="preview-file_skl" class="mt-4 hidden">
-                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-                                    <div class="flex items-center space-x-3">
-                                        <i class="fas fa-file-alt text-blue-600"></i>
-                                        <span id="nama-file_skl" class="text-sm text-gray-700"></span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button type="button" onclick="previewFile('file_skl')" class="text-blue-600 hover:text-blue-800 text-sm">
-                                            <i class="fas fa-eye mr-1"></i>Lihat
-                                        </button>
-                                        <button type="button" onclick="removeFile('file_skl')" class="text-red-600 hover:text-red-800 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Hapus
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @error('file_skl')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
 
+                            @if($isEdit && $siswa->SISWA_FILE_SKL)
+                                <div class="mt-4">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_SKL) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
+                                </div>
+                            @endif
+
+                            <div id="preview-file_skl" class="mt-4 hidden"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Submit Button -->
+            {{-- Tutup overlay locked --}}
+            @if($isLocked)
+                </div>{{-- end opacity/pointer wrapper --}}
+            </div>{{-- end relative wrapper --}}
+            @endif
+
+            {{-- Submit — sembunyikan jika locked --}}
+            @if(!$isLocked)
             <div class="p-8 bg-gray-50">
                 <div class="flex items-start mb-4">
-                    <input type="checkbox" 
-                           id="persetujuan" 
-                           name="persetujuan" 
-                           class="mt-1 mr-3 w-4 h-4 text-blue-600"
-                           required>
+                    <input type="checkbox" id="persetujuan" name="persetujuan" class="mt-1 mr-3 w-4 h-4 text-blue-600" required>
                     <label for="persetujuan" class="text-sm text-gray-700">
                         Saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan. 
                         Apabila dikemudian hari terbukti tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.
@@ -771,14 +629,20 @@
                         <i class="fas fa-paper-plane mr-2"></i>
                         D A F T A R
                     </button>
-                    <!-- <button type="reset" 
-                            class="flex-1 bg-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:bg-gray-400 transition flex items-center justify-center">
-                        <i class="fas fa-redo mr-2"></i>
-                        Reset Form
-                    </button> -->
                 </div>
             </div>
+            @else
+            {{-- Pesan info locked di bagian bawah form --}}
+            <div class="p-8 bg-gray-50 border-t border-gray-200">
+                <div class="flex items-center gap-3 text-gray-500">
+                    <i class="fas fa-lock text-lg"></i>
+                    <span class="text-sm">Form terkunci karena status pendaftaran sudah <strong>{{ $currentStatus['label'] }}</strong>. Hubungi panitia untuk informasi lebih lanjut.</span>
+                </div>
+            </div>
+            @endif
+
         </form>
+
     </div>
 </div>
 
@@ -818,9 +682,8 @@ window.allKelurahan = @json(
         )
 );
 
-    
 // File Upload Preview & Remove
-const fileInputs = ['pas_foto', 'skl'];
+const fileInputs = ['file_pas_foto', 'file_skl'];
 
 fileInputs.forEach(inputId => {
     const input = document.getElementById(inputId);
@@ -828,17 +691,13 @@ fileInputs.forEach(inputId => {
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validate file size (max 5MB for documents, 2MB for photos)
-                const maxSize = inputId === 'pas_foto' ?
-                    2 * 1024 * 1024 
-                    : 5 * 1024 * 1024;
+                const maxSize = inputId === 'pas_foto' ? 2 * 1024 * 1024 : 5 * 1024 * 1024;
                 if (file.size > maxSize) {
                     alert(`Ukuran file terlalu besar. Maksimal ${inputId === 'pas_foto' ? '2MB' : '5MB'}`);
                     e.target.value = '';
                     return;
                 }
 
-                // Show preview
                 const preview = document.getElementById(`preview-${inputId}`);
                 const namaFile = document.getElementById(`nama-${inputId}`);
                 
@@ -853,78 +712,62 @@ fileInputs.forEach(inputId => {
     }
 });
 
-// Preview file in new tab
 function previewFile(inputId) {
     const input = document.getElementById(inputId);
     const file = input.files[0];
-    
     if (file) {
         const fileURL = URL.createObjectURL(file);
         window.open(fileURL, '_blank');
     }
 }
 
-// Remove uploaded file
 function removeFile(inputId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(`preview-${inputId}`);
-    
-    if (input) {
-        input.value = '';
-    }
-    
-    if (preview) {
-        preview.classList.add('hidden');
-    }
-    
+    if (input) input.value = '';
+    if (preview) preview.classList.add('hidden');
     updateProgress();
 }
 
-
-// Progress bar calculation
+// Progress bar — hanya dijalankan jika tidak locked
+@if(!$isLocked)
 function updateProgress() {
     const form = document.getElementById('registration-form');
     const requiredInputs = form.querySelectorAll('[required]');
 
     let filledCount = 0;
     let totalCount = 0;
-
     const radioGroups = {};
 
     requiredInputs.forEach(input => {
         if (input.type === 'radio') {
             if (!radioGroups[input.name]) {
-                radioGroups[input.name] = form.querySelectorAll(`input[name="${input.name}"][required]`);
+                radioGroups[input.name] = true;
                 totalCount++;
-
-                const checked = form.querySelector(`input[name="${input.name}"]:checked`);
-                if (checked) filledCount++;
+                if (form.querySelector(`input[name="${input.name}"]:checked`)) filledCount++;
             }
-        } 
-        else if (input.type === 'checkbox') {
+        } else if (input.type === 'checkbox') {
             totalCount++;
             if (input.checked) filledCount++;
-        } 
-        else if (input.type === 'file') {
+        } else if (input.type === 'file') {
             totalCount++;
             if (input.files.length > 0) filledCount++;
-        } 
-        else {
+        } else {
             totalCount++;
             if (input.value.trim() !== '') filledCount++;
         }
     });
 
     const percentage = Math.round((filledCount / totalCount) * 100);
-
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-percentage');
-
     if (progressBar) progressBar.style.width = percentage + '%';
     if (progressText) progressText.textContent = percentage;
 }
+@else
+function updateProgress() {} // noop saat locked
+@endif
 
-// Auto-update progress on input change
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registration-form');
     const inputs = form.querySelectorAll('input, select, textarea');
@@ -934,109 +777,126 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', updateProgress);
     });
     
-    // Initial progress update
     updateProgress();
 
     const provInput = document.getElementById('provinsi')
     const kotaWrapper = document.querySelector('[data-select-id="kota"]')
     if (!provInput || !kotaWrapper) return
-    provInput.addEventListener('change', () => {
+    provInput.addEventListener('change', (e) => {
+        if (e.detail?.isInit) return
         const provId = provInput.value
         const kotaData = window.allKota[provId] ?? []
-        
-        // isi
         updateSelect('kota', kotaData)
-
-        // reset bawahnya
         updateSelect('kecamatan', [])
         updateSelect('kelurahan', [])
     })
 
     const kotaInput = document.getElementById('kota')
     if (kotaInput) {
-        kotaInput.addEventListener('change', () => {
+        kotaInput.addEventListener('change', (e) => {
+            if (e.detail?.isInit) return
             const kotaId = kotaInput.value
             const kecData = window.allKecamatan[kotaId] ?? []
-            
-            // fill
             updateSelect('kecamatan', kecData)
-
-            // reset kelurahan
             updateSelect('kelurahan', [])
         })
     }
 
     const kecInput = document.getElementById('kecamatan')
     if (kecInput) {
-        kecInput.addEventListener('change', () => {
+        kecInput.addEventListener('change', (e) => {
+            if (e.detail?.isInit) return
             const kecId = kecInput.value
             const kelData = window.allKelurahan[kecId] ?? []
-
-            // fill
             updateSelect('kelurahan', kelData)
         })
     }
 
+    @if($isEdit)
+        prefillSelects()
+    @endif
 });
 
-function updateSelect(target, options){
-    window.dispatchEvent(new CustomEvent('update-options',{
-        detail:{ target, options }
+function updateSelect(target, options, isInit = false) {
+    window.dispatchEvent(new CustomEvent('update-options', {
+        detail: { target, options, isInit }
     }))
 }
 
-
-// Form validation before submit
-// // manual way
-// document.getElementById('registration-form').addEventListener('submit', function(e) {
-//     const persetujuan = document.getElementById('persetujuan');
-    
-//     if (!persetujuan.checked) {
-//         e.preventDefault();
-//         alert('Anda harus menyetujui pernyataan sebelum mengirim formulir');
-//         return false;
-//     }
-    
-//     // Additional validation can be added here
-//     return true;
-// });
-
-// js way
-document.getElementById('registration-form').addEventListener('submit', async function(e) {
-    e.preventDefault()
-
-    const form = this
-    const persetujuan = document.getElementById('persetujuan')
-
-    if (!persetujuan.checked) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Perhatian',
-            text: 'Anda harus menyetujui pernyataan sebelum mengirim formulir'
+async function prefillSelects() {
+    function pickOption(id, value) {
+        return new Promise(resolve => {
+            const hidden = document.getElementById(id)
+            if (!hidden || !value) return resolve()
+            hidden.value = value
+            const wrapper = document.querySelector(`[data-select-id="${id}"]`)
+            if (!wrapper) return resolve()
+            const alpine = wrapper._x_dataStack?.[0]
+            if (!alpine) return resolve()
+            const match = alpine.options.find(o => String(o.value) === String(value))
+            if (match) alpine.selected = match
+            hidden.dispatchEvent(new CustomEvent('change', { detail: { isInit: true } }))
+            resolve()
         })
-        return
     }
 
-    // 🔥 KONFIRMASI
+    function fillAndPick(id, options, value) {
+        return new Promise(resolve => {
+            updateSelect(id, options)
+            setTimeout(() => {
+                const hidden = document.getElementById(id)
+                if (hidden && value) hidden.value = value
+                const wrapper = document.querySelector(`[data-select-id="${id}"]`)
+                if (wrapper) {
+                    const alpine = wrapper._x_dataStack?.[0]
+                    if (alpine) {
+                        const match = alpine.options.find(o => String(o.value) === String(value))
+                        if (match) alpine.selected = match
+                    }
+                }
+                resolve()
+            }, 50)
+        })
+    }
+
+    await pickOption('tempat_lahir', '{{ old("tempat_lahir", $isEdit ? $siswa->SISWA_TEMPAT_LAHIR : "") }}')
+    await pickOption('provinsi', '{{ old("provinsi", $isEdit ? $siswa->SISWA_ALAMAT_PROVINSI : "") }}')
+
+    const provId = '{{ old("provinsi", $isEdit ? $siswa->SISWA_ALAMAT_PROVINSI : "") }}'
+    const kotaOptions = window.allKota[provId] ?? []
+    await fillAndPick('kota', kotaOptions, '{{ old("kota", $isEdit ? $siswa->SISWA_ALAMAT_KOTA : "") }}')
+
+    const kotaId = '{{ old("kota", $isEdit ? $siswa->SISWA_ALAMAT_KOTA : "") }}'
+    const kecOptions = window.allKecamatan[kotaId] ?? []
+    await fillAndPick('kecamatan', kecOptions, '{{ old("kecamatan", $isEdit ? $siswa->SISWA_ALAMAT_KECAMATAN : "") }}')
+
+    const kecId = '{{ old("kecamatan", $isEdit ? $siswa->SISWA_ALAMAT_KECAMATAN : "") }}'
+    const kelOptions = window.allKelurahan[kecId] ?? []
+    await fillAndPick('kelurahan', kelOptions, '{{ old("kelurahan", $isEdit ? $siswa->SISWA_ALAMAT_KELURAHAN : "") }}')
+}
+
+// Form submit — hanya aktif jika tidak locked
+@if(!$isLocked)
+document.getElementById('registration-form').addEventListener('submit', async function(e) {
+    e.preventDefault()
+    const form = this
+
     const confirm = await Swal.fire({
         icon: 'question',
-        title: 'Kirim Pengajuan?',
-        html: 'Pastikan data sudah benar.<br><b>Data tidak dapat diubah setelah dikirim.</b>',
+        title: 'Konfirmasi Pendaftaran?',
+        html: 'Pastikan data pendaftaran sudah benar.<br><b></b>',
         showCancelButton: true,
-        confirmButtonText: 'Ya, kirim',
+        confirmButtonText: 'Ya, Daftar',
         cancelButtonText: 'Batal'
     })
 
     if (!confirm.isConfirmed) return
 
     const formData = new FormData(form)
-    console.log(formData)
-    //return
 
     try {
-
         Swal.fire({
-            title: 'Mengirim...',
+            title: 'Mendaftarkan...',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         })
@@ -1054,33 +914,18 @@ document.getElementById('registration-form').addEventListener('submit', async fu
 
         Swal.close()
         if (data.STATUS !== 'SUCCESS') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: data.MESSAGE
-            })
+            Swal.fire({ icon: 'error', title: 'Gagal', text: data.MESSAGE })
             return
         }
 
-        await Swal.fire({
-            icon: 'success',
-            title: 'Berhasil mendaftar dengan nomor '+data.PAYLOAD+'',
-            text: data.MESSAGE
-        })
-
-        // form.reset()
-        // go to detail pendaftaran
+        await Swal.fire({ icon: 'success', title: 'Berhasil Mendaftar', text: data.MESSAGE })
 
     } catch (err) {
         console.log(err)
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal',
-            text: 'Terjadi kesalahan'
-        })
+        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan' })
     }
 })
-
+@endif
 
 </script>
 @endpush

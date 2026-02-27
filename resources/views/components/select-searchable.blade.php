@@ -11,21 +11,13 @@
             init() {
                 this.options = JSON.parse(this.$el.dataset.options)
                 this.filtered = this.options
-
+                                
                 this.$watch('search', value => {
                     this.filtered = value === ''
                         ? this.options
                         : this.options.filter(o => 
                             o.label.toLowerCase().includes(value.toLowerCase())
                         )
-                })
-
-                this.$watch('selected', value => {
-                    const el = document.getElementById('{{ $id }}')
-                    if (el) {
-                        el.value = value ? value.value : ''
-                        el.dispatchEvent(new Event('change'))
-                    }
                 })
 
                 this.$watch('selected', value => {

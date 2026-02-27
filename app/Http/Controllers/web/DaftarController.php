@@ -19,15 +19,15 @@ use App\Services\InboxService as mInboxService;
 
 class DaftarController extends Controller
 {
-    protected $inboxService;
-
+    //protected $inboxService;
 
     public function __construct(){
-        $this->inboxService = new mInboxService();
+        //$this->inboxService = new mInboxService();
     }
 
 
     public function daftar(Request $request){
+        $loginUser = $request->loginUser;
         $req = $request->all();
 
         $refProvinsi = mProvinsi::all();
@@ -35,11 +35,14 @@ class DaftarController extends Controller
         $refKecamatan = mKecamatan::all();
         $refKelurahan = mKelurahan::all();
 
+        $siswa = mSiswa::getByUserId($loginUser->U_ID);
+
         $viewData = [
             "refProvinsi" => $refProvinsi,
             "refKota" => $refKota,
             "refKecamatan" => $refKecamatan,
             "refKelurahan" => $refKelurahan,
+            "siswa" => $siswa,
         ];
         //dd($viewData);
         return view("daftar", $viewData);
@@ -56,6 +59,11 @@ class DaftarController extends Controller
             'file_pas_foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
             'file_skl' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:3072',
         ]);
+
+        $record = mSiswa::getByUserId($loginUser->U_ID);
+        if($record){
+            return compose("ERROR", "Anda sudah mendaftar");
+        }
 
         DB::beginTransaction();
         try {
@@ -143,7 +151,7 @@ class DaftarController extends Controller
             $msg .= "\n*".$siswa->refJalur->R_INFO."*";
             $msg .= "\n\n_silahkan melakukan verifikasi berkas pada tanggal yang sudah ditentukan\nterimakasih._";
             
-            $this->inboxService->send([
+            mInboxService::send([
                 'U_ID' => $siswa->U_ID,
                 'jenis' => "success",
                 'judul' => 'Pendaftaran Berhasil',
@@ -151,7 +159,7 @@ class DaftarController extends Controller
                 "to" => $siswa->SISWA_WA
             ]);
 
-            return compose("SUCCESS", "Berhasil mendaftar", $siswa->SISWA_NO);
+            return compose("SUCCESS", "Nomor pendaftaran anda #". str_pad($siswa->SISWA_ID, 4, '0', STR_PAD_LEFT));
 
         } catch (\Throwable $e) {
             DB::rollBack();

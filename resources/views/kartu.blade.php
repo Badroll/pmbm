@@ -326,7 +326,7 @@
                     <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4">
                         <p class="text-xs text-blue-800">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Dokumen untuk siswa yang dinyatakan lulus seleksi
+                            Dokumen untuk murid yang dinyatakan lulus seleksi
                         </p>
                     </div>
 

@@ -24,7 +24,7 @@ class User extends Model implements AuthenticatableContract
 
     //
     public function inbox(){
-        return $this->hasOne(Inbox::class, "U_ID", "U_ID");
+        return $this->hasMany(Inbox::class, "U_ID", "U_ID")->orderBy("INBOX_ID", "DESC");
     }
 
     //

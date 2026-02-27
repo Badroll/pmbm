@@ -11,9 +11,9 @@
 <body class="bg-gray-50 flex items-center justify-center h-screen">
 
     <div class="w-72">
-        <label for="siswa" class="block text-sm font-medium text-gray-700 mb-2">Pilih Siswa</label>
+        <label for="siswa" class="block text-sm font-medium text-gray-700 mb-2">Pilih Murid</label>
         <select id="siswa" name="siswa" class="w-full">
-            <option value="">-- Pilih Siswa --</option>
+            <option value="">-- Pilih Murid --</option>
             <option value="1">Budi Santoso</option>
             <option value="2">Siti Aminah</option>
             <option value="3">Andi Pratama</option>

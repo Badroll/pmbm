@@ -52,10 +52,10 @@
         <div class="border-t border-gray-700 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <p class="text-gray-400 text-sm">
-                    Developed by <span class="text-blue-400 font-semibold">MTs N 2 Kota Semarang Dev Team</span>
+                    Developed by <span class="text-blue-400 font-semibold">Matsanda Dev Team</span>
                 </p>
                 <p class="text-gray-400 text-sm">
-                    &copy; 2026 SMK Nusantara. All Rights Reserved.
+                    &copy; 2026 MTs Negeri 2 Kota Semarang. All Rights Reserved.
                 </p>
             </div>
         </div>

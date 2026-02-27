@@ -151,12 +151,12 @@
                         </div>
 
                         <!-- Last Updated Info -->
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <!-- <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                             <p class="text-sm text-blue-800">
                                 <i class="fas fa-clock mr-2"></i>
                                 Terakhir diperbarui: <strong>{{ Auth::user() ? Auth::user()->updated_at->format('d M Y, H:i') : 'Belum pernah' }}</strong>
                             </p>
-                        </div>
+                        </div> -->
 
                         <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-3">
@@ -312,7 +312,7 @@
                         </div>
 
                         <!-- Security Tips -->
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <!-- <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                             <h4 class="text-sm font-semibold text-yellow-800 mb-2">
                                 <i class="fas fa-shield-alt mr-2"></i>Tips Keamanan Password
                             </h4>
@@ -320,9 +320,8 @@
                                 <li>• Jangan gunakan password yang sama dengan akun lain</li>
                                 <li>• Kombinasikan huruf besar, huruf kecil, angka, dan simbol</li>
                                 <li>• Hindari menggunakan informasi pribadi (tanggal lahir, nama, dll)</li>
-                                <li>• Ganti password secara berkala setiap 3-6 bulan</li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-3">

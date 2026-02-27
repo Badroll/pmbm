@@ -207,10 +207,10 @@
         <div class="max-w-4xl mx-auto">
             <div class="space-y-8">
 
-                <!-- abu abu -->
+                <!-- pass -->
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-gray-400">Sekarang - 26 April 2026</div>
+                        <div class="text-sm font-semibold text-gray-400">Sekarang - 29 Maret 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full bg-gray-400"></div>
@@ -218,56 +218,44 @@
                     </div>
                     <div class="flex-1 pb-8">
                         <h3 class="font-semibold text-gray-400 mb-1">Pra Pendaftaran</h3>
-                        <p class="text-sm text-gray-400">Persiapan SPMB</p>
+                        <p class="text-sm text-gray-400">Persiapan PMBM</p>
                     </div>
                 </div>
 
+                <!-- aktif -->
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-green-600">27 April - 13 Mei 2026</div>
+                        <div class="text-sm font-semibold text-green-600">30 Maret - 13 Mei 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full bg-green-500 ring-4 ring-green-200"></div>
                         <div class="w-0.5 h-full bg-gray-300 mt-2"></div>
                     </div>
                     <div class="flex-1 pb-8">
-                        <h3 class="font-semibold text-green-600 mb-1">Pendaftaran Siswa</h3>
-                        <p class="text-sm text-gray-700">Periode pendaftaran siswa secara online melalui website</p>
+                        <h3 class="font-semibold text-green-600 mb-1">Pendaftaran Murid</h3>
+                        <p class="text-sm text-gray-700">Periode pendaftaran murid secara online melalui website</p>
                         <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Sedang Berjalan</span>
                     </div>
                 </div>
 
+                <!-- coming soon -->
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-blue-400">15 - 21 Mei 2026</div>
+                        <div class="text-sm font-semibold text-blue-400">18 - 23 Mei 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full border-2 border-blue-400 bg-white"></div>
                         <div class="w-0.5 h-full bg-gray-200 mt-2"></div>
                     </div>
                     <div class="flex-1 pb-8">
-                        <h3 class="font-semibold text-blue-400 mb-1">Verifikasi Berkas</h3>
-                        <p class="text-sm text-gray-500">Verifikasi berkas pendaftaran di Madrasah</p>
+                        <h3 class="font-semibold text-blue-400 mb-1">Verifikasi Berkas dan Tes Seleksi</h3>
+                        <p class="text-sm text-gray-500">Verifikasi berkas pendaftaran dan tes seleksi penerimaan di Madrasah</p>
                     </div>
                 </div>
 
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-blue-400">15 - 21 Mei 2026</div>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-4 h-4 rounded-full border-2 border-blue-400 bg-white"></div>
-                        <div class="w-0.5 h-full bg-gray-200 mt-2"></div>
-                    </div>
-                    <div class="flex-1 pb-8">
-                        <h3 class="font-semibold text-blue-400 mb-1">Tes Seleksi</h3>
-                        <p class="text-sm text-gray-500">Tes seleksi penerimaan di Madrasah</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-6">
-                    <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-blue-400">23 Mei 2026</div>
+                        <div class="text-sm font-semibold text-blue-400">26 Mei 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full border-2 border-blue-400 bg-white"></div>
@@ -281,14 +269,14 @@
 
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-blue-400">23 - 26 Mei 2026</div>
+                        <div class="text-sm font-semibold text-blue-400">28 - 29 Mei 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full border-2 border-blue-400 bg-white"></div>
                     </div>
                     <div class="flex-1">
                         <h3 class="font-semibold text-blue-400 mb-1">Daftar Ulang</h3>
-                        <p class="text-sm text-gray-500">Periode daftar ulang siswa diterima di Madrasah</p>
+                        <p class="text-sm text-gray-500">Periode daftar ulang murid diterima di Madrasah</p>
                     </div>
                 </div>
 
@@ -312,7 +300,19 @@
                 <ul class="space-y-3 text-gray-700 mb-6 flex-grow">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Nilai rapor</span>
+                        <span>Nilai Raport</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Tes Baca Al Qur'an</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>CBT (Tes Akademik & Psikotest)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Umur</span>
                     </li>
                 </ul>
                 <div class="text-center mt-auto">
@@ -336,15 +336,23 @@
                 <ul class="space-y-3 text-gray-700 mb-6 flex-grow">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Nilai rapor</span>
+                        <span>Nilai Raport</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Kejuaraan bidang akademik maupun non-akademik</span>
+                        <span>Kejuaraan Akademik atau non Akademik</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Hafalan Al-Qur'an</span>
+                        <span>Tes Baca dan Hafalan Al Qur'an minimal 3 Juz</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>CBT (tes Akademik dan Psikotest)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Umur</span>
                     </li>
                 </ul>
                 <div class="text-center mt-auto">
@@ -368,15 +376,39 @@
                 <ul class="space-y-3 text-gray-700 mb-6 flex-grow">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Nilai rapor</span>
+                        <span>Nilai Raport</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Keluarga/saudara</span>
+                        <span>Tes Baca Al Qur'an</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Wilayah sekitar madrasah</span>
+                        <span>CBT (tes Akademik dan non Akademik)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Pemegang Kartu KIP/PIP/PKS/PKH</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Warga Wilayah Matsanda</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Anak GTK dan Komite Matsanda</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Anak Guru</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Anak ASN Kemenag</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                        <span>Umur</span>
                     </li>
                 </ul>
                 <div class="text-center mt-auto">

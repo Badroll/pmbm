@@ -72,7 +72,9 @@ class APIController extends Controller
     }
 
     public function tes4(Request $request){
+        $data = str_pad(10, 4, '0', STR_PAD_LEFT);
 
+        return compose("SUCCESS", "ok", $data);
     }
 
     public function tes5(Request $request){

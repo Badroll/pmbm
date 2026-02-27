@@ -53,12 +53,12 @@ class Siswa extends Model
 
     //
     public function kecamatanAlamat(){
-        return $this->hasOne(Kecamatan::class, "KOTA_ID", "SISWA_ALAMAT_KECAMATAN");
+        return $this->hasOne(Kecamatan::class, "KEC_ID", "SISWA_ALAMAT_KECAMATAN");
     }
 
     //
     public function kelurahanAlamat(){
-        return $this->hasOne(Kelurahan::class, "KOTA_ID", "SISWA_ALAMAT_KELURAHAN");
+        return $this->hasOne(Kelurahan::class, "KEL_ID", "SISWA_ALAMAT_KELURAHAN");
     }
 
     //

@@ -22,7 +22,7 @@
 
     {{-- Back + Header --}}
     <div class="mb-6">
-        <a href="#"
+        <a href="/siswa"
             class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition mb-4">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -131,14 +131,16 @@
             <div class="p-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @include('pendaftar._detail-item', ['label' => 'NISN', 'value' => $siswa->SISWA_NISN, 'mono' => true])
-                    @include('pendaftar._detail-item', ['label' => 'Tempat Lahir', 'value' => $siswa->SISWA_TEMPAT_LAHIR])
+                    @include('pendaftar._detail-item', ['label' => 'Tempat Lahir', 'value' => $siswa->kotaTempatLahir->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA])
                     @include('pendaftar._detail-item', ['label' => 'Tanggal Lahir', 'value' => \Carbon\Carbon::parse($siswa->SISWA_TGL_LAHIR)->translatedFormat('d F Y')])
                     @include('pendaftar._detail-item', ['label' => 'Jenis Kelamin', 'value' => $siswa->SISWA_JENIS_KELAMIN == 'JENIS_KELAMIN_L' ? 'Laki-laki' : 'Perempuan'])
+                    {{--
                     @include('pendaftar._detail-item', ['label' => 'Tinggi Badan', 'value' => $siswa->SISWA_TB . ' cm'])
                     @include('pendaftar._detail-item', ['label' => 'Berat Badan', 'value' => $siswa->SISWA_BB . ' kg'])
-                    @include('pendaftar._detail-item', ['label' => 'No. WhatsApp', 'value' => $siswa->SISWA_WA])
+                    --}}
                     @include('pendaftar._detail-item', ['label' => 'Nama Ayah', 'value' => $siswa->SISWA_AYAH])
                     @include('pendaftar._detail-item', ['label' => 'Nama Ibu', 'value' => $siswa->SISWA_IBU])
+                    @include('pendaftar._detail-item', ['label' => 'No. WhatsApp', 'value' => $siswa->SISWA_WA])
                 </div>
             </div>
         </div>
@@ -156,15 +158,16 @@
             </div>
             <div class="p-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @include('pendaftar._detail-item', ['label' => 'Provinsi', 'value' => $siswa->SISWA_ALAMAT_PROVINSI])
-                    @include('pendaftar._detail-item', ['label' => 'Kota/Kabupaten', 'value' => $siswa->SISWA_ALAMAT_KOTA])
-                    @include('pendaftar._detail-item', ['label' => 'Kecamatan', 'value' => $siswa->SISWA_ALAMAT_KECAMATAN])
-                    @include('pendaftar._detail-item', ['label' => 'Kelurahan', 'value' => $siswa->SISWA_ALAMAT_KELURAHAN])
+                    @include('pendaftar._detail-item', ['label' => 'Provinsi', 'value' => $siswa->provinsiAlamat->PROV_NAMA])
+                    @include('pendaftar._detail-item', ['label' => 'Kota/Kabupaten', 'value' => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->provinsiAlamat->KOTA_NAMA])
+                    @include('pendaftar._detail-item', ['label' => 'Kecamatan', 'value' => $siswa->kecamatanAlamat->KEC_NAMA])
+                    @include('pendaftar._detail-item', ['label' => 'Kelurahan', 'value' => $siswa->kelurahanAlamat->KEL_NAMA])
+                    <div class="mt-4">
+                        <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Alamat Lengkap</p>
+                        <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 rounded-xl px-4 py-3">{{ $siswa->SISWA_ALAMAT }}</p>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Alamat Lengkap</p>
-                    <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 rounded-xl px-4 py-3">{{ $siswa->SISWA_ALAMAT }}</p>
-                </div>
+                
             </div>
         </div>
 
@@ -179,7 +182,7 @@
                 <h2 class="font-semibold text-gray-800 text-sm">Data Sekolah & Nilai</h2>
             </div>
             <div class="p-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
                     @include('pendaftar._detail-item', ['label' => 'Asal Sekolah', 'value' => $siswa->SISWA_SEKOLAH])
                     @include('pendaftar._detail-item', ['label' => 'Tahun Lulus', 'value' => $siswa->SISWA_SEKOLAH_TAHUN_LULUS])
                     @include('pendaftar._detail-item', ['label' => 'Nilai Rata-rata', 'value' => number_format($siswa->SISWA_NILAI_RATA, 2)])

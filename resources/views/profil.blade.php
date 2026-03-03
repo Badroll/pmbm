@@ -39,14 +39,14 @@
                     <div class="text-center mb-6">
                         <div class="relative inline-block">
                             <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white text-4xl font-bold mx-auto mb-4">
-                                {{ strtoupper(substr(Auth::user()->email ?? 'U', 0, 1)) }}
+                                {{ strtoupper(substr(Session::get('SESSION_U_EMAIL') ?? 'U', 0, 1)) }}
                             </div>
                             <!-- <button class="absolute bottom-2 right-2 bg-blue-600 text-white w-10 h-10 rounded-full hover:bg-blue-700 transition shadow-lg">
                                 <i class="fas fa-camera"></i>
                             </button> -->
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">{{ Auth::user()->name ?? 'User' }}</h3>
-                        <p class="text-sm text-gray-500">{{ Auth::user()->email ?? 'E' }}</p>
+                        <h3 class="text-xl font-bold text-gray-800">{{ Session::get('SESSION_U_USERNAME') ?? 'User' }}</h3>
+                        <p class="text-sm text-gray-500">{{ Session::get('SESSION_U_EMAIL') ?? '-' }}</p>
                     </div>
 
                     <!-- Menu Navigation -->
@@ -111,7 +111,7 @@
                                 <input type="email" 
                                        id="email" 
                                        name="email" 
-                                       value="{{ old('email', Auth::user()->email ?? 'a@b.c') }}"
+                                       value="{{ old('email', Session::get('SESSION_U_EMAIL') ?? 'a@b.c') }}"
                                        class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('email') border-red-500 @enderror"
                                        placeholder="contoh@email.com"
                                        required>
@@ -136,7 +136,7 @@
                                 <input type="tel" 
                                        id="no_hp" 
                                        name="no_hp" 
-                                       value="{{ old('no_hp', Auth::user()->no_hp ?? '08x') }}"
+                                       value="{{ old('no_hp', Session::get('SESSION_U_PHONE') ?? '08x') }}"
                                        class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('no_hp') border-red-500 @enderror"
                                        placeholder="08xxxxxxxxxx"
                                        pattern="[0-9]{10,13}"

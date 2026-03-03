@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'PMBM')</title>
     
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>

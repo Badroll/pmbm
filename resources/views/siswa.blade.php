@@ -37,7 +37,7 @@
                 <div class="flex gap-2">
                     <select name="jalur"
                         class="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition bg-white text-gray-700">
-                        <option value="">Semua Jalur</option>
+                        <option value="_ALL_">Semua Jalur</option>
                         <option value="JALUR_REGULER"  {{ request('jalur') == 'JALUR_REGULER'  ? 'selected' : '' }}>Reguler</option>
                         <option value="JALUR_AFIRMASI" {{ request('jalur') == 'JALUR_AFIRMASI' ? 'selected' : '' }}>Afirmasi</option>
                         <option value="JALUR_PRESTASI" {{ request('jalur') == 'JALUR_PRESTASI' ? 'selected' : '' }}>Prestasi</option>
@@ -45,11 +45,10 @@
 
                     <select name="status"
                         class="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition bg-white text-gray-700">
-                        <option value="">Semua Status</option>
-                        <option value="STATUS_PENDING"    {{ request('status') == 'STATUS_PENDING'    ? 'selected' : '' }}>Pending</option>
-                        <option value="STATUS_VERIFIKASI" {{ request('status') == 'STATUS_VERIFIKASI' ? 'selected' : '' }}>Verifikasi</option>
-                        <option value="STATUS_DITERIMA"   {{ request('status') == 'STATUS_DITERIMA'   ? 'selected' : '' }}>Diterima</option>
-                        <option value="STATUS_DITOLAK"    {{ request('status') == 'STATUS_DITOLAK'    ? 'selected' : '' }}>Ditolak</option>
+                        <option value="_ALL_">Semua Status</option>
+                        <option value="STATUS_PENDING"    {{ request('status') == 'STATUS_PENDING'    ? 'selected' : '' }}>Pendaftaran Terkirim</option>
+                        <option value="STATUS_TERVERIFIKASI" {{ request('status') == 'STATUS_TERVERIFIKASI' ? 'selected' : '' }}>Terverifikasi</option>
+                        <option value="STATUS_MENUNGGU"   {{ request('status') == 'STATUS_MENUNGGU'   ? 'selected' : '' }}>Menunggu Hasil Tes</option>
                     </select>
                 </div>
 
@@ -63,7 +62,7 @@
                         Filter
                     </button>
                     @if(request()->hasAny(['search','jalur','status']))
-                    <a href="#"
+                    <a href="/siswa"
                         class="inline-flex items-center gap-1 px-4 py-2.5 text-sm text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
                         Reset
                     </a>
@@ -73,21 +72,23 @@
         </form>
     </div>
 
+    @php
+    $jalurMap = [
+        'JALUR_REGULER'  => ['label' => 'Reguler',  'class' => 'bg-blue-100 text-blue-700'],
+        'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'class' => 'bg-orange-100 text-orange-700'],
+        'JALUR_PRESTASI' => ['label' => 'Prestasi', 'class' => 'bg-purple-100 text-purple-700'],
+    ];
+    $statusMap = [
+        'STATUS_PENDING'    => ['label' => 'Pendaftaran Terkirim',      'class' => 'bg-yellow-100 text-yellow-700', 'dot' => 'bg-yellow-400'],
+        'STATUS_VERIFIKASI' => ['label' => 'Terverifikasi',             'class' => 'bg-blue-100 text-blue-700',     'dot' => 'bg-blue-400'],
+        'STATUS_MENUNGGU'   => ['label' => 'Menunggu Hasil Tes',        'class' => 'bg-yellow-100 text-green-700',  'dot' => 'bg-yellow-400'],
+    ];
+    @endphp
+
     {{-- === MOBILE: Card List (tampil di bawah sm) === --}}
     <div class="block sm:hidden space-y-3 mb-5">
         @forelse($siswa as $s)
         @php
-            $jalurMap = [
-                'JALUR_REGULER'  => ['label' => 'Reguler',  'class' => 'bg-blue-100 text-blue-700'],
-                'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'class' => 'bg-orange-100 text-orange-700'],
-                'JALUR_PRESTASI' => ['label' => 'Prestasi', 'class' => 'bg-purple-100 text-purple-700'],
-            ];
-            $statusMap = [
-                'STATUS_PENDING'    => ['label' => 'Pending',    'class' => 'bg-yellow-100 text-yellow-700', 'dot' => 'bg-yellow-400'],
-                'STATUS_VERIFIKASI' => ['label' => 'Verifikasi', 'class' => 'bg-blue-100 text-blue-700',    'dot' => 'bg-blue-400'],
-                'STATUS_DITERIMA'   => ['label' => 'Diterima',   'class' => 'bg-green-100 text-green-700',  'dot' => 'bg-green-400'],
-                'STATUS_DITOLAK'    => ['label' => 'Ditolak',    'class' => 'bg-red-100 text-red-700',      'dot' => 'bg-red-400'],
-            ];
             $jalur  = $jalurMap[$s->SISWA_JALUR]   ?? ['label' => $s->SISWA_JALUR,   'class' => 'bg-gray-100 text-gray-600'];
             $status = $statusMap[$s->SISWA_STATUS]  ?? ['label' => $s->SISWA_STATUS,  'class' => 'bg-gray-100 text-gray-600', 'dot' => 'bg-gray-400'];
         @endphp
@@ -118,10 +119,6 @@
                 <div>
                     <span class="text-gray-400">Skor</span>
                     <p class="font-bold text-gray-800 text-sm">{{ number_format($s->SISWA_SKOR, 1) }}</p>
-                </div>
-                <div>
-                    <span class="text-gray-400">Asal Sekolah</span>
-                    <p class="text-gray-700 truncate">{{ $s->SISWA_SEKOLAH }}</p>
                 </div>
                 <div>
                     <span class="text-gray-400">Tgl. Daftar</span>
@@ -160,7 +157,6 @@
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Siswa</th>
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">NISN</th>
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Jalur</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Asal Sekolah</th>
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Tgl. Daftar</th>
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Skor</th>
                         <th class="px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
@@ -170,17 +166,6 @@
                 <tbody class="divide-y divide-gray-50">
                     @forelse($siswa as $s)
                     @php
-                        $jalurMap = [
-                            'JALUR_REGULER'  => ['label' => 'Reguler',  'class' => 'bg-blue-100 text-blue-700'],
-                            'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'class' => 'bg-orange-100 text-orange-700'],
-                            'JALUR_PRESTASI' => ['label' => 'Prestasi', 'class' => 'bg-purple-100 text-purple-700'],
-                        ];
-                        $statusMap = [
-                            'STATUS_PENDING'    => ['label' => 'Pending',    'class' => 'bg-yellow-100 text-yellow-700', 'dot' => 'bg-yellow-400'],
-                            'STATUS_VERIFIKASI' => ['label' => 'Verifikasi', 'class' => 'bg-blue-100 text-blue-700',    'dot' => 'bg-blue-400'],
-                            'STATUS_DITERIMA'   => ['label' => 'Diterima',   'class' => 'bg-green-100 text-green-700',  'dot' => 'bg-green-400'],
-                            'STATUS_DITOLAK'    => ['label' => 'Ditolak',    'class' => 'bg-red-100 text-red-700',      'dot' => 'bg-red-400'],
-                        ];
                         $jalur  = $jalurMap[$s->SISWA_JALUR]   ?? ['label' => $s->SISWA_JALUR,   'class' => 'bg-gray-100 text-gray-600'];
                         $status = $statusMap[$s->SISWA_STATUS]  ?? ['label' => $s->SISWA_STATUS,  'class' => 'bg-gray-100 text-gray-600', 'dot' => 'bg-gray-400'];
                     @endphp
@@ -207,9 +192,6 @@
                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap {{ $jalur['class'] }}">
                                 {{ $jalur['label'] }}
                             </span>
-                        </td>
-                        <td class="px-5 py-4 text-gray-600 max-w-[180px] truncate" title="{{ $s->SISWA_SEKOLAH }}">
-                            {{ $s->SISWA_SEKOLAH }}
                         </td>
                         <td class="px-5 py-4 text-gray-500 text-xs whitespace-nowrap">
                             {{ \Carbon\Carbon::parse($s->SISWA_TGL_DAFTAR)->format('d M Y') }}<br>

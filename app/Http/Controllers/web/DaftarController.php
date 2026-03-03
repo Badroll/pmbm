@@ -56,8 +56,12 @@ class DaftarController extends Controller
         // VALIDASI
         $validated = $request->validate([
             // file
-            'file_pas_foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
-            'file_skl' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:3072',
+            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'file_nisn' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_rapor_52' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_rapor_61' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         $record = mSiswa::getByUserId($loginUser->U_ID);
@@ -70,21 +74,61 @@ class DaftarController extends Controller
             // =====================
             // UPLOAD FILE
             // =====================
-            $filePasFotoPath = null;
-            if ($request->hasFile('file_pas_foto')) {
-                $file = $request->file('file_pas_foto');
+            $fileFotoPath = "";
+            if ($request->hasFile('file_foto')) {
+                $file = $request->file('file_foto');
                 $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $filePasFotoPath = $file->storeAs(
+                $fileFotoPath = $file->storeAs(
                     'siswa',
                     $filename,
                     'public'
                 );
             }
-            $fileSklPath = null;
-            if ($request->hasFile('file_skl')) {
-                $file = $request->file('file_skl');
+            $fileNisnPath = "";
+            if ($request->hasFile('file_nisn')) {
+                $file = $request->file('file_nisn');
                 $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileSklPath = $file->storeAs(
+                $fileNisnPath = $file->storeAs(
+                    'siswa',
+                    $filename,
+                    'public'
+                );
+            }
+            $fileKKPath = "";
+            if ($request->hasFile('file_kk')) {
+                $file = $request->file('file_kk');
+                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+                $fileKKPath = $file->storeAs(
+                    'siswa',
+                    $filename,
+                    'public'
+                );
+            }
+            $fileAktaPath = "";
+            if ($request->hasFile('file_akta')) {
+                $file = $request->file('file_akta');
+                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+                $fileAktaPath = $file->storeAs(
+                    'siswa',
+                    $filename,
+                    'public'
+                );
+            }
+            $fileRapor52Path = "";
+            if ($request->hasFile('file_rapor_52')) {
+                $file = $request->file('file_rapor_52');
+                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+                $fileRapor52Path = $file->storeAs(
+                    'siswa',
+                    $filename,
+                    'public'
+                );
+            }
+            $fileRapor61Path = "";
+            if ($request->hasFile('file_rapor_61')) {
+                $file = $request->file('file_rapor_61');
+                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+                $fileRapor61Path = $file->storeAs(
                     'siswa',
                     $filename,
                     'public'
@@ -135,8 +179,12 @@ class DaftarController extends Controller
                 'SISWA_NILAI_61_BIND' => $request->nilai_61_bind,
                 'SISWA_NILAI_61_PAI' => $request->nilai_61_pai,
 
-                'SISWA_FILE_FOTO' => $filePasFotoPath,
-                'SISWA_FILE_SKL' => $fileSklPath,
+                'SISWA_FILE_FOTO' => $fileFotoPath,
+                'SISWA_FILE_NISN' => $fileNisnPath,
+                'SISWA_FILE_KK' => $fileKKPath,
+                'SISWA_FILE_AKTA' => $fileAktaPath,
+                'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
+                'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
             ]);
 
             DB::commit();
@@ -168,21 +216,40 @@ class DaftarController extends Controller
     }
 
 
-    public function siswa(Request $request){
+    public function siswa(Request $request)
+    {
         $loginUser = $request->loginUser;
-        $req = $request->all();
 
-        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])){
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
-        $siswa = mSiswa::all();
+        $query = mSiswa::query();
 
-        $viewData = [
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('SISWA_NAMA', 'like', "%{$search}%")
+                ->orWhere('SISWA_NISN', 'like', "%{$search}%");
+                if (ctype_digit($search)) {
+                    $q->orWhere('SISWA_ID', (int) $search);
+                }
+            });
+        }
+
+        if ($request->filled('jalur') && $request->jalur !== '_ALL_') {
+            $query->where('SISWA_JALUR', $request->jalur);
+        }
+
+        if ($request->filled('status') && $request->status !== '_ALL_') {
+            $query->where('SISWA_STATUS', $request->status);
+        }
+
+        $siswa = $query->orderBy('SISWA_TGL_DAFTAR', 'desc')->get();
+
+        return view("siswa", [
             "siswa" => $siswa,
-        ];
-        //dd($viewData);
-        return view("siswa", $viewData);
+        ]);
     }
 
     public function siswaDetail(Request $request, $siswaId){

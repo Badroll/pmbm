@@ -6,13 +6,12 @@
     $isEdit = isset($siswa);
     $formAction = url('daftar');
     $siswaStatus = $isEdit ? $siswa->SISWA_STATUS : null;
-    $isLocked = in_array($siswaStatus, ['STATUS_TERVERIFIKASI', 'STATUS_MENUNGGU', 'STATUS_LOLOS', 'STATUS_DITERIMA', 'STATUS_CADANGAN', 'STATUS_TERDAFTAR']);
+    $isLocked = in_array($siswaStatus, ['STATUS_TERVERIFIKASI', 'STATUS_MENUNGGU', 'STATUS_LOLOS', 'STATUS_DITOLAK', 'STATUS_CADANGAN', 'STATUS_DITERIMA', 'STATUS_MENGUNDURKAN', 'STATUS_TERDAFTAR']);
 
     $statusConfig = [
         'STATUS_PENDING'        => ['label' => 'Pendaftaran Terkirim',  'color' => 'blue',      'icon' => 'fa-clock'],
         'STATUS_TERVERIFIKASI'  => ['label' => 'Terverifikasi',         'color' => 'green',     'icon' => 'fa-check-circle'],
         'STATUS_MENUNGGU'       => ['label' => 'Menunggu Hasil Tes',    'color' => 'yellow',    'icon' => 'fa-clock'],
-        'STATUS_LOLOS'          => ['label' => 'Lolos Seleksi',         'color' => 'green',     'icon' => 'fa-trophy'],
     ];
 
     $currentStatus = $siswaStatus ? ($statusConfig[$siswaStatus] ?? ['label' => $siswaStatus, 'color' => 'gray', 'icon' => 'fa-info-circle']) : null;
@@ -56,7 +55,7 @@
                 <i class="fas {{ $currentStatus['icon'] }} text-2xl {{ $iconClass }} mt-0.5 flex-shrink-0"></i>
                 <div class="flex-1">
                     <div class="flex items-center gap-3 flex-wrap">
-                        <span class="font-semibold {{ $textClass }} text-base">Status Pendaftaran:</span>
+                        <span class="font-semibold {{ $textClass }} text-base">Status:</span>
                         <span class="text-sm font-bold px-3 py-1 rounded-full {{ $badgeClass }}">
                             {{ $currentStatus['label'] }}
                         </span>
@@ -147,8 +146,8 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 required>
                             <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="L" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_L' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="P" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_P' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="JENIS_KELAMIN_L" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="JENIS_KELAMIN_P" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_P' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('jenis_kelamin')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -516,28 +515,51 @@
                     <h2 class="text-2xl font-bold text-gray-800">Upload Dokumen</h2>
                 </div>
 
+                <div class="mb-6 space-y-3">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <i class="fas fa-info-circle text-blue-500 mt-0.5 text-lg flex-shrink-0"></i>
+                            <p class="text-sm text-blue-800">
+                                Seluruh dokumen di bawah ini bersifat <strong>opsional</strong>. Verifikasi dilakukan secara langsung di madrasah pada tanggal yang sudah ditentukan.
+                            </p>
+                        </div>
+                        <ul class="ml-8 space-y-1.5 text-sm text-blue-900 list-none">
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Pas Foto terbaru 3x4 sebanyak 2 lembar</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi NISN</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Rapor kelas 5 semester 2</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Rapor kelas 6 semester 1</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Kartu Keluarga</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Akta Kelahiran</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="space-y-6">
                     {{-- Foto --}}
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Foto <span class="text-red-500">*</span>
+                            Pas Foto
+                            <!-- <span class="text-red-500">*</span> -->
                         </label>
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
                             <div class="flex flex-col items-center">
                                 <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
-                                <label for="file_pas_foto" class="cursor-pointer">
+                                <label for="file_foto" class="cursor-pointer">
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
-                                    <input type="file" id="file_pas_foto" name="file_pas_foto" class="hidden" 
+                                    <input type="file" id="file_foto" name="file_foto" class="hidden" 
                                         accept="image/jpeg,image/png,image/jpg"
-                                        {{ !$isEdit ? 'required' : '' }}>
+                                        {{--
+                                        {{ !$isEdit ? 'required' : '' }}
+                                        --}}
+                                        >
                                 </label>
-                                <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Max: 3MB)</p>
+                                <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Maks. 5MB)</p>
                             </div>
 
                             @if($isEdit && $siswa->SISWA_FILE_FOTO)
-                                <div class="mt-4" id="existing-file_pas_foto">
+                                <div class="mt-4" id="existing-file_foto">
                                     <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
                                         <div class="flex items-center space-x-3">
                                             <i class="fas fa-check-circle text-green-600"></i>
@@ -549,64 +571,293 @@
                                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti foto</p>
                                 </div>
                             @endif
-
-                            <div id="preview-file_pas_foto" class="mt-4 hidden">
+                            <div id="preview-file_foto" class="mt-4 hidden">
                                 <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-file-alt text-blue-600"></i>
-                                        <span id="nama-file_pas_foto" class="text-sm text-gray-700"></span>
+                                        <span id="nama-file_foto" class="text-sm text-gray-700"></span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button type="button" onclick="previewFile('file_pas_foto')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                        <button type="button" onclick="previewFile('file_foto')" class="text-blue-600 hover:text-blue-800 text-sm">
                                             <i class="fas fa-eye mr-1"></i>Lihat
                                         </button>
-                                        <button type="button" onclick="removeFile('file_pas_foto')" class="text-red-600 hover:text-red-800 text-sm">
+                                        <button type="button" onclick="removeFile('file_foto')" class="text-red-600 hover:text-red-800 text-sm">
                                             <i class="fas fa-trash mr-1"></i>Hapus
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @error('file_pas_foto')
+                        @error('file_foto')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    {{-- SKL --}}
+                    {{-- NISN --}}
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            SKL <span class="text-blue-400">(opsional)</span>
+                            NISN
+                            <!-- <span class="text-blue-400">(opsional)</span> -->
                         </label>
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
                             <div class="flex flex-col items-center">
                                 <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
-                                <label for="file_skl" class="cursor-pointer">
+                                <label for="file_nisn" class="cursor-pointer">
                                     <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
                                         <i class="fas fa-upload mr-2"></i>Unggah File
                                     </span>
-                                    <input type="file" id="file_skl" name="file_skl" class="hidden" 
+                                    <input type="file" id="file_nisn" name="file_nisn" class="hidden" 
                                         accept="application/pdf,image/jpeg,image/png,image/jpg">
                                 </label>
-                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Max: 3MB)</p>
+                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Maks. 2MB)</p>
                             </div>
-
-                            @if($isEdit && $siswa->SISWA_FILE_SKL)
-                                <div class="mt-4">
+                            @if($isEdit && $siswa->SISWA_FILE_NISN)
+                                <div class="mt-4" id="existing-file_nisn">
                                     <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
                                         <div class="flex items-center space-x-3">
                                             <i class="fas fa-check-circle text-green-600"></i>
                                             <span class="text-sm text-gray-700">File saat ini: 
-                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_SKL) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_NISN) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
                                             </span>
                                         </div>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
                                 </div>
                             @endif
-
-                            <div id="preview-file_skl" class="mt-4 hidden"></div>
+                            <div id="preview-file_nisn" class="mt-4 hidden">
+                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span id="nama-file_nisn" class="text-sm text-gray-700"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="previewFile('file_nisn')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button type="button" onclick="removeFile('file_nisn')" class="text-red-600 hover:text-red-800 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        @error('file_nisn')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    {{-- Rapor 52 --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Rapor kelas 5 semester 2
+                            <!-- <span class="text-blue-400">(opsional)</span> -->
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
+                                <label for="file_rapor_52" class="cursor-pointer">
+                                    <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
+                                        <i class="fas fa-upload mr-2"></i>Unggah File
+                                    </span>
+                                    <input type="file" id="file_rapor_52" name="file_rapor_52" class="hidden" 
+                                        accept="application/pdf,image/jpeg,image/png,image/jpg">
+                                </label>
+                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Maks. 2MB)</p>
+                            </div>
+                            @if($isEdit && $siswa->SISWA_FILE_RAPOR_52)
+                                <div class="mt-4" id="existing-file_rapor_52">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_RAPOR_52) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
+                                </div>
+                            @endif
+                            <div id="preview-file_rapor_52" class="mt-4 hidden">
+                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span id="nama-file_rapor_52" class="text-sm text-gray-700"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="previewFile('file_rapor_52')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button type="button" onclick="removeFile('file_rapor_52')" class="text-red-600 hover:text-red-800 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @error('file_rapor_52')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Rapor 61 --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Rapor kelas 6 semester 1
+                            <!-- <span class="text-blue-400">(opsional)</span> -->
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
+                                <label for="file_rapor_61" class="cursor-pointer">
+                                    <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
+                                        <i class="fas fa-upload mr-2"></i>Unggah File
+                                    </span>
+                                    <input type="file" id="file_rapor_61" name="file_rapor_61" class="hidden" 
+                                        accept="application/pdf,image/jpeg,image/png,image/jpg">
+                                </label>
+                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Maks. 2MB)</p>
+                            </div>
+                            @if($isEdit && $siswa->SISWA_FILE_RAPOR_61)
+                                <div class="mt-4" id="existing-file_rapor_61">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_RAPOR_61) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
+                                </div>
+                            @endif
+                            <div id="preview-file_rapor_61" class="mt-4 hidden">
+                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span id="nama-file_rapor_61" class="text-sm text-gray-700"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="previewFile('file_rapor_61')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button type="button" onclick="removeFile('file_rapor_61')" class="text-red-600 hover:text-red-800 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @error('file_rapor_61')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- KK --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Kartu Keluarga
+                            <!-- <span class="text-blue-400">(opsional)</span> -->
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
+                                <label for="file_kk" class="cursor-pointer">
+                                    <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
+                                        <i class="fas fa-upload mr-2"></i>Unggah File
+                                    </span>
+                                    <input type="file" id="file_kk" name="file_kk" class="hidden" 
+                                        accept="application/pdf,image/jpeg,image/png,image/jpg">
+                                </label>
+                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Maks. 2MB)</p>
+                            </div>
+                            @if($isEdit && $siswa->SISWA_FILE_KK)
+                                <div class="mt-4" id="existing-file_kk">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_KK) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
+                                </div>
+                            @endif
+                            <div id="preview-file_kk" class="mt-4 hidden">
+                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span id="nama-file_kk" class="text-sm text-gray-700"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="previewFile('file_kk')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button type="button" onclick="removeFile('file_kk')" class="text-red-600 hover:text-red-800 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @error('file_kk')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- AKTA --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            NISN
+                            <!-- <span class="text-blue-400">(opsional)</span> -->
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-file text-4xl text-gray-400 mb-3"></i>
+                                <label for="file_akta" class="cursor-pointer">
+                                    <span class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block">
+                                        <i class="fas fa-upload mr-2"></i>Unggah File
+                                    </span>
+                                    <input type="file" id="file_akta" name="file_akta" class="hidden" 
+                                        accept="application/pdf,image/jpeg,image/png,image/jpg">
+                                </label>
+                                <p class="text-sm text-gray-500 mt-2">Format: PDF, JPG, PNG (Maks. 2MB)</p>
+                            </div>
+                            @if($isEdit && $siswa->SISWA_FILE_AKTA)
+                                <div class="mt-4" id="existing-file_akta">
+                                    <div class="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                            <span class="text-sm text-gray-700">File saat ini: 
+                                                <a href="{{ asset('storage/' . $siswa->SISWA_FILE_AKTA) }}" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file</p>
+                                </div>
+                            @endif
+                            <div id="preview-file_akta" class="mt-4 hidden">
+                                <div class="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                        <span id="nama-file_akta" class="text-sm text-gray-700"></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="previewFile('file_akta')" class="text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Lihat
+                                        </button>
+                                        <button type="button" onclick="removeFile('file_akta')" class="text-red-600 hover:text-red-800 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @error('file_akta')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                 </div>
             </div>
 
@@ -693,7 +944,7 @@ window.allKelurahan = @json(
 );
 
 // File Upload Preview & Remove
-const fileInputs = ['file_pas_foto', 'file_skl'];
+const fileInputs = ['file_foto', 'file_nisn', 'file_kk', 'file_akta', 'file_rapor_52', 'file_rapor_61'];
 
 fileInputs.forEach(inputId => {
     const input = document.getElementById(inputId);
@@ -701,9 +952,9 @@ fileInputs.forEach(inputId => {
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                const maxSize = inputId === 'pas_foto' ? 2 * 1024 * 1024 : 5 * 1024 * 1024;
+                const maxSize = inputId === 'foto' ? 5 * 1024 * 1024 : 5 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    alert(`Ukuran file terlalu besar. Maksimal ${inputId === 'pas_foto' ? '2MB' : '5MB'}`);
+                    alert(`Ukuran file terlalu besar. Maksimal ${inputId === 'foto' ? '5MB' : '5MB'}`);
                     e.target.value = '';
                     return;
                 }

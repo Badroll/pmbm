@@ -285,7 +285,7 @@ class ExcelController extends Controller
             'height' => 160,
         ]);
 
-        $filename = 'kartu_'.$siswa->SISWA_ID.'_'.time();
+        $filename = 'kartu pendaftaran'.$siswa->SISWA_NAMA.'_';
 
         $docxPath = storage_path('app/'.$filename.".docx");
         $template->saveAs($docxPath);
@@ -296,7 +296,7 @@ class ExcelController extends Controller
 
         $pdfPath = storage_path('app/'.$filename.".pdf");
 
-        $command = "libreoffice --headless --convert-to pdf --outdir "
+        $command = "libreoffice --headless --nologo --nofirststartwizard --convert-to pdf --outdir "
             . escapeshellarg(storage_path('app')) . " "
             . escapeshellarg($docxPath);
 

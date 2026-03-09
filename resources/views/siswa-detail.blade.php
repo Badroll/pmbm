@@ -197,10 +197,12 @@
                 <h2 class="font-bold text-gray-700 text-sm tracking-wide">Data Sekolah & Nilai</h2>
             </div>
             <div class="p-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
+                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-5">
                     @include('pendaftar._detail-item', ['label' => 'Asal Sekolah', 'value' => $siswa->SISWA_SEKOLAH])
                     @include('pendaftar._detail-item', ['label' => 'Tahun Lulus', 'value' => $siswa->SISWA_SEKOLAH_TAHUN_LULUS])
+                    {{--
                     @include('pendaftar._detail-item', ['label' => 'Nilai Rata-rata', 'value' => number_format($siswa->SISWA_NILAI_RATA, 2)])
+                    --}}
                 </div>
 
                 {{-- Tabel Nilai --}}

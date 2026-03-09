@@ -210,6 +210,7 @@
                                id="tanggal_lahir" 
                                name="tanggal_lahir" 
                                value="{{ old('tanggal_lahir', $isEdit ? $siswa->SISWA_TGL_LAHIR : '') }}"
+                               min="2011-07-10"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                required>
                         @error('tanggal_lahir')
@@ -345,6 +346,7 @@
                         @enderror
                     </div>
 
+                    {{--
                     <!-- Nilai Rata-rata -->
                     <div>
                         <label for="nilai_rata" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -362,6 +364,7 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    --}}
 
                     <!-- Nilai Kelas 5 Sem 2 -->
                     <div class="md:col-span-2 mt-4">

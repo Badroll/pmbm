@@ -55,6 +55,8 @@ class DaftarController extends Controller
 
         // VALIDASI
         $validated = $request->validate([
+            'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
+
             // file
             'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'file_nisn' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -167,7 +169,7 @@ class DaftarController extends Controller
 
                 'SISWA_SEKOLAH' => $request->asal_sekolah,
                 'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus,
-                'SISWA_NILAI_RATA' => $request->nilai_rata,
+                //'SISWA_NILAI_RATA' => $request->nilai_rata,
 
                 'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk,
                 'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa,

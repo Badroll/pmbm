@@ -289,7 +289,7 @@ class ExcelController extends Controller
         $docxPath = storage_path('app/'.$filename.".docx");
         $template->saveAs($docxPath);
 
-        if(true){
+        if(isWindows()){
             return response()->download($docxPath)->deleteFileAfterSend(true);
         }
 
@@ -300,6 +300,7 @@ class ExcelController extends Controller
         exec($command, $output, $returnCode);
         if ($returnCode !== 0 || !file_exists($pdfPath)) {
             logcmd($output);
+            dd($output);
             abort(500, 'Gagal membuat PDF');
         }
         

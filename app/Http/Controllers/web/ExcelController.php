@@ -285,7 +285,7 @@ class ExcelController extends Controller
             'height' => 160,
         ]);
 
-        $filename = 'kartu pendaftaran'.$siswa->SISWA_NAMA.'_';
+        $filename = 'Kartu Pendaftaran '.$siswa->SISWA_NAMA.'';
 
         $docxPath = storage_path('app/'.$filename.".docx");
         $template->saveAs($docxPath);

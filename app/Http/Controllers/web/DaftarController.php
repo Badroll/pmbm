@@ -19,10 +19,10 @@ use App\Services\InboxService as mInboxService;
 
 class DaftarController extends Controller
 {
-    //protected $inboxService;
+    protected $inboxService;
 
     public function __construct(){
-        //$this->inboxService = new mInboxService();
+        $this->inboxService = new mInboxService();
     }
 
 
@@ -76,66 +76,12 @@ class DaftarController extends Controller
             // =====================
             // UPLOAD FILE
             // =====================
-            $fileFotoPath = "";
-            if ($request->hasFile('file_foto')) {
-                $file = $request->file('file_foto');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileFotoPath = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
-            $fileNisnPath = "";
-            if ($request->hasFile('file_nisn')) {
-                $file = $request->file('file_nisn');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileNisnPath = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
-            $fileKKPath = "";
-            if ($request->hasFile('file_kk')) {
-                $file = $request->file('file_kk');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileKKPath = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
-            $fileAktaPath = "";
-            if ($request->hasFile('file_akta')) {
-                $file = $request->file('file_akta');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileAktaPath = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
-            $fileRapor52Path = "";
-            if ($request->hasFile('file_rapor_52')) {
-                $file = $request->file('file_rapor_52');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileRapor52Path = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
-            $fileRapor61Path = "";
-            if ($request->hasFile('file_rapor_61')) {
-                $file = $request->file('file_rapor_61');
-                $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-                $fileRapor61Path = $file->storeAs(
-                    'siswa',
-                    $filename,
-                    'public'
-                );
-            }
+            $fileFotoPath = $this->handleUpload($request, 'file_foto');
+            $fileNisnPath = $this->handleUpload($request, 'file_nisn');
+            $fileKKPath = $this->handleUpload($request, 'file_kk');
+            $fileAktaPath = $this->handleUpload($request, 'file_akta');
+            $fileRapor52Path = $this->handleUpload($request, 'file_rapor_52');
+            $fileRapor61Path = $this->handleUpload($request, 'file_rapor_61');
 
             // ======================
             // INSERT
@@ -187,6 +133,11 @@ class DaftarController extends Controller
                 'SISWA_FILE_AKTA' => $fileAktaPath,
                 'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
                 'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
+
+                'SISWA_AFIRMASI' => $request->pilihan_afirmasi ?? "",
+                'SISWA_PRESTASI_KEJUARAAN' => $request->tingkat_juara ?? "",
+                'SISWA_PRESTASI_KEJUARAAN_JUDUL' => $request->penyelenggara_kejuaraan ?? "",
+                'SISWA_PRESTASI_KEAGAMAAN' => $request->hafalan_quran ?? "",
             ]);
 
             DB::commit();
@@ -201,7 +152,7 @@ class DaftarController extends Controller
             $msg .= "\n*".$siswa->refJalur->R_INFO."*";
             $msg .= "\n\n_silahkan melakukan verifikasi berkas pada tanggal yang sudah ditentukan\nterimakasih._";
             
-            mInboxService::send([
+            $this->inboxService->send([
                 'U_ID' => $siswa->U_ID,
                 'jenis' => "success",
                 'judul' => 'Pendaftaran Berhasil',
@@ -215,6 +166,135 @@ class DaftarController extends Controller
             DB::rollBack();
             return compose("ERROR", "Terjadi kesalahan internal", $e->getMessage());
         }
+    }
+
+
+    public function updateDaftar(Request $request)
+    {
+        $loginUser = $request->loginUser;
+
+        // VALIDASI
+        $validated = $request->validate([
+            'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
+
+            // file
+            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'file_nisn' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_rapor_52' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_rapor_61' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $record = mSiswa::getByUserId($loginUser->U_ID);
+        if(!$record){
+            return compose("ERROR", "Data pendaftaran tidak ditemukan");
+        }
+
+        DB::beginTransaction();
+        try {
+
+            // =====================
+            // FUNCTION UPLOAD
+            // =====================
+            $fileFotoPath = $this->handleUpload($request, 'file_foto', $record->SISWA_FILE_FOTO);
+            $fileNisnPath = $this->handleUpload($request, 'file_nisn', $record->SISWA_FILE_NISN);
+            $fileKKPath = $this->handleUpload($request, 'file_kk', $record->SISWA_FILE_KK);
+            $fileAktaPath = $this->handleUpload($request, 'file_akta', $record->SISWA_FILE_AKTA);
+            $fileRapor52Path = $this->handleUpload($request, 'file_rapor_52', $record->SISWA_FILE_RAPOR_52);
+            $fileRapor61Path = $this->handleUpload($request, 'file_rapor_61', $record->SISWA_FILE_RAPOR_61);
+
+            // ======================
+            // UPDATE
+            // ======================
+            $updatedRow = [
+                'SISWA_NAMA' => $request->nama_lengkap,
+                'SISWA_NISN' => $request->nisn,
+                'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
+                'SISWA_AYAH' => $request->nama_ayah,
+                'SISWA_IBU' => $request->nama_ibu,
+                'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir,
+                'SISWA_TGL_LAHIR' => $request->tanggal_lahir,
+                'SISWA_WA' => $request->no_wa,
+                'SISWA_JALUR' => $request->jalur_pendaftaran,
+
+                'SISWA_ALAMAT_PROVINSI' => $request->provinsi,
+                'SISWA_ALAMAT_KOTA' => $request->kota,
+                'SISWA_ALAMAT_KECAMATAN' => $request->kecamatan,
+                'SISWA_ALAMAT_KELURAHAN' => $request->kelurahan,
+                'SISWA_ALAMAT' => $request->alamat,
+
+                'SISWA_SEKOLAH' => $request->asal_sekolah,
+                'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus,
+
+                'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk,
+                'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa,
+                'SISWA_NILAI_52_BIND' => $request->nilai_52_bind,
+                'SISWA_NILAI_52_PAI' => $request->nilai_52_pai,
+
+                'SISWA_NILAI_61_MTK' => $request->nilai_61_mtk,
+                'SISWA_NILAI_61_IPA' => $request->nilai_61_ipa,
+                'SISWA_NILAI_61_BIND' => $request->nilai_61_bind,
+                'SISWA_NILAI_61_PAI' => $request->nilai_61_pai,
+
+                'SISWA_FILE_FOTO' => $fileFotoPath,
+                'SISWA_FILE_NISN' => $fileNisnPath,
+                'SISWA_FILE_KK' => $fileKKPath,
+                'SISWA_FILE_AKTA' => $fileAktaPath,
+                'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
+                'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
+            ];
+
+            if($request->jalur_pendaftaran == "JALUR_AFIRMASI"){
+                $updatedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
+                $updatedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
+                $updatedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $updatedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
+            }
+            if($request->jalur_pendaftaran == "JALUR_PRESTASI"){
+                $updatedRow['SISWA_AFIRMASI'] = "";
+                $updatedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
+                $updatedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
+                $updatedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
+            }
+
+            $record->update($updatedRow);
+
+            $this->inboxService->send([
+                'U_ID' => $record->U_ID,
+                'jenis' => "success",
+                'judul' => 'Pendaftaran Diperbarui',
+                'isi' => "-",
+                "to" => $record->SISWA_WA
+            ]);
+
+            DB::commit();
+
+            return compose("SUCCESS", "Data pendaftaran berhasil diperbarui");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return compose("ERROR", "Terjadi kesalahan internal", $e->getMessage());
+        }
+    }
+
+
+    public function handleUpload($request, $field, $oldPath = null)
+    {
+        if ($request->hasFile($field)) {
+
+            // hapus file lama jika ada
+            if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $file = $request->file($field);
+            $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+
+            return $file->storeAs('siswa', $filename, 'public');
+        }
+
+        return $oldPath ?? "";
     }
 
 

@@ -110,7 +110,7 @@
                                name="nama_lengkap" 
                                value="{{ old('nama_lengkap', $isEdit ? $siswa->SISWA_NAMA : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Masukkan nama lengkap sesuai ijazah"
+                               placeholder="Nama lengkap sesuai ijazah"
                                required>
                         @error('nama_lengkap')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -290,7 +290,7 @@
                                   name="alamat" 
                                   rows="3"
                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                  placeholder="Masukkan alamat lengkap"
+                                  placeholder="Alamat lengkap"
                                   required>{{ old('alamat', $isEdit ? $siswa->SISWA_ALAMAT : '') }}</textarea>
                         @error('alamat')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -303,21 +303,21 @@
             <div class="p-8 border-b border-gray-200">
                 <div class="flex items-center mb-6">
                     <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">2</div>
-                    <h2 class="text-2xl font-bold text-gray-800">Data Sekolah Asal</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Asal Sekolah</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama Sekolah -->
                     <div class="md:col-span-2">
                         <label for="asal_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Nama Sekolah Asal <span class="text-red-500">*</span>
+                            Nama Sekolah <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
                                id="asal_sekolah" 
                                name="asal_sekolah" 
                                value="{{ old('asal_sekolah', $isEdit ? $siswa->SISWA_SEKOLAH : '') }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                               placeholder="Contoh: SMP Negeri 1 Semarang"
+                               placeholder="Nama Asal Sekolah"
                                required>
                         @error('asal_sekolah')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -334,7 +334,7 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 required>
                             <option value="">-- Pilih Tahun --</option>
-                            @foreach(['2026','2025','2024','2023'] as $yr)
+                            @foreach(['2026','2025','2024','2023','2022','2021'] as $yr)
                                 <option value="{{ $yr }}" 
                                     {{ old('tahun_lulus', $isEdit ? $siswa->SISWA_SEKOLAH_TAHUN_LULUS : '') == $yr ? 'selected' : '' }}>
                                     {{ $yr }}
@@ -432,7 +432,7 @@
             <div class="p-8 border-b border-gray-200">
                 <div class="flex items-center mb-6">
                     <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">3</div>
-                    <h2 class="text-2xl font-bold text-gray-800">Pilihan Jalur Pendaftaran</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Jalur Pendaftaran</h2>
                 </div>
                 
                 <div class="mb-4">
@@ -449,7 +449,7 @@
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Reguler</h3>
                                 </div>
-                                <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
+                                <div class="checkmark-wrapper flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
@@ -467,7 +467,7 @@
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Prestasi</h3>
                                 </div>
-                                <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
+                                <div class="checkmark-wrapper flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
@@ -485,7 +485,7 @@
                                     </div>
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Jalur Afirmasi</h3>
                                 </div>
-                                <div class="checkmark-wrapper mt-4 flex justify-center opacity-0 transition-opacity duration-300">
+                                <div class="checkmark-wrapper flex justify-center opacity-0 transition-opacity duration-300">
                                     <div class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </div>
@@ -498,6 +498,148 @@
                         <p class="mt-3 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- ===================== SUB-FORM AFIRMASI ===================== -->
+                <div id="sub-afirmasi" class="sub-jalur-form mt-6 hidden">
+                    <div class="border border-blue-200 rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <!-- <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div> -->
+                            <h3 class="text-base font-semibold text-blue-800">Detail Jalur Afirmasi</h3>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pilihan Afirmasi <span class="text-red-500">*</span></label> 
+                            <select id="pilihan_afirmasi" 
+                                name="pilihan_afirmasi" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                >
+                                <option value="">-- Pilih --</option>
+                                @foreach(getReferences("AFIRMASI") as $i => $v)
+                                    <option value="{{ $v->R_ID }}" {{ old('pilihan_afirmasi', $isEdit ? ($siswa->SISWA_AFIRMASI ?? '') : '') === $v->R_ID ? 'selected' : '' }}>{{ $v->R_INFO }}</option>
+                                @endforeach
+                            </select>
+                            @error('pilihan_afirmasi')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Catatan Afirmasi -->
+                        <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg px-4 py-3 space-y-1">
+                            <p class="text-sm text-blue-800 flex items-start gap-2">
+                                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+                                Dokumen asli bukti Afirmasi dibawa saat verifikasi berkas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===================== SUB-FORM PRESTASI ===================== -->
+                <div id="sub-prestasi" class="sub-jalur-form mt-6 hidden">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-6">
+                        <div class="flex items-center mb-2">
+                            <!-- <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                            </div> -->
+                            <h3 class="text-base font-semibold text-blue-800">Detail Jalur Prestasi</h3>
+                            <p class="text-sm text-blue-800 ml-2"> (pilih minimal 1 jenis prestasi/hafalan)<p>
+                        </div>
+
+                        <!-- Sub-form 1: Kejuaraan -->
+                        <div class="bg-white border border-blue-200 rounded-xl p-5">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                                <!-- <span class="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">1</span> -->
+                                Prestasi Kejuaraan
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Tingkat Juara -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat Kejuaraan</label>
+                                    <select id="tingkat_juara" 
+                                            name="tingkat_juara" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                            >
+                                        <option value="">-- Pilih --</option>
+                                        @foreach(getReferences("PRESTASI_KEJUARAAN") as $i => $v)
+                                            <option value="{{ $v->R_ID }}" {{ old('tingkat_juara', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN ?? '') : '') === $v->R_ID ? 'selected' : '' }}>{{ $v->R_INFO }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('tingkat_juara')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Penyelenggara -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Penyelenggara</label>
+                                    <input type="text" name="penyelenggara_kejuaraan" id="penyelenggara_kejuaraan"
+                                        value="{{ old('penyelenggara_kejuaraan', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL ?? '') : '') }}"
+                                        placeholder=""
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                        
+                                        >
+                                    @error('penyelenggara_kejuaraan')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Catatan Kejuaraan -->
+                            <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg px-4 py-3 space-y-1">
+                                <p class="text-sm text-blue-800 flex items-start gap-2">
+                                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+                                    Pilih satu kejuaraan terbaik
+                                </p>
+                                <p class="text-sm text-blue-800 flex items-start gap-2">
+                                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+                                    Sertifikat Asli dibawa saat verifikasi berkas
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Sub-form 2: Hafalan Al-Qur'an -->
+                        <div class="bg-white border border-blue-200 rounded-xl p-5">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                                <!-- <span class="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">2</span> -->
+                                Hafalan Al-Qur'an
+                            </h4>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Hafalan</label>
+                                <select id="hafalan_quran" 
+                                    name="hafalan_quran" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                    >
+                                    <option value="">-- Pilih --</option>
+                                    @foreach(getReferences("PRESTASI_KEAGAMAAN") as $i => $v)
+                                        <option value="{{ $v->R_ID }}" {{ old('hafalan_quran', $isEdit ? ($siswa->SISWA_PRESTASI_KEAGAMAAN ?? '') : '') === $v->R_ID ? 'selected' : '' }}>{{ $v->R_INFO }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                @error('hafalan_quran')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Catatan Hafalan -->
+                            <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg px-4 py-3 space-y-1">
+                                <p class="text-sm text-blue-800 flex items-start gap-2">
+                                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+                                    Sertifikat tahfidz asli dibawa saat verifikasi berkas
+                                </p>
+                                <p class="text-sm text-blue-800 flex items-start gap-2">
+                                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+                                    Dilakukan pengujian saat verifikasi berkas
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
             <style>
@@ -509,13 +651,40 @@
                 .jalur-input:checked + .jalur-option .checkmark-wrapper {
                     opacity: 1;
                 }
+                .sub-jalur-form {
+                    transition: all 0.3s ease;
+                }
+                .sub-jalur-form.hidden {
+                    display: none;
+                }
             </style>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const radios = document.querySelectorAll('.jalur-input');
+                    const subAfirmasi = document.getElementById('sub-afirmasi');
+                    const subPrestasi = document.getElementById('sub-prestasi');
+
+                    function updateSubForms() {
+                        const selected = document.querySelector('.jalur-input:checked');
+                        const value = selected ? selected.value : '';
+
+                        subAfirmasi.classList.toggle('hidden', value !== 'JALUR_AFIRMASI');
+                        subPrestasi.classList.toggle('hidden', value !== 'JALUR_PRESTASI');
+                    }
+
+                    radios.forEach(radio => radio.addEventListener('change', updateSubForms));
+
+                    // Run on load (for edit mode)
+                    updateSubForms();
+                });
+            </script>
 
             <!-- Section 4: Upload Dokumen -->
             <div class="p-8 border-b border-gray-200">
                 <div class="flex items-center mb-6">
                     <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">4</div>
-                    <h2 class="text-2xl font-bold text-gray-800">Upload Dokumen</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Dokumen</h2>
                 </div>
 
                 <div class="mb-6 space-y-3">
@@ -884,7 +1053,7 @@
                 <div class="flex flex-col sm:flex-row gap-4">
                     <button type="submit" 
                             class="flex-1 bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg flex items-center justify-center">
-                        <i class="fas fa-paper-plane mr-2"></i>
+                        <!-- <i class="fas fa-paper-plane mr-2"></i> -->
                         D A F T A R
                     </button>
                 </div>
@@ -993,7 +1162,44 @@ function removeFile(inputId) {
     updateProgress();
 }
 
-// Progress bar — hanya dijalankan jika tidak locked
+
+// Tambah di luar DOMContentLoaded, sejajar dengan updateProgress()
+function updateSubForms() {
+    const selected = document.querySelector('.jalur-input:checked');
+    const value = selected ? selected.value : '';
+
+    const subAfirmasi = document.getElementById('sub-afirmasi');
+    const subPrestasi = document.getElementById('sub-prestasi');
+
+    subAfirmasi.classList.toggle('hidden', value !== 'JALUR_AFIRMASI');
+    subPrestasi.classList.toggle('hidden', value !== 'JALUR_PRESTASI');
+
+    // Toggle required secara dinamis
+    const pilihanAfirmasi = document.getElementById('pilihan_afirmasi');
+    if (pilihanAfirmasi) {
+        pilihanAfirmasi.required = (value === 'JALUR_AFIRMASI');
+    }
+
+    // Untuk prestasi: required dikelola via validatePrestasi(), bukan required HTML
+    updateProgress();
+}
+
+// Cek apakah minimal 1 sub-form prestasi terisi
+function isPrestasiFilled() {
+    const jalur = document.querySelector('.jalur-input:checked');
+    if (!jalur || jalur.value !== 'JALUR_PRESTASI') return true; // bukan prestasi, skip
+
+    const tingkatJuara   = document.getElementById('tingkat_juara')?.value?.trim();
+    const penyelenggara  = document.getElementById('penyelenggara_kejuaraan')?.value?.trim();
+    const hafalanQuran   = document.getElementById('hafalan_quran')?.value?.trim();
+
+    const kejuaraanFilled = tingkatJuara && penyelenggara;   // keduanya harus ada jika isi kejuaraan
+    const hafalanFilled   = !!hafalanQuran;
+
+    return kejuaraanFilled || hafalanFilled;
+}
+
+
 @if(!$isLocked)
 function updateProgress() {
     const form = document.getElementById('registration-form');
@@ -1004,6 +1210,9 @@ function updateProgress() {
     const radioGroups = {};
 
     requiredInputs.forEach(input => {
+        // Skip input yang ada di dalam sub-form tersembunyi
+        if (input.closest('.sub-jalur-form.hidden')) return;
+
         if (input.type === 'radio') {
             if (!radioGroups[input.name]) {
                 radioGroups[input.name] = true;
@@ -1022,7 +1231,14 @@ function updateProgress() {
         }
     });
 
-    const percentage = Math.round((filledCount / totalCount) * 100);
+    // Tambahan slot progres untuk prestasi (minimal 1 sub-form)
+    const jalur = document.querySelector('.jalur-input:checked');
+    if (jalur?.value === 'JALUR_PRESTASI') {
+        totalCount++;
+        if (isPrestasiFilled()) filledCount++;
+    }
+
+    const percentage = totalCount === 0 ? 0 : Math.round((filledCount / totalCount) * 100);
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-percentage');
     if (progressBar) progressBar.style.width = percentage + '%';
@@ -1031,6 +1247,7 @@ function updateProgress() {
 @else
 function updateProgress() {} // noop saat locked
 @endif
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registration-form');
@@ -1041,6 +1258,21 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', updateProgress);
     });
     
+    // Jalur radio → jalankan updateSubForms
+    document.querySelectorAll('.jalur-input').forEach(radio => {
+        radio.addEventListener('change', updateSubForms);
+    });
+
+    // Input sub-prestasi → update progress saat diketik/dipilih
+    ['tingkat_juara', 'penyelenggara_kejuaraan', 'hafalan_quran'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateProgress);
+            el.addEventListener('change', updateProgress);
+        }
+    });
+
+    updateSubForms(); // init — set required & visibility sesuai nilai awal (edit mode)
     updateProgress();
 
     const provInput = document.getElementById('provinsi')
@@ -1080,6 +1312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         prefillSelects()
     @endif
 });
+
 
 function updateSelect(target, options, isInit = false) {
     window.dispatchEvent(new CustomEvent('update-options', {
@@ -1138,6 +1371,7 @@ async function prefillSelects() {
     const kelOptions = window.allKelurahan[kecId] ?? []
     await fillAndPick('kelurahan', kelOptions, '{{ old("kelurahan", $isEdit ? $siswa->SISWA_ALAMAT_KELURAHAN : "") }}')
 }
+
 
 // Form submit — hanya aktif jika tidak locked
 @if(!$isLocked)

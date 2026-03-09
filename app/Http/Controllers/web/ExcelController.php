@@ -285,7 +285,8 @@ class ExcelController extends Controller
             'height' => 160,
         ]);
 
-        $filename = 'Kartu Pendaftaran ' . $siswa->SISWA_NAMA;
+        $filename = 'kartu_'.$siswa->SISWA_ID.'_'.time();
+
         $docxPath = storage_path('app/'.$filename.".docx");
         $template->saveAs($docxPath);
 
@@ -294,19 +295,19 @@ class ExcelController extends Controller
         }
 
         $pdfPath = storage_path('app/'.$filename.".pdf");
+
         $command = "libreoffice --headless --convert-to pdf --outdir "
-            . storage_path('app') . " " . $docxPath;
+            . escapeshellarg(storage_path('app')) . " "
+            . escapeshellarg($docxPath);
 
         exec($command, $output, $returnCode);
+
         if ($returnCode !== 0 || !file_exists($pdfPath)) {
-            logcmd($output);
-            dd([$output, $returnCode]);
-            abort(500, 'Gagal membuat PDF');
+            dd($output, $returnCode);
         }
-        
-        if(file_exists($docxPath)){
-            unlink($docxPath);
-        }
+
+        unlink($docxPath);
+
         return response()->download($pdfPath)->deleteFileAfterSend(true);
     }
 

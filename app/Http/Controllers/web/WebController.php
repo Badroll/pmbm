@@ -21,11 +21,25 @@ class WebController extends Controller
         $inbox = mUser::find($loginUser->U_ID)->inbox;
 
         $viewData = [
-            "inbox" => $inbox
+            "inbox" => $inbox,
+            "siswa" => mSiswa::getByUserId($loginUser->U_ID)
         ];
 
         if(isset($req["json"])) dd($viewData);
         return view("inbox", $viewData);
+    }
+
+
+    public function kartu(Request $request){
+        $loginUser = $request->loginUser; // login user
+        $req = $request->all();
+
+        $viewData = [
+            "siswa" => mSiswa::getByUserId($loginUser->U_ID)
+        ];
+
+        if(isset($req["json"])) dd($viewData);
+        return view("kartu", $viewData);
     }
 
 }

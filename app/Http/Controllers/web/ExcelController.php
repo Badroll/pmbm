@@ -13,6 +13,7 @@ use App\Models\Kota as mKota;
 use App\Models\Kecamatan as mKecamatan;
 use App\Models\Kelurahan as mKelurahan;
 use App\Models\_reference as _reference;
+use App\Models\Siswa as mSiswa;
 
 
 // ===========================================
@@ -94,6 +95,9 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
+// Phpword
+use PhpOffice\PhpWord\TemplateProcessor;
 
 
 class ExcelController extends Controller
@@ -252,6 +256,57 @@ class ExcelController extends Controller
             fclose($handle);
         }
         return $rows;
+    }
+
+
+    public function kartuPendaftaran(Request $request){
+        $siswaId = $request->siswaId;
+        $siswa = mSiswa::find($siswaId);
+        if(!isset($siswa)){
+            return compose("ERROR", "data not found");
+        }
+
+        $template = new TemplateProcessor(public_path('word/templates/kartu-pendaftaran.docx'));
+
+        $template->setValue('no', str_pad($siswa->SISWA_ID, 4, '0', STR_PAD_LEFT));
+        $template->setValue('nama', $siswa->SISWA_NAMA);
+        $template->setValue('nisn', $siswa->SISWA_NISN);
+        $template->setValue('jalur', $siswa->refJalur->R_INFO);
+        $template->setValue('tgl', tanggal($siswa->SISWA_TGL_DAFTAR, "LONG"));
+
+        $fotoPath = storage_path('app/public/' . $siswa->SISWA_FILE_FOTO);
+        if($siswa->SISWA_FILE_FOTO == ""){
+            $fotoPath = public_path('images/pas_foto_3x4.jpg');
+        }
+        //dd($fotoPath);
+        $template->setImageValue('foto', [
+            'path' => $fotoPath,
+            'width' => 120,
+            'height' => 160,
+        ]);
+
+        $filename = 'Kartu Pendaftaran ' . $siswa->SISWA_NAMA;
+        $docxPath = storage_path('app/'.$filename.".docx");
+        $template->saveAs($docxPath);
+
+        if(isWindows()){
+            return response()->download($docxPath)->deleteFileAfterSend(true);
+        }
+
+        $pdfPath = storage_path('app/'.$filename.".pdf");
+        $command = "libreoffice --headless --convert-to pdf --outdir "
+            . storage_path('app') . " " . $docxPath;
+
+        exec($command, $output, $returnCode);
+        if ($returnCode !== 0 || !file_exists($pdfPath)) {
+            logcmd($output);
+            abort(500, 'Gagal membuat PDF');
+        }
+        
+        if(file_exists($docxPath)){
+            unlink($docxPath);
+        }
+        return response()->download($pdfPath)->deleteFileAfterSend(true);
     }
 
 

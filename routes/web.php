@@ -57,8 +57,8 @@ Route::middleware("loggedin")->group(function () {
         Route::get("/{siswaId}", [DaftarController::class, "siswaDetail"]);
     });
 
-    Route::get("/kartu", function () {
-        return view("kartu");
+    Route::prefix("kartu")->group(function () {
+        Route::get("/", [WebController::class, "kartu"]);
     });
 
 });
@@ -67,7 +67,8 @@ Route::middleware("loggedin")->group(function () {
 // -------------------------------------------------------------------------
 Route::prefix("public")->group(function () {
 
-    // WILAYAH
-    Route::get("excel/download/exam/template", [ExcelController::class, 'downloadTemplateExam']);
+    Route::prefix("excel")->group(function () {
+        Route::get("kartu-pendaftaran", [ExcelController::class, 'kartuPendaftaran']);
+    });
 
 });

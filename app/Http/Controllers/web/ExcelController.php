@@ -300,7 +300,7 @@ class ExcelController extends Controller
         exec($command, $output, $returnCode);
         if ($returnCode !== 0 || !file_exists($pdfPath)) {
             logcmd($output);
-            dd($output);
+            dd([$output, $returnCode]);
             abort(500, 'Gagal membuat PDF');
         }
         

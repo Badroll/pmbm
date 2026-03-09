@@ -808,7 +808,7 @@
                     {{-- AKTA --}}
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            NISN
+                            Akta Kelahiran
                             <!-- <span class="text-blue-400">(opsional)</span> -->
                         </label>
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-500 transition">

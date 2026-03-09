@@ -289,7 +289,7 @@ class ExcelController extends Controller
         $docxPath = storage_path('app/'.$filename.".docx");
         $template->saveAs($docxPath);
 
-        if(isWindows()){
+        if(true){
             return response()->download($docxPath)->deleteFileAfterSend(true);
         }
 

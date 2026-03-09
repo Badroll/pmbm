@@ -47,7 +47,7 @@
                 <h3 class="font-semibold text-lg mb-2">Buat Akun</h3>
                 <p class="text-gray-600 text-sm">Buat akun untuk mengakses website</p>
             </div>
-            <!--  -->
+            <!-- Step 2 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
                 <i class="fas fa-file-alt text-blue-600 text-3xl mb-3"></i>
@@ -61,28 +61,38 @@
                 <h3 class="font-semibold text-lg mb-2">Verifikasi</h3>
                 <p class="text-gray-600 text-sm">Verifikasi berkas pendaftaran di Madrasah</p>
             </div>
-            <!-- Step 3 -->
+            <!-- Step 4 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
                 <i class="fas fa-pencil text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Tes Seleksi</h3>
                 <p class="text-gray-600 text-sm">Tes Seleksi penerimaan di Madrasah</p>
             </div>
-            <!-- Step 4 -->
+            <!-- Step 5 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">5</div>
                 <i class="fas fa-newspaper text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Pengumuman</h3>
                 <p class="text-gray-600 text-sm">Hasil tes seleksi diumumkan</p>
             </div>
-            <!-- Step 2 -->
+            <!-- Step 6 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">6</div>
                 <i class="fas fa-upload text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Daftar Ulang</h3>
-                <p class="text-gray-600 text-sm">Daftar ulang dengan mengunggah berka</p>
+                <p class="text-gray-600 text-sm">Daftar ulang dengan mengunggah berkas</p>
             </div>
         </div>
+
+        <!-- Download Juknis -->
+        <div class="flex mt-8 justify-center">
+            <a href="{{ asset('pdf/juknis.pdf') }}" target="_blank"
+                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+                <i class="fas fa-book-reader"></i>
+                Baca Juknis (Petunjuk Teknis)
+            </a>
+        </div>
+        
     </div>
 </section>
 

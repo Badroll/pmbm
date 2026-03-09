@@ -1417,6 +1417,7 @@ document.getElementById('registration-form').addEventListener('submit', async fu
         }
 
         await Swal.fire({ icon: 'success', title: 'Berhasil Mendaftar', text: data.MESSAGE })
+        window.open("/inbox", "_blank")
 
     } catch (err) {
         console.log(err)

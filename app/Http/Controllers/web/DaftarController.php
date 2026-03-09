@@ -142,23 +142,7 @@ class DaftarController extends Controller
 
             DB::commit();
             
-            $msg = "";
-            $msg .= "Pendaftaran siswa baru berhasil, dengan data sebagai berikut:";
-            $msg .= "\n\nNama:";
-            $msg .= "\n*".$siswa->SISWA_NAMA."*";
-            $msg .= "\n\nNISN:";
-            $msg .= "\n*".$siswa->SISWA_NISN."*";
-            $msg .= "\n\nJalur:";
-            $msg .= "\n*".$siswa->refJalur->R_INFO."*";
-            $msg .= "\n\n_silahkan melakukan verifikasi berkas pada tanggal yang sudah ditentukan\nterimakasih._";
-            
-            $this->inboxService->send([
-                'U_ID' => $siswa->U_ID,
-                'jenis' => "success",
-                'judul' => 'Pendaftaran Berhasil',
-                'isi' => $msg,
-                "to" => $siswa->SISWA_WA
-            ]);
+            $this->sendInbox($siswa, $request->jalur_pendaftaran, "Pendaftaran");
 
             return compose("SUCCESS", "Nomor pendaftaran anda #". str_pad($siswa->SISWA_ID, 4, '0', STR_PAD_LEFT));
 
@@ -260,15 +244,9 @@ class DaftarController extends Controller
 
             $record->update($updatedRow);
 
-            $this->inboxService->send([
-                'U_ID' => $record->U_ID,
-                'jenis' => "success",
-                'judul' => 'Pendaftaran Diperbarui',
-                'isi' => "-",
-                "to" => $record->SISWA_WA
-            ]);
-
             DB::commit();
+
+            $this->sendInbox($record, $request->jalur_pendaftaran, "Pembaruan data pendaftaran");
 
             return compose("SUCCESS", "Data pendaftaran berhasil diperbarui");
 
@@ -295,6 +273,41 @@ class DaftarController extends Controller
         }
 
         return $oldPath ?? "";
+    }
+
+    public function sendInbox($record, $jalur, $judul){
+        $msg = "";
+        $msg .= $judul . " siswa baru berhasil, dengan data sebagai berikut:";
+        $msg .= "\n\nNama:";
+        $msg .= "\n*".$record->SISWA_NAMA."*";
+        $msg .= "\n\nNISN:";
+        $msg .= "\n*".$record->SISWA_NISN."*";
+        $msg .= "\n\nJalur:";
+        $msg .= "\n*".$record->refJalur->R_INFO."*";
+        $msg .= "\n\n_silahkan melakukan verifikasi berkas pada tanggal yang sudah ditentukan\nterimakasih._";
+        $this->inboxService->send([
+            'U_ID' => $record->U_ID,
+            'jenis' => "success",
+            'judul' => 'Pendaftaran Berhasil',
+            'isi' => $msg,
+            "to" => $record->SISWA_WA
+        ]);
+
+        $waGrup = [
+            "JALUR_REGULER" => "https://chat.whatsapp.com/IFw7mXauoxiBjpJQ91IiTR?mode=gi_t",
+            "JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
+            "JALUR_PRESTASI" => "https://chat.whatsapp.com/C06zHp5zcKEKAR1ITtGikG?mode=hq2tswa",
+        ];
+        $msg = "
+            Silahkan bergabung pada Grup WhatsApp pendaftar untuk mendapatkan informasi lebih lengkap
+            <a href='".$waGrup[$jalur]."' target='_blank' style='color: blue;'>klik untuk bergabung!</a>
+            ";
+        $this->inboxService->send([
+            'U_ID' => $record->U_ID,
+            'jenis' => "info",
+            'judul' => 'Grup WhatsApp Pendaftar',
+            'isi' => trim($msg),
+        ]);
     }
 
 

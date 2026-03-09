@@ -158,11 +158,11 @@
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-angle-right text-green-500 mr-3 mt-1"></i>
-                        <span>Bagi pendaftar jalur afirmasi</span>
+                        <span>Bagi pendaftar jalur afirmasi wajib melampirkan fotokopi KIP/PIP/KKS/PKH atau Surat Keterangan Tidak Mampu (SKTM) yang diterbitkan oleh pemerintah daerah</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-angle-right text-green-500 mr-3 mt-1"></i>
-                        <span>Seluruh pendaftar wajib</span>
+                        <span>Seluruh pendaftar wajib mengikuti rangkaian seleksi CBT (Akademik dan Psikotest) dan baca Al Qur'an</span>
                     </li>
                 </ul>
             </div>

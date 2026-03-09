@@ -87,4 +87,59 @@ class Siswa extends Model
         return self::where("SISWA_NO", $no)->first();
     }
 
+    public function hitungSkor()
+    {
+        $siswa = $this;
+
+        /* ======================
+        * A : Rata-rata nilai rapor
+        * ====================== */
+        $nilai = [
+            $siswa->SISWA_NILAI_52_MTK,
+            $siswa->SISWA_NILAI_52_IPA,
+            $siswa->SISWA_NILAI_52_BIND,
+            $siswa->SISWA_NILAI_52_PAI,
+            $siswa->SISWA_NILAI_61_MTK,
+            $siswa->SISWA_NILAI_61_IPA,
+            $siswa->SISWA_NILAI_61_BIND,
+            $siswa->SISWA_NILAI_61_PAI
+        ];
+
+        $A = array_sum($nilai) / count($nilai);
+
+        /* ======================
+        * B C D
+        * ====================== */
+        $B = $siswa->SISWA_TES_CBT_AKADEMIK;
+        $C = $siswa->SISWA_TES_CBT_PSIKO;
+        $D = $siswa->SISWA_TES_QURAN;
+
+        /* ======================
+        * E F G (skor khusus)
+        * ====================== */
+        $E = skorKhusus($siswa->SISWA_AFIRMASI);
+        $F = skorKhusus($siswa->SISWA_PRESTASI_KEJUARAAN);
+        $G = skorKhusus($siswa->SISWA_PRESTASI_KEAGAMAAN);
+
+        /* ======================
+        * H : Umur
+        * ====================== */
+        $H = \Carbon\Carbon::parse($siswa->SISWA_TGL_LAHIR)->age;
+
+        /* ======================
+        * HITUNG SKOR
+        * ====================== */
+        $skor = $A 
+            + (3 * $B)
+            + (2 * $C)
+            + (2 * $D)
+            + (3 * ($F + $G))
+            + $H;
+
+        $this->SISWA_SKOR = $skor;
+        $this->save();
+
+        return $skor;
+    }
+
 }

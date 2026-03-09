@@ -209,7 +209,7 @@
                 <div class="overflow-x-auto rounded-xl border border-gray-100">
                     <table class="w-full text-sm min-w-[340px]">
                         <thead>
-                            <tr style="background: #f8f7ff;">
+                            <tr class="bg-gray-100">
                                 <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase text-left">Mata Pelajaran</th>
                                 <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase text-center">Sem. 5 (Kls V)</th>
                                 <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase text-center">Sem. 6 (Kls VI)</th>
@@ -236,6 +236,29 @@
                                 </td>
                             </tr>
                             @endforeach
+                            <tr class="bg-gray-100 border-t border-gray-50">
+                                <td class="px-4 py-3 font-semibold text-gray-700 text-lg">Rata-rata</td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="inline-block px-3 py-0.5 bg-indigo-50 text-indigo-700 rounded-lg text-lg font-bold">
+                                        {{ number_format((
+                                            $siswa->SISWA_NILAI_52_MTK
+                                            + $siswa->SISWA_NILAI_52_IPA
+                                            + $siswa->SISWA_NILAI_52_BIND
+                                            + $siswa->SISWA_NILAI_52_PAI
+                                        ) / 4, 2) }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="inline-block px-3 py-0.5 bg-indigo-50 text-indigo-700 rounded-lg text-lg font-bold">
+                                        {{ number_format((
+                                            $siswa->SISWA_NILAI_61_MTK
+                                            + $siswa->SISWA_NILAI_61_IPA
+                                            + $siswa->SISWA_NILAI_61_BIND
+                                            + $siswa->SISWA_NILAI_61_PAI
+                                        ) / 4, 2) }}
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -253,91 +276,157 @@
                 <h2 class="font-bold text-gray-700 text-sm tracking-wide">Nilai Tes</h2>
             </div>
             <div class="p-5">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- CBT Akademik -->
                     <div class="relative overflow-hidden rounded-2xl p-5 text-center" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe);">
                         <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #7c3aed;"></div>
-                        <p class="text-xs font-bold text-violet-500 mb-1 uppercase tracking-wider">Tes CBT</p>
-                        <p class="text-4xl font-black text-violet-700 leading-none">{{ number_format($siswa->SISWA_TES_CBT_NILAI, 1) }}</p>
+                        <p class="text-xs font-bold text-violet-500 mb-1 uppercase tracking-wider">CBT Akademik</p>
+                        <p class="text-4xl font-black text-violet-700 leading-none">{{ number_format($siswa->SISWA_TES_CBT_AKADEMIK, 1) }}</p>
                     </div>
+
+                    <!-- CBT Psikotest -->
+                    <div class="relative overflow-hidden rounded-2xl p-5 text-center" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
+                        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #2563eb;"></div>
+                        <p class="text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">CBT Psikotest</p>
+                        <p class="text-4xl font-black text-blue-700 leading-none">{{ number_format($siswa->SISWA_TES_CBT_PSIKO, 1) }}</p>
+                    </div>
+
+                    <!-- Tes Quran -->
                     <div class="relative overflow-hidden rounded-2xl p-5 text-center" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
                         <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #059669;"></div>
-                        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">Tes Qur'an</p>
-                        <p class="text-4xl font-black text-emerald-700 leading-none">{{ number_format($siswa->SISWA_TES_QURAN_NILAI, 1) }}</p>
+                        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">Tes baca Al-Qur'an</p>
+                        <p class="text-4xl font-black text-emerald-700 leading-none">{{ number_format($siswa->SISWA_TES_QURAN, 1) }}</p>
                     </div>
+
                 </div>
             </div>
         </div>
 
         {{-- ═══ 5. AFIRMASI & PRESTASI ═══ --}}
-        @if($siswa->SISWA_AFIRMASI || $siswa->SISWA_PRESTASI_KEJUARAAN || $siswa->SISWA_PRESTASI_KEAGAMAAN)
-        <div class="detail-card">
+        @if(in_array($siswa->SISWA_JALUR, ["JALUR_PRESTASI", "JALUR_AFIRMASI"]))
+        <div class="rounded-2xl border border-sky-100 bg-white shadow-sm overflow-hidden">
+
+            {{-- Header --}}
             <div class="px-5 py-3.5 border-b border-gray-50 flex items-center gap-3">
-                <div class="section-icon bg-rose-100">
-                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                <div class="section-icon bg-sky-100">
+                    <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
-                <h2 class="font-bold text-gray-700 text-sm tracking-wide">Afirmasi & Prestasi</h2>
+                <h2 class="font-bold text-gray-700 text-sm tracking-wide">Jalur Khusus</h2>
             </div>
-            <div class="p-5 space-y-5">
-                @if($siswa->SISWA_AFIRMASI)
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Afirmasi</p>
-                    <div class="flex flex-wrap gap-3 items-center">
-                        <span class="inline-flex px-3 py-1.5 bg-amber-100 text-amber-700 rounded-xl text-sm font-bold ring-1 ring-amber-200">
-                            {{ $siswa->SISWA_AFIRMASI }}
-                        </span>
-                        @if($siswa->SISWA_AFIRMASI_FILE)
-                        <a href="{{ asset('storage/' . $siswa->SISWA_AFIRMASI_FILE) }}" target="_blank"
-                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+
+            <div class="divide-y divide-gray-50">
+
+                {{-- Afirmasi --}}
+                @if($siswa->SISWA_JALUR == "JALUR_AFIRMASI")
+                <div class="px-8 py-4 flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <!-- <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                             </svg>
-                            Lihat Berkas
-                        </a>
-                        @endif
+                        </div> -->
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold text-gray-400 mb-1">Afirmasi</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate">{{ $siswa->refAfirmasi->R_INFO }}</p>
+                            @if($siswa->SISWA_AFIRMASI_FILE)
+                            <a href="{{ asset('storage/' . $siswa->SISWA_AFIRMASI_FILE) }}" target="_blank"
+                                class="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                </svg>
+                                Lihat Berkas
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                    {{-- POIN AFIRMASI --}}
+                    <div class="shrink-0 text-right">
+                        <div class="inline-flex flex-col items-center bg-amber-50 border border-amber-200 rounded-xl px-4 py-4">
+                            <span class="text-lg font-black text-amber-600 leading-none">{{ skorKhusus($siswa->SISWA_AFIRMASI) }}</span>
+                            <span class="text-[9px] font-bold text-amber-400 mt-0.5">skor</span>
+                        </div>
                     </div>
                 </div>
                 @endif
 
-                @if($siswa->SISWA_PRESTASI_KEJUARAAN)
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Prestasi Kejuaraan</p>
-                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                        <p class="text-sm font-bold text-gray-800">{{ $siswa->SISWA_PRESTASI_KEJUARAAN }}</p>
-                        @if($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL)
-                            <p class="text-xs text-gray-500 mt-1">{{ $siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL }}</p>
-                        @endif
-                        @if($siswa->SISWA_PRESTASI_KEJUARAAN_FILE)
-                        <a href="{{ asset('storage/' . $siswa->SISWA_PRESTASI_KEJUARAAN_FILE) }}" target="_blank"
-                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:underline mt-2">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                {{-- Prestasi Kejuaraan --}}
+                @if($siswa->SISWA_JALUR == "JALUR_PRESTASI")
+                <div class="px-8 py-4 flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <!-- <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                             </svg>
-                            Lihat Berkas
-                        </a>
-                        @endif
+                        </div> -->
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold text-gray-400 mb-1">Prestasi Kejuaraan</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKejuaraan->R_INFO }}</p>
+                            @if($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL)
+                                <p class="text-xs text-gray-500 mt-0.5 truncate">{{ $siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL }}</p>
+                            @endif
+                            @if($siswa->SISWA_PRESTASI_KEJUARAAN_FILE)
+                            <a href="{{ asset('storage/' . $siswa->SISWA_PRESTASI_KEJUARAAN_FILE) }}" target="_blank"
+                                class="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                </svg>
+                                Lihat Berkas
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                    {{-- POIN KEJUARAAN --}}
+                    <div class="shrink-0 text-right">
+                        <div class="inline-flex flex-col items-center bg-amber-50 border border-amber-200 rounded-xl px-4 py-4">
+                            <span class="text-lg font-black text-amber-600 leading-none">{{ skorKhusus($siswa->SISWA_PRESTASI_KEJUARAAN)  }}</span>
+                            <span class="text-[9px] font-bold text-amber-400 mt-0.5">skor</span>
+                        </div>
                     </div>
                 </div>
                 @endif
 
+                {{-- Prestasi Keagamaan --}}
                 @if($siswa->SISWA_PRESTASI_KEAGAMAAN)
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Prestasi Keagamaan</p>
-                    <div class="bg-teal-50 rounded-xl p-4 border border-teal-100">
-                        <p class="text-sm font-bold text-gray-800">{{ $siswa->SISWA_PRESTASI_KEAGAMAAN }}</p>
-                        @if($siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE)
-                        <a href="{{ asset('storage/' . $siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE) }}" target="_blank"
-                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:underline mt-2">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                <div class="px-8 py-4 flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <!-- <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                             </svg>
-                            Lihat Berkas
-                        </a>
-                        @endif
+                        </div> -->
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold text-gray-400 mb-1">Hafalan Al-Qur'an</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKeagamaan->R_INFO }}</p>
+                            @if($siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE)
+                            <a href="{{ asset('storage/' . $siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE) }}" target="_blank"
+                                class="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                </svg>
+                                Lihat Berkas
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                    {{-- POIN KEAGAMAAN --}}
+                    <div class="shrink-0 text-right">
+                        <div class="inline-flex flex-col items-center bg-amber-50 border border-amber-200 rounded-xl px-4 py-4">
+                            <span class="text-lg font-black text-amber-600 leading-none">{{ skorKhusus($siswa->SISWA_PRESTASI_KEAGAMAAN) }}</span>
+                            <span class="text-[9px] font-bold text-amber-400 mt-0.5">skor</span>
+                        </div>
                     </div>
                 </div>
                 @endif
+
             </div>
         </div>
         @endif
@@ -345,8 +434,8 @@
         {{-- ═══ 6. BERKAS DOKUMEN ═══ --}}
         <div class="detail-card">
             <div class="px-5 py-3.5 border-b border-gray-50 flex items-center gap-3">
-                <div class="section-icon bg-sky-100">
-                    <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="section-icon bg-green-100">
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>

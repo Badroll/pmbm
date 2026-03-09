@@ -140,6 +140,8 @@ class DaftarController extends Controller
                 'SISWA_PRESTASI_KEAGAMAAN' => $request->hafalan_quran ?? "",
             ]);
 
+            $siswa->hitungSkor();
+
             DB::commit();
             
             $this->sendInbox($siswa, $request->jalur_pendaftaran, "Pendaftaran");
@@ -243,6 +245,7 @@ class DaftarController extends Controller
             }
 
             $record->update($updatedRow);
+            $record->hitungSkor();
 
             DB::commit();
 
@@ -356,6 +359,7 @@ class DaftarController extends Controller
         }
 
         $siswa = mSiswa::find($siswaId);
+        $siswa->hitungSkor();
 
         $viewData = [
             "siswa" => $siswa,

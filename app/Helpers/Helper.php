@@ -352,3 +352,30 @@ function copyR2File($filename, $folder = 'public')
 
     return $newFilename;
 }
+
+
+function skorKhusus($id){
+    $map = [
+        'AFIRMASI_BANSOS'  => 80,
+        'AFIRMASI_ANAK_GTK'  => 75,
+        'AFIRMASI_ANAK_ASN'  => 70,
+        'AFIRMASI_ANAK_KOMITE'  => 65,
+        'AFIRMASI_ANAK_GURU'  => 60,
+        'AFIRMASI_SEKITAR'  => 40,
+
+        'PRESTASI_KEAGAMAAN_5'  => 100,
+        'PRESTASI_KEAGAMAAN_4'  => 90,
+        'PRESTASI_KEAGAMAAN_3'  => 80,
+
+        'PRESTASI_KEJUARAAN_1_NASIONAL'  => 100,
+        'PRESTASI_KEJUARAAN_2_NASIONAL'  => 95,
+        'PRESTASI_KEJUARAAN_3_NASIONAL'  => 90,
+        'PRESTASI_KEJUARAAN_1_PROVINSI'  => 90,
+        'PRESTASI_KEJUARAAN_2_PROVINSI'  => 85,
+        'PRESTASI_KEJUARAAN_3_PROVINSI'  => 80,
+        'PRESTASI_KEJUARAAN_1_KOTA'  => 80,
+        'PRESTASI_KEJUARAAN_2_KOTA'  => 75,
+        'PRESTASI_KEJUARAAN_3_KOTA'  => 70,
+    ];
+    return $map[$id] ?? 0;
+}

@@ -13,7 +13,7 @@ class BeritaController extends Controller
     /** Daftar semua berita published dengan filter kategori & load more */
     public function index(Request $request)
     {
-        $kategoriList  = ['Pengumuman', 'Kegiatan', 'Prestasi', 'Lainnya'];
+        $kategoriList  = Berita::kategoriList();
         $kategoriAktif = $request->get('kategori');
 
         $beritaQuery = Berita::published();
@@ -162,7 +162,7 @@ class BeritaController extends Controller
             abort(403);
         }
 
-        $kategoriList = ['Pengumuman', 'Kegiatan', 'Prestasi', 'Lainnya'];
+        $kategoriList = Berita::kategoriList();
         return view('admin.berita.form', compact('kategoriList'));
     }
 
@@ -224,7 +224,7 @@ class BeritaController extends Controller
         }
 
         $berita       = Berita::findOrFail($id);
-        $kategoriList = ['Pengumuman', 'Kegiatan', 'Prestasi', 'Lainnya'];
+        $kategoriList = Berita::kategoriList();
         return view('admin.berita.form', compact('berita', 'kategoriList'));
     }
 

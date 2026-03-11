@@ -125,6 +125,9 @@
                             <button class="ql-link"></button>
                         </span>
                         <span class="ql-formats">
+                            <button class="ql-image" title="Sisipkan Gambar"></button>
+                        </span>
+                        <span class="ql-formats">
                             <button class="ql-clean"></button>
                         </span>
                     </div>
@@ -175,6 +178,37 @@ $(document).ready(function () {
     @isset($berita)
         quill.root.innerHTML = {!! json_encode($berita->BERITA_ISI) !!};
     @endisset
+
+    // ---- Handler gambar Base64 dengan validasi ukuran (maks 1MB) ----
+    quill.getModule('toolbar').addHandler('image', function () {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/png, image/jpeg, image/webp, image/gif');
+        input.click();
+
+        input.onchange = function () {
+            const file = input.files[0];
+            if (!file) return;
+
+            const maxSize = 3 * 1024 * 1024; // 3MB
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Gambar terlalu besar',
+                    text: 'Ukuran gambar maksimal 3MB. Kompres gambar terlebih dahulu.',
+                });
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', e.target.result, 'user');
+                quill.setSelection(range.index + 1, 0);
+            };
+            reader.readAsDataURL(file);
+        };
+    });
 
     // ---- Preview thumbnail ----
     registerPreviewFile(

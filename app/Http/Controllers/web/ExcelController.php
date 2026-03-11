@@ -276,7 +276,7 @@ class ExcelController extends Controller
 
         $fotoPath = storage_path('app/public/' . $siswa->SISWA_FILE_FOTO);
         if($siswa->SISWA_FILE_FOTO == ""){
-            $fotoPath = public_path('images/pas_foto_3x4.jpg');
+            $fotoPath = public_path('images/pas_foto_3x4.png');
         }
         //dd($fotoPath);
         $template->setImageValue('foto', [

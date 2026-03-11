@@ -178,7 +178,7 @@ class BeritaController extends Controller
 
         $request->validate([
             'BERITA_JUDUL'    => 'required|string|max:255',
-            'BERITA_KATEGORI' => 'required|in:Pengumuman,Kegiatan,Prestasi,Lainnya',
+            'BERITA_KATEGORI' => 'required|in:'.implode(",", Berita::kategoriList()),
             'BERITA_ISI'      => 'required|string',
             'BERITA_STATUS'   => 'required|in:draft,published',
             'thumbnail'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',

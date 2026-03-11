@@ -33,7 +33,7 @@
                 </label>
                 <input type="text" id="BERITA_JUDUL"
                        value="{{ isset($berita) ? $berita->BERITA_JUDUL : '' }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
                        placeholder="Tulis judul berita...">
             </div>
 
@@ -44,7 +44,7 @@
                         Kategori <span class="text-red-500">*</span>
                     </label>
                     <select id="BERITA_KATEGORI"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 bg-white">
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 bg-white">
                         <option value="">-- Pilih Kategori --</option>
                         @foreach($kategoriList as $kat)
                             <option value="{{ $kat }}"
@@ -59,7 +59,7 @@
                         Status <span class="text-red-500">*</span>
                     </label>
                     <select id="BERITA_STATUS"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 bg-white">
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 bg-white">
                         <option value="draft"     {{ isset($berita) && $berita->BERITA_STATUS === 'draft'     ? 'selected' : '' }}>Draft</option>
                         <option value="published" {{ isset($berita) && $berita->BERITA_STATUS === 'published' ? 'selected' : '' }}>Published</option>
                     </select>
@@ -70,7 +70,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5">
                     Thumbnail
-                    <span class="font-normal text-gray-400 ml-1">(JPG/PNG/WEBP, maks 2MB)</span>
+                    <span class="font-normal text-gray-400 ml-1">(JPG/PNG, maks 2MB)</span>
                 </label>
                 <div class="flex items-start gap-4">
                     <div id="preview_container_thumbnail" class="hidden flex-shrink-0">
@@ -143,7 +143,7 @@
                     Batal
                 </a>
                 <button type="button" id="btnSimpan"
-                        class="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-colors shadow-sm">
+                        class="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors shadow-sm">
                     <i class="fas fa-save"></i>
                     {{ isset($berita) ? 'Simpan Perubahan' : 'Simpan Berita' }}
                 </button>
@@ -183,7 +183,7 @@ $(document).ready(function () {
     quill.getModule('toolbar').addHandler('image', function () {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/png, image/jpeg, image/webp, image/gif');
+        input.setAttribute('accept', 'image/png, image/jpeg');
         input.click();
 
         input.onchange = function () {

@@ -23,10 +23,10 @@
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
 
             {{-- Thumbnail --}}
-            <div class="w-full h-64 sm:h-80 overflow-hidden">
+            <div class="w-full overflow-hidden">
                 <img src="{{ $berita->thumbnail_url }}"
-                     alt="{{ $berita->BERITA_JUDUL }}"
-                     class="w-full h-full object-cover">
+                    alt="{{ $berita->BERITA_JUDUL }}"
+                    class="w-full h-auto object-cover">
             </div>
 
             <div class="p-6 sm:p-10">

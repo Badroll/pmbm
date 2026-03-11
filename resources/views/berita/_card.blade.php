@@ -2,7 +2,7 @@
     <article class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group">
         {{-- Thumbnail --}}
         <a href="{{ route('berita.show', $berita->BERITA_SLUG) }}" class="block overflow-hidden flex-shrink-0">
-            <div class="w-full h-48 overflow-hidden">
+            <div class="w-full h-64 overflow-hidden">
                 <img src="{{ $berita->thumbnail_url }}"
                      alt="{{ $berita->BERITA_JUDUL }}"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

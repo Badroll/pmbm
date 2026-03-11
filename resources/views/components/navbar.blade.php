@@ -40,10 +40,11 @@
                     @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
+                    <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('berita*') }}">Berita & Pengumuman</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
                     @elseif($isSuperadmin || $isAdminPMBM)
                         <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
-                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita') }}">Berita & Pengumuman</a>
+                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Berita & Pengumuman</a>
                     @endif
                     <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>
                 @else
@@ -69,9 +70,11 @@
                 @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
+                    <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('berita*') }}">Berita & Pengumuman</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
                 @elseif($isSuperadmin || $isAdminPMBM)
                     <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>
+                    <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/berita*') }}">Berita & Pengumuman</a>
                 @endif
                 <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveMobile('profil') }}">Profil</a>
             @else

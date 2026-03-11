@@ -58,9 +58,9 @@ class Berita extends Model
         }
         // Placeholder dengan warna berbeda per kategori
         $colors = [
-            'Pengumuman' => '3B82F6',
-            'Kegiatan'   => '10B981',
-            'Prestasi'   => 'F59E0B',
+            'Informasi' => '3B82F6',
+            'Pengumuman'   => '10B981',
+            'Peringatan'   => 'F59E0B',
             'Lainnya'    => '6B7280',
         ];
         $color = $colors[$this->BERITA_KATEGORI] ?? '6B7280';
@@ -71,9 +71,9 @@ class Berita extends Model
     public function getBadgeColorAttribute(): string
     {
         switch ($this->BERITA_KATEGORI) {
-            case 'Pengumuman': return 'bg-blue-100 text-blue-700';
-            case 'Kegiatan':   return 'bg-green-100 text-green-700';
-            case 'Prestasi':   return 'bg-yellow-100 text-yellow-700';
+            case 'Informasi': return 'bg-blue-100 text-blue-700';
+            case 'Pengumuman':   return 'bg-green-100 text-green-700';
+            case 'Peringatan':   return 'bg-yellow-100 text-yellow-700';
             default:           return 'bg-gray-100 text-gray-700';
         }
     }
@@ -82,7 +82,8 @@ class Berita extends Model
     public function getTanggalPublishAttribute(): string
     {
         if (!$this->BERITA_PUBLISHED_AT) return '-';
-        return $this->BERITA_PUBLISHED_AT->translatedFormat('d F Y');
+        //return $this->BERITA_PUBLISHED_AT->translatedFormat('d F Y');
+        return substr(tanggal($this->BERITA_PUBLISHED_AT, "LONG"), 0, -3);
     }
 
 
@@ -110,7 +111,7 @@ class Berita extends Model
     /** Daftar kategori yang tersedia */
     public static function kategoriList(): array
     {
-        return ['Pengumuman', 'Kegiatan', 'Prestasi', 'Lainnya'];
+        return ['Pengumuman', 'Informasi', 'Peringatan', 'Lainnya'];
     }
 
 }

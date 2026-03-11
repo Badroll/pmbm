@@ -8,11 +8,11 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Manajemen Berita</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Manajemen Berita dan Pengumuman</h1>
             <p class="text-sm text-gray-500 mt-0.5">Kelola berita dan pengumuman yang ditampilkan di website.</p>
         </div>
         <a href="{{ route('admin.berita.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors">
+           class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
             <i class="fas fa-plus"></i>
             Tambah Berita
         </a>
@@ -28,8 +28,8 @@
                         <th class="pb-3 pr-4 w-16">Foto</th>
                         <th class="pb-3 pr-4">Judul</th>
                         <th class="pb-3 pr-4 w-32">Kategori</th>
-                        <th class="pb-3 pr-4 w-28">Status</th>
                         <th class="pb-3 pr-4 w-36">Tanggal</th>
+                        <th class="pb-3 pr-4 w-28">Status</th>
                         <th class="pb-3 w-28">Aksi</th>
                     </tr>
                 </thead>
@@ -57,8 +57,8 @@ $(document).ready(function () {
             { data: 'thumbnail', orderable: false, searchable: false, width: '60px' },
             { data: 'judul',     orderable: false },
             { data: 'kategori',  orderable: false, width: '120px' },
-            { data: 'status',    orderable: false, width: '110px' },
             { data: 'tanggal',   orderable: false, width: '140px' },
+            { data: 'status',    orderable: false, width: '110px' },
             { data: 'aksi',      orderable: false, searchable: false, width: '110px' },
         ],
         language: {

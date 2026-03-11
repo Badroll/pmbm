@@ -99,7 +99,7 @@
                                 </div>
                                 <div>
                                     <h3 class="text-lg font-bold text-gray-800">Kartu Pendaftaran</h3>
-                                    <p class="text-xs text-gray-500">Registration Card</p>
+                                    <p class="text-xs text-gray-500">Kartu Pendaftaran Murid</p>
                                 </div>
                             </div>
                             <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">
@@ -197,7 +197,7 @@
                             </div>
                             <div>
                                 <h3 class="text-lg font-bold text-gray-800">Kartu Pendaftaran</h3>
-                                <p class="text-xs text-gray-500">Registration Card</p>
+                                <p class="text-xs text-gray-500">Kartu Pendaftaran Murid</p>
                             </div>
                         </div>
                         <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">

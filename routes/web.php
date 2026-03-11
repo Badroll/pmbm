@@ -65,6 +65,17 @@ Route::middleware("loggedin")->group(function () {
         Route::get("/", [WebController::class, "kartu"]);
     });
 
+    Route::prefix('admin/berita')->name("admin.berita.")->group(function () {
+        Route::get('/',                         [BeritaController::class, 'list'])->name('index');
+        Route::get('/data',                     [BeritaController::class, 'data'])->name('data');
+        Route::get('/create',                   [BeritaController::class, 'create'])->name('create');
+        Route::post('/',                        [BeritaController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',                [BeritaController::class, 'edit'])->name('edit');
+        Route::post('/{id}',                    [BeritaController::class, 'update'])->name('update');
+        Route::delete('/{id}',                  [BeritaController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle-status',      [BeritaController::class, 'toggleStatus'])->name('toggleStatus');
+    });
+
 });
 
 

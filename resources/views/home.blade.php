@@ -14,7 +14,7 @@
 
     <div class="relative max-w-7xl mx-auto text-center">
         <div class="mb-8">
-            <!-- <i class="fas fa-school text-6xl mb-4"></i> -->
+            <!-- <i class="fas fa-school text-6xl mb-4">lorem ipsum</i> -->
         </div>
         <h1 class="text-4xl md:text-5xl font-bold mb-4">
             Penerimaan Murid Baru Madrasah
@@ -39,7 +39,7 @@
 <section id="alur" class="py-16 px-4 bg-white">
     <div class="max-w-7xl mx-auto">
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Alur Pendaftaran</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Step 1 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
@@ -57,27 +57,34 @@
             <!-- Step 3 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
                 <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                <i class="fas fa-print text-blue-600 text-3xl mb-3"></i>
+                <h3 class="font-semibold text-lg mb-2">Cetak Kartu</h3>
+                <p class="text-gray-600 text-sm">Cetak kartu pendaftaran untuk dibawa saat verifikasi berkas</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
+                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
                 <i class="fas fa-clipboard-check text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Verifikasi</h3>
                 <p class="text-gray-600 text-sm">Verifikasi berkas pendaftaran di Madrasah</p>
             </div>
             <!-- Step 4 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
-                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">5</div>
                 <i class="fas fa-pencil text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Tes Seleksi</h3>
-                <p class="text-gray-600 text-sm">Tes Seleksi penerimaan di Madrasah</p>
+                <p class="text-gray-600 text-sm">Tes seleksi penerimaan di Madrasah</p>
             </div>
             <!-- Step 5 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
-                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">5</div>
+                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">6</div>
                 <i class="fas fa-newspaper text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Pengumuman</h3>
                 <p class="text-gray-600 text-sm">Hasil tes seleksi diumumkan</p>
             </div>
             <!-- Step 6 -->
             <div class="text-center p-6 bg-blue-50 rounded-lg hover:shadow-lg transition">
-                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">6</div>
+                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">7</div>
                 <i class="fas fa-upload text-blue-600 text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg mb-2">Daftar Ulang</h3>
                 <p class="text-gray-600 text-sm">Daftar ulang dengan mengunggah berkas</p>
@@ -161,7 +168,7 @@
                         <i class="fas fa-angle-right text-green-500 mr-3 mt-1"></i>
                         <span>Bagi pendaftar jalur prestasi wajib melampirkan;
                             <ul>
-                                <li>• fotokopi piagam kejuaraan bidang akademik maupun non-akademik minimal tingkat Kota/Kabupaten dan menunjuukan piagam asli, atau;</li>
+                                <li>• fotokopi piagam kejuaraan bidang akademik maupun non-akademik minimal tingkat Kota/Kabupaten dan menunjukkan piagam asli, atau;</li>
                                 <li>• sertifikat hafalan Al - Qur'an minimal 30 juz</li>
                             </ul>
                         </span>
@@ -176,34 +183,6 @@
                     </li>
                 </ul>
             </div>
-
-            <!-- <div class="bg-white p-8 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4 text-blue-600">
-                    <i class="fas fa-folder-open mr-2"></i>Dokumen yang Diperlukan
-                </h3>
-                <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-start">
-                        <i class="fas fa-file text-blue-500 mr-3 mt-1"></i>
-                        <span>Fotokopi Ijazah/SKHUN yang dilegalisir</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-file text-blue-500 mr-3 mt-1"></i>
-                        <span>Fotokopi Kartu Keluarga</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-file text-blue-500 mr-3 mt-1"></i>
-                        <span>Fotokopi Akta Kelahiran</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-file text-blue-500 mr-3 mt-1"></i>
-                        <span>Pas foto 3x4 (4 lembar)</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-file text-blue-500 mr-3 mt-1"></i>
-                        <span>Surat keterangan sehat dari dokter</span>
-                    </li>
-                </ul>
-            </div> -->
 
         </div>
     </div>
@@ -244,7 +223,7 @@
                     <div class="flex-1 pb-8">
                         <h3 class="font-semibold text-green-600 mb-1">Pendaftaran Murid</h3>
                         <p class="text-sm text-gray-700">Periode pendaftaran murid secara online melalui website</p>
-                        <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Sedang Berjalan</span>
+                        <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Pendaftaran Dibuka</span>
                     </div>
                 </div>
 
@@ -402,11 +381,11 @@
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Warga Wilayah Matsanda</span>
+                        <span>Warga Wilayah MTsN 2 Kota Semarang</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                        <span>Anak GTK dan Komite Matsanda</span>
+                        <span>Anak GTK dan Komite MTsN 2 Kota Semarang</span>
                     </li>
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
@@ -431,6 +410,90 @@
             </div>
             
         </div>
+    </div>
+</section>
+
+{{-- ============================================================ --}}
+{{-- SECTION BERITA TERBARU                                       --}}
+{{-- Tempel bagian ini di home.blade.php, sebelum footer          --}}
+{{-- ============================================================ --}}
+
+<section class="py-16 bg-gray-50" id="berita">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {{-- Header Section --}}
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+            <div>
+                <span class="inline-block text-xs font-semibold tracking-widest text-green-600 uppercase mb-2">
+                    Informasi Terkini
+                </span>
+                <h2 class="text-3xl font-bold text-gray-800">Berita Terbaru</h2>
+            </div>
+            <a href="{{ route('berita.index') }}"
+               class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 transition-colors group">
+                Lihat Semua Berita
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+        </div>
+
+        {{-- Grid Berita --}}
+        @if($beritaTerbaru->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($beritaTerbaru as $berita)
+                    <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
+                        {{-- Thumbnail --}}
+                        <a href="{{ route('berita.show', $berita->BERITA_SLUG) }}" class="block overflow-hidden">
+                            <img src="{{ $berita->thumbnail_url }}"
+                                 alt="{{ $berita->BERITA_JUDUL }}"
+                                 class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300">
+                        </a>
+
+                        {{-- Konten --}}
+                        <div class="p-5 flex flex-col flex-1">
+                            {{-- Badge Kategori --}}
+                            <div class="mb-3">
+                                <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full {{ $berita->badge_color }}">
+                                    {{ $berita->BERITA_KATEGORI }}
+                                </span>
+                            </div>
+
+                            {{-- Judul --}}
+                            <a href="{{ route('berita.show', $berita->BERITA_SLUG) }}"
+                               class="block text-gray-800 font-bold text-base leading-snug hover:text-green-600 transition-colors mb-2 line-clamp-2">
+                                {{ $berita->BERITA_JUDUL }}
+                            </a>
+
+                            {{-- Excerpt --}}
+                            <p class="text-sm text-gray-500 line-clamp-2 flex-1">
+                                {{ $berita->excerpt }}
+                            </p>
+
+                            {{-- Footer Card --}}
+                            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <span class="text-xs text-gray-400 flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    {{ $berita->tanggal_publish }}
+                                </span>
+                                <a href="{{ route('berita.show', $berita->BERITA_SLUG) }}"
+                                   class="text-xs font-semibold text-green-600 hover:text-green-700 transition-colors">
+                                    Baca →
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-12 text-gray-400">
+                <p class="text-lg">Belum ada berita yang dipublikasikan.</p>
+            </div>
+        @endif
+
     </div>
 </section>
 

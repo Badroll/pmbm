@@ -58,7 +58,7 @@ class DaftarController extends Controller
             'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
 
             // file
-            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'file_nisn' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -164,7 +164,7 @@ class DaftarController extends Controller
             'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
 
             // file
-            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'file_nisn' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -282,12 +282,12 @@ class DaftarController extends Controller
         $msg = "";
         $msg .= $judul . " siswa baru berhasil, dengan data sebagai berikut:";
         $msg .= "\n\nNama:";
-        $msg .= "\n*".$record->SISWA_NAMA."*";
+        $msg .= "\n<b>".$record->SISWA_NAMA."</b>";
         $msg .= "\n\nNISN:";
-        $msg .= "\n*".$record->SISWA_NISN."*";
+        $msg .= "\n<b>".$record->SISWA_NISN."</b>";
         $msg .= "\n\nJalur:";
-        $msg .= "\n*".$record->refJalur->R_INFO."*";
-        $msg .= "\n\n_silahkan melakukan verifikasi berkas pada tanggal yang sudah ditentukan\nterimakasih._";
+        $msg .= "\n<b>".$record->refJalur->R_INFO."</b>";
+        $msg .= "\n\nsilahkan cetak kartu pendaftaran pada menu <a href='kartu' target='_blank' style='color: blue;'>CETAK KARTU</a>. Lalu verifikasi berkas pada tanggal yang sudah ditentukan dengan membawa kartu pendaftaran yang telah dicetak.";
         $this->inboxService->send([
             'U_ID' => $record->U_ID,
             'jenis' => "success",

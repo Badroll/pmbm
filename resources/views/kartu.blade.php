@@ -6,11 +6,11 @@
     <div class="max-w-7xl mx-auto">
         
         <!-- Header -->
-        <div class="mb-8">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Dokumen & Kartu Pendaftaran</h1>
-                    <p class="text-gray-600">Kelola dokumen terkait PMBM Anda di sini</p>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Cetak Kartu</h1>
+                    <p class="text-gray-600">Download dan cetak kartu/dokumen Anda di sini</p>
                 </div>
                 @if(isset($siswa))
                 <div class="mt-4 md:mt-0">

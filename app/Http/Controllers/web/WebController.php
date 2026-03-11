@@ -10,9 +10,24 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Inbox as mInbox;
 use App\Models\Siswa as mSiswa;
 use App\Models\User as mUser;
+use App\Models\Berita as mBerita;
 
 class WebController extends Controller
 {
+
+    public function home()
+    {
+        // Ambil 3 berita terbaru yang sudah published untuk ditampilkan di home
+        $beritaTerbaru = mBerita::published()->limit(3)->get();
+
+        // ... variabel lain yang sudah ada di HomeController Anda tetap dipertahankan
+
+        return view('home', compact(
+            'beritaTerbaru',
+            // ... variabel lain yang sudah ada
+        ));
+    }
+
 
     public function inbox(Request $request){
         $loginUser = $request->loginUser; // login user

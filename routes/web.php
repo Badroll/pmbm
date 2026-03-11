@@ -6,6 +6,7 @@ use App\Http\Controllers\web\AuthController;
 use App\Http\Controllers\web\WebController;
 use App\Http\Controllers\web\MasterController;
 use App\Http\Controllers\web\DaftarController;
+use App\Http\Controllers\web\BeritaController;
 use App\Http\Controllers\web\ExcelController;
 
 
@@ -20,9 +21,7 @@ use App\Http\Controllers\web\ExcelController;
 |
 */
 
-Route::get("/", function () {
-    return view("home");
-});
+Route::get("/", [WebController::class, "home"]);
 
 /*
 
@@ -34,6 +33,11 @@ Route::prefix("auth")->group(function () {
     Route::get("register", [AuthController::class, "register"])->name("register");
     Route::post("register", [AuthController::class, "doRegister"])->name("doRegister");
     Route::get("logout", [AuthController::class, "logout"])->name("logout");
+});
+
+Route::prefix("berita")->name("berita.")->group(function () {
+    Route::get("/", [BeritaController::class, "index"])->name("index");
+    Route::get("{slug}", [BeritaController::class, "show"])->name("show");
 });
 
 // -------------------------------------------------------------------------

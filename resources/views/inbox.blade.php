@@ -9,7 +9,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">Notifikasi</h1>
-                    <p class="text-gray-600">Semua informasi dan pemberitahuan</p>
+                    <p class="text-gray-600">Notifikasi informasi PMBM</p>
                 </div>
                 <div class="mt-4 md:mt-0 flex items-center space-x-3">
                     <!-- <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center">

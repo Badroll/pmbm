@@ -6,6 +6,18 @@
     $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
     $isAdminPMBM = $sessionUserRole == "ROLE_ADMIN_PMBM";
     $isSiswa= $sessionUserRole == "ROLE_SISWA";
+
+    function isActiveDesktop($path){
+        return Request::is($path)
+            ? 'bg-white text-blue-600 font-semibold shadow py-1' 
+            : 'text-white hover:bg-white hover:text-blue-600';
+    }
+
+    function isActiveMobile($path){
+        return Request::is($path) 
+            ? 'block bg-white text-blue-600 font-semibold' 
+            : 'block text-white hover:text-blue-200';
+    }
 ?>
 
 <!-- Navbar -->
@@ -19,19 +31,22 @@
             </div>
 
             <!-- Desktop Menu -->
+            <?php
+                $navMenuClass = "px-2 py-2 rounded-md transition-all duration-200 "; 
+            ?>
             <div class="hidden md:flex space-x-8">
-                <a href="{{ url('/') }}" class="text-white hover:text-blue-200 transition">Beranda</a>
+                <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
                 @if($isLoggedIn)
                     @if($isSiswa)
-                    <a href="{{ url('/daftar') }}" class="text-white hover:text-blue-200 transition">Pendaftaran</a>
-                    <a href="{{ url('/kartu') }}" class="text-white hover:text-blue-200 transition">Dokumen</a>
-                    <a href="{{ url('/inbox') }}" class="text-white hover:text-blue-200 transition">Notifikasi</a>
+                    <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
+                    <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
+                    <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
                     @elseif($isSuperadmin || $isAdminPMBM)
-                        <a href="{{ url('/siswa') }}" class="text-white hover:text-blue-200 transition">Data Pendaftaran</a>
+                        <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
                     @endif
-                    <a href="{{ url('/profil') }}" class="text-white hover:text-blue-200 transition">Profil</a>
+                    <a href="{{ url('/profil') }}" class="p{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>
                 @else
-                    <a href="{{ url('/auth/login') }}" class="text-white hover:text-blue-200 transition">Masuk</a>
+                    <a href="{{ url('/auth/login') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('auth/login') }}">Masuk</a>
                 @endif
             </div>
 
@@ -43,20 +58,23 @@
     </div>
 
     <!-- Mobile Menu Dropdown -->
+     <?php
+        $navMenuClass = "block w-full px-3 py-2 rounded-md transition-all duration-200";
+    ?>
     <div id="mobile-menu" class="hidden md:hidden bg-blue-700">
         <div class="px-4 py-3 space-y-3">
-            <a href="{{ url('/') }}" class="block text-white hover:text-blue-200 transition py-2">Beranda</a>
+            <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
             @if($isLoggedIn)
                 @if($isSiswa)
-                    <a href="{{ url('/daftar') }}" class="block text-white hover:text-blue-200 transition py-2">Pendaftaran</a>
-                    <a href="{{ url('/kartu') }}" class="block text-white hover:text-blue-200 transition py-2">Dokumen</a>
-                    <a href="{{ url('/inbox') }}" class="block text-white hover:text-blue-200 transition py-2">Notifikasi</a>
+                    <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
+                    <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
+                    <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
                 @elseif($isSuperadmin || $isAdminPMBM)
-                    <a href="{{ url('/siswa') }}" class="block text-white hover:text-blue-200 transition py-2">Data Pendaftaran</a>
+                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>
                 @endif
-                <a href="{{ url('/profil') }}" class="block text-white hover:text-blue-200 transition py-2">Profil</a>
+                <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveMobile('profil') }}">Profil</a>
             @else
-                <a href="{{ url('/auth/login') }}" class="block text-white hover:text-blue-200 transition py-2">Masuk</a>
+                <a href="{{ url('/auth/login') }}" class="{{ $navMenuClass }}  {{ isActiveMobile('auth/login') }}">Masuk</a>
             @endif
         </div>
     </div>

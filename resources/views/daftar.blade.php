@@ -727,7 +727,7 @@
                                         --}}
                                         >
                                 </label>
-                                <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Maks. 5MB)</p>
+                                <p class="text-sm text-gray-500 mt-2">Format: JPG, PNG (Maks. 2MB)</p>
                             </div>
 
                             @if($isEdit && $siswa->SISWA_FILE_FOTO)
@@ -766,7 +766,7 @@
                     </div>
 
                     {{-- NISN --}}
-                    <div>
+                    <div class="hidden">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             NISN
                             <!-- <span class="text-blue-400">(opsional)</span> -->
@@ -819,7 +819,7 @@
                     </div>
 
                     {{-- Rapor 52 --}}
-                    <div>
+                    <div class="hidden">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Rapor kelas 5 semester 2
                             <!-- <span class="text-blue-400">(opsional)</span> -->
@@ -872,7 +872,7 @@
                     </div>
 
                     {{-- Rapor 61 --}}
-                    <div>
+                    <div class="hidden">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Rapor kelas 6 semester 1
                             <!-- <span class="text-blue-400">(opsional)</span> -->
@@ -925,7 +925,7 @@
                     </div>
 
                     {{-- KK --}}
-                    <div>
+                    <div class="hidden">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Kartu Keluarga
                             <!-- <span class="text-blue-400">(opsional)</span> -->
@@ -978,7 +978,7 @@
                     </div>
 
                     {{-- AKTA --}}
-                    <div>
+                    <div class="hidden">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Akta Kelahiran
                             <!-- <span class="text-blue-400">(opsional)</span> -->

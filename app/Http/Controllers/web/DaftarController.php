@@ -161,7 +161,7 @@ class DaftarController extends Controller
 
         // VALIDASI
         $validated = $request->validate([
-            'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
+            //'tanggal_lahir' => 'required|date|after_or_equal:2011-07-01',
 
             // file
             'file_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -194,34 +194,34 @@ class DaftarController extends Controller
             // UPDATE
             // ======================
             $updatedRow = [
-                'SISWA_NAMA' => $request->nama_lengkap,
-                'SISWA_NISN' => $request->nisn,
-                'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
-                'SISWA_AYAH' => $request->nama_ayah,
-                'SISWA_IBU' => $request->nama_ibu,
-                'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir,
-                'SISWA_TGL_LAHIR' => $request->tanggal_lahir,
-                'SISWA_WA' => $request->no_wa,
+                // 'SISWA_NAMA' => $request->nama_lengkap,
+                // 'SISWA_NISN' => $request->nisn,
+                // 'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
+                // 'SISWA_AYAH' => $request->nama_ayah,
+                // 'SISWA_IBU' => $request->nama_ibu,
+                // 'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir,
+                // 'SISWA_TGL_LAHIR' => $request->tanggal_lahir,
+                // 'SISWA_WA' => $request->no_wa,
                 'SISWA_JALUR' => $request->jalur_pendaftaran,
 
-                'SISWA_ALAMAT_PROVINSI' => $request->provinsi,
-                'SISWA_ALAMAT_KOTA' => $request->kota,
-                'SISWA_ALAMAT_KECAMATAN' => $request->kecamatan,
-                'SISWA_ALAMAT_KELURAHAN' => $request->kelurahan,
-                'SISWA_ALAMAT' => $request->alamat,
+                // 'SISWA_ALAMAT_PROVINSI' => $request->provinsi,
+                // 'SISWA_ALAMAT_KOTA' => $request->kota,
+                // 'SISWA_ALAMAT_KECAMATAN' => $request->kecamatan,
+                // 'SISWA_ALAMAT_KELURAHAN' => $request->kelurahan,
+                // 'SISWA_ALAMAT' => $request->alamat,
 
-                'SISWA_SEKOLAH' => $request->asal_sekolah,
-                'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus,
+                // 'SISWA_SEKOLAH' => $request->asal_sekolah,
+                // 'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus,
 
-                'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk,
-                'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa,
-                'SISWA_NILAI_52_BIND' => $request->nilai_52_bind,
-                'SISWA_NILAI_52_PAI' => $request->nilai_52_pai,
+                // 'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk,
+                // 'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa,
+                // 'SISWA_NILAI_52_BIND' => $request->nilai_52_bind,
+                // 'SISWA_NILAI_52_PAI' => $request->nilai_52_pai,
 
-                'SISWA_NILAI_61_MTK' => $request->nilai_61_mtk,
-                'SISWA_NILAI_61_IPA' => $request->nilai_61_ipa,
-                'SISWA_NILAI_61_BIND' => $request->nilai_61_bind,
-                'SISWA_NILAI_61_PAI' => $request->nilai_61_pai,
+                // 'SISWA_NILAI_61_MTK' => $request->nilai_61_mtk,
+                // 'SISWA_NILAI_61_IPA' => $request->nilai_61_ipa,
+                // 'SISWA_NILAI_61_BIND' => $request->nilai_61_bind,
+                // 'SISWA_NILAI_61_PAI' => $request->nilai_61_pai,
 
                 'SISWA_FILE_FOTO' => $fileFotoPath,
                 'SISWA_FILE_NISN' => $fileNisnPath,

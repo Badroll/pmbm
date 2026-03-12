@@ -199,7 +199,7 @@
                 <!-- pass -->
                 <div class="flex gap-6">
                     <div class="w-40 flex-shrink-0 text-right">
-                        <div class="text-sm font-semibold text-gray-400">Sekarang - 29 Maret 2026</div>
+                        <div class="text-sm font-semibold text-gray-400">Sebelum 30 Maret 2026</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-4 h-4 rounded-full bg-gray-400"></div>

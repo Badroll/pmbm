@@ -93,7 +93,8 @@ class DaftarController extends Controller
                     $unique = true;
                 }
             }
-            $siswa = mSiswa::create([
+
+            $savedRow = [
                 'U_ID' => $loginUser->U_ID,
                 'SISWA_NO' => $no,
                 'SISWA_TGL_DAFTAR' => now(),
@@ -133,13 +134,21 @@ class DaftarController extends Controller
                 'SISWA_FILE_AKTA' => $fileAktaPath,
                 'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
                 'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
+            ];
+            if($request->jalur_pendaftaran == "JALUR_AFIRMASI"){
+                $savedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
+                $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
+            }
+            if($request->jalur_pendaftaran == "JALUR_PRESTASI"){
+                $savedRow['SISWA_AFIRMASI'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
+            }
 
-                'SISWA_AFIRMASI' => $request->pilihan_afirmasi ?? "",
-                'SISWA_PRESTASI_KEJUARAAN' => $request->tingkat_juara ?? "",
-                'SISWA_PRESTASI_KEJUARAAN_JUDUL' => $request->penyelenggara_kejuaraan ?? "",
-                'SISWA_PRESTASI_KEAGAMAAN' => $request->hafalan_quran ?? "",
-            ]);
-
+            $siswa = mSiswa::create($savedRow);
             $siswa->hitungSkor();
 
             DB::commit();
@@ -193,7 +202,7 @@ class DaftarController extends Controller
             // ======================
             // UPDATE
             // ======================
-            $updatedRow = [
+            $savedRow = [
                 // 'SISWA_NAMA' => $request->nama_lengkap,
                 // 'SISWA_NISN' => $request->nisn,
                 // 'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
@@ -230,21 +239,20 @@ class DaftarController extends Controller
                 'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
                 'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
             ];
-
             if($request->jalur_pendaftaran == "JALUR_AFIRMASI"){
-                $updatedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
-                $updatedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
-                $updatedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
-                $updatedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
+                $savedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
+                $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
             }
             if($request->jalur_pendaftaran == "JALUR_PRESTASI"){
-                $updatedRow['SISWA_AFIRMASI'] = "";
-                $updatedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
-                $updatedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
-                $updatedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
+                $savedRow['SISWA_AFIRMASI'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
             }
 
-            $record->update($updatedRow);
+            $record->update($savedRow);
             $record->hitungSkor();
 
             DB::commit();

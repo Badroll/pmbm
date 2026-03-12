@@ -697,11 +697,11 @@
                         </div>
                         <ul class="ml-8 space-y-1.5 text-sm text-blue-900 list-none">
                             <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Pas Foto terbaru 3x4 sebanyak 2 lembar</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi NISN</li>
+                            <!-- <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi NISN</li>
                             <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Rapor kelas 5 semester 2</li>
                             <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Rapor kelas 6 semester 1</li>
                             <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Kartu Keluarga</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Akta Kelahiran</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[6px]"></i> Fotokopi Akta Kelahiran</li> -->
                         </ul>
                     </div>
                 </div>

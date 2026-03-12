@@ -133,6 +133,7 @@ class Siswa extends Model
             + (3 * $B)
             + (2 * $C)
             + (2 * $D)
+            + (2 * $E)
             + (3 * ($F + $G))
             + $H;
 

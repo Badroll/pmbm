@@ -36,11 +36,11 @@
             ?>
             <div class="hidden md:flex space-x-8">
                 <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
+                <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('berita*') }}">Berita & Pengumuman</a>
                 @if($isLoggedIn)
                     @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
-                    <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('berita*') }}">Berita & Pengumuman</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
                     @elseif($isSuperadmin || $isAdminPMBM)
                         <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
@@ -66,11 +66,11 @@
     <div id="mobile-menu" class="hidden md:hidden bg-blue-700">
         <div class="px-4 py-3 space-y-3">
             <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
+            <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('berita*') }}">Berita & Pengumuman</a>
             @if($isLoggedIn)
                 @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
-                    <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('berita*') }}">Berita & Pengumuman</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
                 @elseif($isSuperadmin || $isAdminPMBM)
                     <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>

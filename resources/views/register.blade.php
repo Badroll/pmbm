@@ -208,7 +208,7 @@
                         id="submit-btn"
                         class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
                     <i class="fas fa-user-plus mr-2"></i>
-                    Duat Akun
+                    Buat Akun
                 </button>
             </form>
 

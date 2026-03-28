@@ -2,6 +2,22 @@
 @section('title', 'Form Pendaftaran - PMBM')
 @section('content')
 
+
+@php
+    $openDate = \Carbon\Carbon::create(2026, 3, 30, 0, 0, 0, 'Asia/Jakarta');
+    $isOpen = \Carbon\Carbon::now('Asia/Jakarta')->gte($openDate);
+@endphp
+
+@if (!$isOpen)
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="text-center">
+        <p class="text-gray-500 text-base">Pendaftaran dibuka pada <span class="font-semibold text-gray-700">30 Maret {{ date('Y') }}</span></p>
+    </div>
+</div>
+
+@else
+
 @php
     $isEdit = isset($siswa);
     $formAction = url('daftar');
@@ -1443,4 +1459,5 @@ document.getElementById('registration-form').addEventListener('submit', async fu
 </script>
 @endpush
 
+@endif
 @endsection

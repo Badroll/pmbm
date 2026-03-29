@@ -87,6 +87,10 @@ class Siswa extends Model
         return self::where("SISWA_NO", $no)->first();
     }
 
+    public static function getByNISN($no){
+        return self::where("SISWA_NISN", $no)->first();
+    }
+
     public function hitungSkor()
     {
         $siswa = $this;

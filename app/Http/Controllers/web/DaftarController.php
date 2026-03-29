@@ -71,6 +71,10 @@ class DaftarController extends Controller
             return compose("ERROR", "Anda sudah mendaftar");
         }
 
+        if(mSiswa::getByNISN($request->nisn)){
+            return compose("ERROR", "NISN ". $request->nisn ." sudah terdaftar");
+        }
+
         DB::beginTransaction();
         try {
             // =====================

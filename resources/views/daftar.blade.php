@@ -85,7 +85,7 @@
                         </p>
                     @else
                         <p class="mt-1 text-sm {{ $textClass }} opacity-80">
-                            Anda masih dapat mengubah data pendaftaran selama status belum terverifikasi.
+                            Anda masih dapat mengubah jalur pendaftaran hingga menjelang penutupan pendaftaran.
                         </p>
                     @endif
                 </div>
@@ -1478,6 +1478,7 @@ document.getElementById('registration-form').addEventListener('submit', async fu
         }
 
         await Swal.fire({ icon: 'success', title: 'Berhasil Mendaftar', text: data.MESSAGE })
+        window.location.reload()
         window.open("/inbox", "_blank")
 
     } catch (err) {

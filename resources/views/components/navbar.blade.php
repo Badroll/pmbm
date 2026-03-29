@@ -43,8 +43,8 @@
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
                     @elseif($isSuperadmin || $isAdminPMBM)
+                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Manajemen Berita & Pengumuman</a>
                         <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
-                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Berita & Pengumuman</a>
                     @endif
                     <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>
                 @else

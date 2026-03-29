@@ -606,10 +606,39 @@
                                     <input type="text" name="penyelenggara_kejuaraan" id="penyelenggara_kejuaraan"
                                         value="{{ old('penyelenggara_kejuaraan', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL ?? '') : '') }}"
                                         placeholder=""
-                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                                         
                                         >
                                     @error('penyelenggara_kejuaraan')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Pelaksanaan -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pelaksanaan</label>
+                                    <select id="pelaksanaan_kejuaraan" 
+                                            name="pelaksanaan_kejuaraan" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                            >
+                                        <option value="Offline" {{ old('pelaksanaan_kejuaraan', $isEdit ? $siswa->SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN : '') == 'Offline' ? 'selected' : '' }}>Offline</option>
+                                        <option value="Online" {{ old('pelaksanaan_kejuaraan', $isEdit ? $siswa->SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN : '') == 'Online' ? 'selected' : '' }}>Online</option>
+                                    </select>
+                                    @error('pelaksanaan_kejuaraan')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Keterangan -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Keterangan Kejuaraan</label>
+                                    <input type="text" name="keterangan_kejuaraan" id="keterangan_kejuaraan"
+                                        value="{{ old('keterangan_kejuaraan', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN_KETERANGAN ?? '') : '') }}"
+                                        placeholder=""
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                                        
+                                        >
+                                    @error('keterangan_kejuaraan')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -1221,9 +1250,11 @@ function isPrestasiFilled() {
 
     const tingkatJuara   = document.getElementById('tingkat_juara')?.value?.trim();
     const penyelenggara  = document.getElementById('penyelenggara_kejuaraan')?.value?.trim();
+    const pelaksanaan_kejuaraan  = document.getElementById('pelaksanaan_kejuaraan')?.value?.trim();
+    const keterangan_kejuaraan  = document.getElementById('keterangan_kejuaraan')?.value?.trim();
     const hafalanQuran   = document.getElementById('hafalan_quran')?.value?.trim();
 
-    const kejuaraanFilled = tingkatJuara && penyelenggara;   // keduanya harus ada jika isi kejuaraan
+    const kejuaraanFilled = tingkatJuara && penyelenggara && keterangan_kejuaraan && pelaksanaan_kejuaraan;
     const hafalanFilled   = !!hafalanQuran;
 
     return kejuaraanFilled || hafalanFilled;

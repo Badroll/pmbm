@@ -32,18 +32,18 @@
                     <i class="fas fa-share-alt mr-2"></i>Media Sosial
                 </h4>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-2xl hover:text-blue-400 transition">
+                    <a target="_blank" href="https://www.facebook.com/share/1HEbazeM2q/" class="text-2xl hover:text-blue-400 transition">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="text-2xl hover:text-blue-400 transition">
+                    <a target="_blank" href="https://www.instagram.com/mtsn2kotasmg?igsh=a3QwOG5hMWVrZm1v" class="text-2xl hover:text-blue-400 transition">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="#" class="text-2xl hover:text-blue-400 transition">
+                    <a target="_blank" href="https://youtube.com/@matsandatvmtsnegeri2kotase769?si=QQ_PbVycp6pd3BH4" class="text-2xl hover:text-blue-400 transition">
                         <i class="fab fa-youtube"></i>
                     </a>
-                    <a href="#" class="text-2xl hover:text-blue-400 transition">
+                    <!-- <a href="#" class="text-2xl hover:text-blue-400 transition">
                         <i class="fab fa-twitter"></i>
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>

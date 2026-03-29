@@ -145,6 +145,8 @@ class DaftarController extends Controller
                 $savedRow['SISWA_AFIRMASI'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_KETERANGAN'] = $request->keterangan_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = $request->pelaksanaan_kejuaraan ?? "";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
             }
 
@@ -249,6 +251,8 @@ class DaftarController extends Controller
                 $savedRow['SISWA_AFIRMASI'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_KETERANGAN'] = $request->keterangan_kejuaraan ?? "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = $request->pelaksanaan_kejuaraan ?? "";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
             }
 

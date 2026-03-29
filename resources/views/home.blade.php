@@ -34,6 +34,29 @@
     </div>
 </section>
 
+<section id="tutorial" class="py-16 px-4 bg-gray-100">
+  <div class="max-w-7xl mx-auto">
+
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Tutorial Cara Pendaftaran</h2>
+
+    <div class="flex justify-center">
+      <div class="w-full max-w-xs sm:max-w-sm">
+        <div class="relative w-full overflow-hidden rounded-2xl shadow-lg bg-black" style="aspect-ratio: 9/16;">
+          <iframe
+            class="absolute inset-0 w-full h-full"
+            src="https://www.youtube.com/embed/8K4SGKA7Q8E"
+            title="Video Tutorial Penggunaan Aplikasi"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- Alur Pendaftaran -->
 <section id="alur" class="py-16 px-4 bg-white">

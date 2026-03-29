@@ -50,7 +50,7 @@
                     </div>
 
                     <!-- Menu Navigation -->
-                    <nav class="space-y-2">
+                    <nav class="space-y-2 hidden">
                         <a href="#info-akun" class="nav-link active flex items-center px-4 py-3 text-blue-600 bg-blue-50 rounded-lg font-medium transition">
                             <i class="fas fa-user-circle mr-3"></i>
                             Informasi Akun
@@ -89,7 +89,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-800 mb-1">Informasi Akun</h2>
-                                <p class="text-sm text-gray-600">Update email dan nomor HP Anda</p>
+                                <p class="text-sm text-gray-600">Update informasi akun Anda</p>
                             </div>
                             <i class="fas fa-user-edit text-3xl text-blue-600"></i>
                         </div>
@@ -102,7 +102,7 @@
                         <!-- Email -->
                         <div class="mb-6">
                             <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Email <span class="text-red-500">*</span>
+                                Email <span class="text-red-500"></span>
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -119,15 +119,15 @@
                             @error('email')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <p class="mt-1 text-xs text-gray-500">
+                            <!-- <p class="mt-1 text-xs text-gray-500">
                                 <i class="fas fa-info-circle mr-1"></i>Email akan digunakan untuk login dan notifikasi penting
-                            </p>
+                            </p> -->
                         </div>
 
                         <!-- No HP -->
                         <div class="mb-6">
                             <label for="no_hp" class="block text-sm font-semibold text-gray-700 mb-2">
-                                No. HP / WhatsApp <span class="text-red-500">*</span>
+                                No. HP / WhatsApp <span class="text-red-500"></span>
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -145,9 +145,9 @@
                             @error('no_hp')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <p class="mt-1 text-xs text-gray-500">
+                            <!-- <p class="mt-1 text-xs text-gray-500">
                                 <i class="fas fa-info-circle mr-1"></i>Nomor aktif WhatsApp untuk notifikasi
-                            </p>
+                            </p> -->
                         </div>
 
                         <!-- Last Updated Info -->
@@ -159,7 +159,7 @@
                         </div> -->
 
                         <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex flex-col sm:flex-row gap-3 hidden">
                             <button type="submit" 
                                     class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-md hover:shadow-lg flex items-center justify-center">
                                 <i class="fas fa-save mr-2"></i>
@@ -243,7 +243,7 @@
                             @enderror
                             
                             <!-- Password Strength Indicator -->
-                            <div class="mt-3">
+                            <!-- <div class="mt-3">
                                 <div class="flex items-center space-x-1">
                                     <div id="new-strength-bar-1" class="h-1 w-1/4 bg-gray-200 rounded"></div>
                                     <div id="new-strength-bar-2" class="h-1 w-1/4 bg-gray-200 rounded"></div>
@@ -270,7 +270,8 @@
                                     <i class="fas fa-circle text-gray-300 text-xs mr-2"></i>
                                     Mengandung angka
                                 </li>
-                            </ul>
+                            </ul> -->
+
                         </div>
 
                         <!-- Confirm New Password -->
@@ -324,7 +325,7 @@
                         </div> -->
 
                         <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex flex-col sm:flex-row gap-3 hidden">
                             <button type="submit" 
                                     class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-md hover:shadow-lg flex items-center justify-center">
                                 <i class="fas fa-key mr-2"></i>

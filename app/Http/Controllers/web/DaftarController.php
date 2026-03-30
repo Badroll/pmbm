@@ -36,6 +36,12 @@ class DaftarController extends Controller
         $refKelurahan = mKelurahan::all();
 
         $siswa = mSiswa::getByUserId($loginUser->U_ID);
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SISWA"])) {
+            $userId = $req->userId ?? null;
+            if($userId){
+                $siswa = mSiswa::getByUserId($userId);
+            }
+        }
 
         $viewData = [
             "refProvinsi" => $refProvinsi,
@@ -71,6 +77,7 @@ class DaftarController extends Controller
             return compose("ERROR", "Anda sudah mendaftar");
         }
 
+        //return compose("ERROR", "NISN ". $request->nisn ." sudah terdaftar");
         if(mSiswa::getByNISN($request->nisn)){
             return compose("ERROR", "NISN ". $request->nisn ." sudah terdaftar");
         }
@@ -211,6 +218,8 @@ class DaftarController extends Controller
             // UPDATE
             // ======================
             $savedRow = [
+                'SISWA_JALUR' => $request->jalur_pendaftaran,
+
                 // 'SISWA_NAMA' => $request->nama_lengkap,
                 // 'SISWA_NISN' => $request->nisn,
                 // 'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
@@ -219,7 +228,6 @@ class DaftarController extends Controller
                 // 'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir,
                 // 'SISWA_TGL_LAHIR' => $request->tanggal_lahir,
                 // 'SISWA_WA' => $request->no_wa,
-                'SISWA_JALUR' => $request->jalur_pendaftaran,
 
                 // 'SISWA_ALAMAT_PROVINSI' => $request->provinsi,
                 // 'SISWA_ALAMAT_KOTA' => $request->kota,

@@ -88,11 +88,11 @@ class DaftarController extends Controller
             // UPLOAD FILE
             // =====================
             $fileFotoPath = $this->handleUpload($request, 'file_foto');
-            $fileNisnPath = $this->handleUpload($request, 'file_nisn');
-            $fileKKPath = $this->handleUpload($request, 'file_kk');
-            $fileAktaPath = $this->handleUpload($request, 'file_akta');
-            $fileRapor52Path = $this->handleUpload($request, 'file_rapor_52');
-            $fileRapor61Path = $this->handleUpload($request, 'file_rapor_61');
+            // $fileNisnPath = $this->handleUpload($request, 'file_nisn');
+            // $fileKKPath = $this->handleUpload($request, 'file_kk');
+            // $fileAktaPath = $this->handleUpload($request, 'file_akta');
+            // $fileRapor52Path = $this->handleUpload($request, 'file_rapor_52');
+            // $fileRapor61Path = $this->handleUpload($request, 'file_rapor_61');
 
             // ======================
             // INSERT

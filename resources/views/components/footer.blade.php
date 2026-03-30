@@ -16,65 +16,65 @@
 
             <!-- Contact Person -->
             <div>
-    <h4 class="text-xl font-semibold mb-4 flex items-center">
-        <i class="fas fa-phone mr-2"></i>Contact Person
-    </h4>
+                <h4 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-phone mr-2"></i>Contact Person
+                </h4>
 
-    <div class="space-y-3 text-gray-300 text-sm">
-        
-        <!-- Contact Person -->
-        <div>
-            <p class="font-semibold text-white">Contact Person:</p>
-            <p>
-                <a href="https://wa.me/6281325604022" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Bapak Safari (Waka Humas): 081325604022
-                </a>
-            </p>
-            <p>
-                <a href="https://wa.me/6285228931445" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Bapak Faiq (Waka Kesiswaan): 085228931445
-                </a>
-            </p>
-        </div>
+                <div class="space-y-3 text-gray-300 text-sm">
+                    
+                    <!-- Contact Person -->
+                    <div>
+                        <p class="font-semibold text-white">Contact Person:</p>
+                        <p>
+                            <a href="https://wa.me/6281325604022" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Bapak Safari (Waka Humas): 081325604022
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://wa.me/6285228931445" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Bapak Faiq (Waka Kesiswaan): 085228931445
+                            </a>
+                        </p>
+                    </div>
 
-        <!-- Informasi -->
-        <div>
-            <p class="font-semibold text-white">Informasi:</p>
-            <p>
-                <a href="https://wa.me/6281327100110" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Ibu Maslikhah: 081327100110
-                </a>
-            </p>
-            <p>
-                <a href="https://wa.me/6285878289553" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Ibu Nur Annisa: 085878289553
-                </a>
-            </p>
-        </div>
+                    <!-- Informasi -->
+                    <div>
+                        <p class="font-semibold text-white">Informasi:</p>
+                        <p>
+                            <a href="https://wa.me/6281327100110" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Ibu Maslikhah: 081327100110
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://wa.me/6285878289553" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Ibu Nur Annisa: 085878289553
+                            </a>
+                        </p>
+                    </div>
 
-        <!-- Kendala Teknis -->
-        <div>
-            <p class="font-semibold text-white">Kendala Teknis:</p>
-            <p>
-                <a href="https://wa.me/6285643540903" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Bapak Miftah: 085643540903
-                </a>
-            </p>
-            <p>
-                <a href="https://wa.me/6282220265429" target="_blank">
-                    <i class="fab fa-whatsapp mr-2 text-green-400"></i>
-                    Bapak Andhika: 082220265429
-                </a>
-            </p>
-        </div>
+                    <!-- Kendala Teknis -->
+                    <div>
+                        <p class="font-semibold text-white">Kendala Teknis:</p>
+                        <p>
+                            <a href="https://wa.me/6285643540903" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Bapak Miftah: 085643540903
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://wa.me/6282220265429" target="_blank">
+                                <i class="fab fa-whatsapp mr-2 text-green-400"></i>
+                                Bapak Andhika: 082220265429
+                            </a>
+                        </p>
+                    </div>
 
-    </div>
-</div>
+                </div>
+            </div>
 
             <!-- Social Media -->
             <div>

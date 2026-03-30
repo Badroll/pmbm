@@ -63,7 +63,7 @@
                 {{-- Avatar --}}
                 <div class="relative flex-shrink-0">
                     @if($siswa->SISWA_FILE_FOTO)
-                        <img src="{{ asset('storage/' . $siswa->SISWA_FILE_FOTO) }}"
+                        <img src="{{ storage_path('app/public/' . $siswa->SISWA_FILE_FOTO) }}"
                             alt="Foto {{ $siswa->SISWA_NAMA }}"
                             class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-indigo-100">
                     @else

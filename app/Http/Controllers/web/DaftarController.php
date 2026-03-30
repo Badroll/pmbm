@@ -143,6 +143,8 @@ class DaftarController extends Controller
                 $savedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_KETERANGAN'] = "-";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = "Offline";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
             }
             if($request->jalur_pendaftaran == "JALUR_PRESTASI"){
@@ -249,6 +251,8 @@ class DaftarController extends Controller
                 $savedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_KETERANGAN'] = "-";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = "Offline";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
             }
             if($request->jalur_pendaftaran == "JALUR_PRESTASI"){

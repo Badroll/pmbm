@@ -15,7 +15,7 @@
             </div>
 
             <!-- Contact Person -->
-            <div>
+            <!-- <div>
                 <h4 class="text-xl font-semibold mb-4 flex items-center">
                     <i class="fas fa-phone mr-2"></i>Contact Person
                 </h4>
@@ -24,7 +24,7 @@
                     <p><i class="fab fa-whatsapp mr-2"></i>WA: +62 812-3456-7890</p>
                     <p><i class="fas fa-envelope mr-2"></i>Email: info@mtsnegeri2kotasemarang.sch.id</p>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Social Media -->
             <div>

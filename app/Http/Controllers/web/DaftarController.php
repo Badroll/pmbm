@@ -325,7 +325,8 @@ class DaftarController extends Controller
         ]);
 
         $waGrup = [
-            "JALUR_REGULER" => "https://chat.whatsapp.com/IFw7mXauoxiBjpJQ91IiTR?mode=gi_t",
+            //"JALUR_REGULER" => "https://chat.whatsapp.com/IFw7mXauoxiBjpJQ91IiTR?mode=gi_t",
+            "JALUR_REGULER" => "https://chat.whatsapp.com/JZCi5wUZ3jlIaliL9hozLC?mode=gi_t",
             "JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
             "JALUR_PRESTASI" => "https://chat.whatsapp.com/C06zHp5zcKEKAR1ITtGikG?mode=hq2tswa",
         ];

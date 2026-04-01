@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class Siswa extends Model
 {
     protected $table = "siswa";
@@ -128,7 +130,9 @@ class Siswa extends Model
         /* ======================
         * H : Umur
         * ====================== */
-        $H = \Carbon\Carbon::parse($siswa->SISWA_TGL_LAHIR)->age;
+        $H = Carbon::parse($siswa->SISWA_TGL_LAHIR)->age;
+        // $H = Carbon::parse($siswa->SISWA_TGL_LAHIR)
+        //     ->diffInYears(Carbon::create(2026, 7, 1));
 
         /* ======================
         * HITUNG SKOR

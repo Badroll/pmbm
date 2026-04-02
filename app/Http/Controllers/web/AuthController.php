@@ -31,7 +31,7 @@ class AuthController extends Controller
             $redirectRole = [
                 "ROLE_SISWA" => "/",
                 "ROLE_SUPERADMIN" => "profil",
-                "ROLE_ADMIN_PMBM" => "profil",
+                "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
             ];
             return redirect($redirectRole[$role])->with("success", "Selamat datang");
@@ -50,7 +50,7 @@ class AuthController extends Controller
             $redirectRole = [
                 "ROLE_SISWA" => "/",
                 "ROLE_SUPERADMIN" => "profil",
-                "ROLE_ADMIN_PMBM" => "profil",
+                "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
             ];
             return redirect($redirectRole[$role])->with("success", "Anda sudah login");
@@ -169,6 +169,21 @@ class AuthController extends Controller
             "siswa" => mSiswa::getByUserId(Session::get("SESSION_U_ID"))
         ];
         return view("profil", $viewData);
+    }
+
+
+    public function admin(Request $request){
+        $req = $request->all();
+
+        $refRole = getReferences("ROLE");
+        unset($refRole["ROLE_SUPERADMIN"]);
+        unset($refRole["ROLE_SISWA"]);
+
+        $viewData = [
+            "admin" => mUser::getAdmin(),
+            "refRole" => $refRole
+        ];
+        return view("admin.manage.index", $viewData);
     }
 
     

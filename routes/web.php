@@ -65,15 +65,23 @@ Route::middleware("loggedin")->group(function () {
         Route::get("/", [WebController::class, "kartu"]);
     });
 
-    Route::prefix('admin/berita')->name("admin.berita.")->group(function () {
-        Route::get('/',                         [BeritaController::class, 'list'])->name('index');
-        Route::get('/data',                     [BeritaController::class, 'data'])->name('data');
-        Route::get('/create',                   [BeritaController::class, 'create'])->name('create');
-        Route::post('/',                        [BeritaController::class, 'store'])->name('store');
-        Route::get('/{id}/edit',                [BeritaController::class, 'edit'])->name('edit');
-        Route::post('/{id}',                    [BeritaController::class, 'update'])->name('update');
-        Route::delete('/{id}',                  [BeritaController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/toggle-status',      [BeritaController::class, 'toggleStatus'])->name('toggleStatus');
+    Route::prefix('admin')->name("admin.")->group(function () {
+        Route::prefix("manage")->name("manage.")->group(function () {
+            Route::get('/',                        [AuthController::class, 'admin'])->name('admin');
+            Route::post('/',                       [AuthController::class, 'createAdmin'])->name('create');
+            Route::post('{id}',                    [AuthController::class, 'updateAdmin'])->name('update');
+            Route::delete('{id}',                  [AuthController::class, 'deleteAdmin'])->name('deleteAdmin');
+        });
+        Route::prefix("berita")->name("berita.")->group(function () {
+            Route::get('/',                         [BeritaController::class, 'list'])->name('index');
+            Route::get('/data',                     [BeritaController::class, 'data'])->name('data');
+            Route::get('/create',                   [BeritaController::class, 'create'])->name('create');
+            Route::post('/',                        [BeritaController::class, 'store'])->name('store');
+            Route::get('/{id}/edit',                [BeritaController::class, 'edit'])->name('edit');
+            Route::post('/{id}',                    [BeritaController::class, 'update'])->name('update');
+            Route::delete('/{id}',                  [BeritaController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/toggle-status',      [BeritaController::class, 'toggleStatus'])->name('toggleStatus');
+        });
     });
 
 });

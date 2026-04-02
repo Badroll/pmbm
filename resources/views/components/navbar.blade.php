@@ -4,8 +4,8 @@
     $sessionUserRole = Session::get("SESSION_U_ROLE");
     $isSuperadmin = $sessionUserRole == "ROLE_SUPERADMIN";
     $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
-    $isAdminPMBM = $sessionUserRole == "ROLE_ADMIN_PMBM";
-    $isSiswa= $sessionUserRole == "ROLE_SISWA";
+    $isAdminBerita = $sessionUserRole == "ROLE_ADMIN_BERITA";
+    $isSiswa = $sessionUserRole == "ROLE_SISWA";
 
     function isActiveDesktop($path){
         return Request::is($path)
@@ -36,20 +36,32 @@
             ?>
             <div class="hidden md:flex space-x-8">
                 <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
-                <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('berita*') }}">Berita & Pengumuman</a>
+
                 @if($isLoggedIn)
-                    @if($isSiswa)
-                    <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
-                    <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
-                    <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
-                    @elseif($isSuperadmin || $isAdminPMBM)
-                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Manajemen Berita & Pengumuman</a>
+
+                    @if($isSuperadmin)
+                        <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Admin</a>
+                    @endif
+
+                    @if($isSuperadmin || $isAdminBerita)
+                        <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Berita & Pengumuman</a>
+                    @endif
+
+                    @if($isSuperadmin || $isAdminBerkas)
                         <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
                     @endif
+
+                    @if($isSiswa)
+                        <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
+                        <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
+                        <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
+                    @endif
+
                     <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>
                 @else
-                    <a href="{{ url('/auth/login') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('auth/login') }}">Masuk</a>
+                    <a href="{{ url('/auth/login') }}" class="{{ $navMenuClass }}  {{ isActiveDesktop('auth/login') }}">Masuk</a>
                 @endif
+
             </div>
 
             <!-- Mobile Menu Button -->
@@ -66,20 +78,28 @@
     <div id="mobile-menu" class="hidden md:hidden bg-blue-700">
         <div class="px-4 py-3 space-y-3">
             <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
-            <a href="{{ url('/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('berita*') }}">Berita & Pengumuman</a>
+
             @if($isLoggedIn)
+
+                @if($isSuperadmin || $isAdminBerita)
+                    <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/berita*') }}">Berita & Pengumuman</a>
+                @endif
+
+                @if($isSuperadmin || $isAdminBerkas)
+                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>
+                @endif
+
                 @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
-                @elseif($isSuperadmin || $isAdminPMBM)
-                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>
-                    <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/berita*') }}">Berita & Pengumuman</a>
                 @endif
+
                 <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveMobile('profil') }}">Profil</a>
             @else
                 <a href="{{ url('/auth/login') }}" class="{{ $navMenuClass }}  {{ isActiveMobile('auth/login') }}">Masuk</a>
             @endif
+            
         </div>
     </div>
 </nav>

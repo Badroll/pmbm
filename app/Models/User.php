@@ -62,12 +62,20 @@ class User extends Model implements AuthenticatableContract
     
 
     public static function getActive(){
-        return self::where("ACCOUNT_STATUS_ACTIVE")->get();
+        return self::where("U_ACCOUNT_STATUS", "ACCOUNT_STATUS_ACTIVE")->get();
     }
 
 
     public static function getInctive(){
-        return self::where("ACCOUNT_STATUS_INACTIVE")->get();
+        return self::where("U_ACCOUNT_STATUS", "ACCOUNT_STATUS_INACTIVE")->get();
+    }
+
+
+    public static function getAdmin(){
+        return self
+            ::where("U_ROLE", "!=", "ROLE_SUPERADMIN")
+            ->where("U_ROLE", "!=", "ROLE_SISWA")
+            ->get();
     }
 
 
@@ -75,9 +83,11 @@ class User extends Model implements AuthenticatableContract
         return self::where("U_USERNAME", $username)->first();
     }
 
+    
     public static function getByLoginToken($loginToken){
         return self::where("U_LOGIN_TOKEN", $loginToken)->first();
     }
+
 
     public static function isLoginTokenValid($loginToken){
         $user = self::where("U_LOGIN_TOKEN", $loginToken)->first();

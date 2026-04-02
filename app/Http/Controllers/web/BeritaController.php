@@ -54,7 +54,7 @@ class BeritaController extends Controller
         return view('berita.show', compact('berita', 'beritaTerkait'));
     }
 
-    private $allowedRoles = ['ROLE_SUPERADMIN', 'ROLE_ADMIN_PMBM'];
+    private $allowedRoles = ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERITA'];
 
     // -------------------------------------------------------
     // GET /admin/berita — halaman tabel index

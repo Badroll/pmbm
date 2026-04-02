@@ -327,8 +327,12 @@ class DaftarController extends Controller
         $waGrup = [
             //"JALUR_REGULER" => "https://chat.whatsapp.com/IFw7mXauoxiBjpJQ91IiTR?mode=gi_t",
             "JALUR_REGULER" => "https://chat.whatsapp.com/JZCi5wUZ3jlIaliL9hozLC?mode=gi_t",
-            "JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
-            "JALUR_PRESTASI" => "https://chat.whatsapp.com/C06zHp5zcKEKAR1ITtGikG?mode=hq2tswa",
+
+            //"JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
+            "JALUR_AFIRMASI" => "https://chat.whatsapp.com/FnJsLeJsEHhEDdyCXBR6sh?mode=gi_t",
+
+            //"JALUR_PRESTASI" => "https://chat.whatsapp.com/C06zHp5zcKEKAR1ITtGikG?mode=hq2tswa",
+            "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu?mode=gi_t",
         ];
         $msg = "
             Silahkan bergabung pada Grup WhatsApp pendaftar untuk mendapatkan informasi lebih lengkap
@@ -347,7 +351,7 @@ class DaftarController extends Controller
     {
         $loginUser = $request->loginUser;
 
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
@@ -383,7 +387,7 @@ class DaftarController extends Controller
         $loginUser = $request->loginUser;
         $req = $request->all();
 
-        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_PMBM"])){
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])){
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 

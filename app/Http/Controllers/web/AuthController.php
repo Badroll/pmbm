@@ -195,7 +195,10 @@ class AuthController extends Controller
 
 
     public function admin(Request $request){
-        $req = $request->all();
+        $loginUser = $request->loginUser;
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN"])) {
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
 
         $refRole = getReferences("ROLE");
         unset($refRole["ROLE_SUPERADMIN"]);
@@ -211,6 +214,11 @@ class AuthController extends Controller
 
     public function datatable(Request $request)
     {
+        $loginUser = $request->loginUser;
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN"])) {
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+        
         // ── Ambil semua admin (non-siswa) ──────────────────────────────────
         $query = \DB::table('_user')  // sesuaikan nama tabel
             ->whereNotIn('U_ROLE', ['ROLE_SUPERADMIN'])

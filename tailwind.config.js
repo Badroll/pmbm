@@ -10,7 +10,11 @@ module.exports = {
     },
   ],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        'modal': '0 8px 40px rgba(0,0,0,0.28)',
+      }
+    },
   },
   plugins: [],
 }

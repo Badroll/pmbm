@@ -68,6 +68,7 @@ Route::middleware("loggedin")->group(function () {
     Route::prefix('admin')->name("admin.")->group(function () {
         Route::prefix("manage")->name("manage.")->group(function () {
             Route::get('/',                        [AuthController::class, 'admin'])->name('admin');
+            Route::get('datatable',                        [AuthController::class, 'datatable'])->name('datatable');
             Route::post('/',                       [AuthController::class, 'createAdmin'])->name('create');
             Route::post('{id}',                    [AuthController::class, 'updateAdmin'])->name('update');
             Route::delete('{id}',                  [AuthController::class, 'deleteAdmin'])->name('deleteAdmin');

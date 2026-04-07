@@ -40,7 +40,7 @@
                 @if($isLoggedIn)
 
                     @if($isSuperadmin)
-                        <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Admin</a>
+                        <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Akun</a>
                     @endif
 
                     @if($isSuperadmin || $isAdminBerita)
@@ -48,7 +48,7 @@
                     @endif
 
                     @if($isSuperadmin || $isAdminBerkas)
-                        <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftaran</a>
+                        <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftar</a>
                     @endif
 
                     @if($isSiswa)
@@ -81,12 +81,16 @@
 
             @if($isLoggedIn)
 
+                @if($isSuperadmin)
+                    <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/manage*') }}">Akun</a>
+                @endif
+
                 @if($isSuperadmin || $isAdminBerita)
                     <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/berita*') }}">Berita & Pengumuman</a>
                 @endif
 
                 @if($isSuperadmin || $isAdminBerkas)
-                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftaran</a>
+                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftar</a>
                 @endif
 
                 @if($isSiswa)

@@ -59,10 +59,12 @@ class AuthController extends Controller
         if(!isset($req["username"])) return compose("ERROR", "Parameter tidak lengkap 'username'");
         if(!isset($req["password"])) return compose("ERROR", "Parameter tidak lengkap 'password'");
         if(!isset($req["role"])) return compose("ERROR", "Parameter tidak lengkap 'role'");
+        if(!isset($req["status"])) return compose("ERROR", "Parameter tidak lengkap 'status'");
 
         $username = $req["username"];
         $password = $req["password"];
         $role = $req["role"];
+        $status = $req["status"];
 
         $user = mUser::getByUsername($username);
         if($user) return compose("ERROR", "Email/No. HP sudah digunakan");
@@ -83,7 +85,7 @@ class AuthController extends Controller
                 "U_EMAIL" => $email,
                 "U_PHONE" => $phone,
                 "U_ROLE" => $role,
-                "U_ACCOUNT_STATUS" => "ACCOUNT_STATUS_ACTIVE",
+                "U_ACCOUNT_STATUS" => $status,
                 "U_LOGIN_TOKEN" => "",
             ]);
 

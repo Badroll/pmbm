@@ -44,6 +44,11 @@
         .choices__input { @apply border-gray-300 text-gray-900 text-sm rounded-md; padding: 0.4rem 0.5rem !important; }
         .choices__list--dropdown { @apply border border-gray-300 rounded-md shadow-lg; }
         .choices__item--selectable.is-highlighted { @apply bg-blue-100 text-blue-700; } */
+
+        [x-cloak] {
+            display: none !important;
+        }
+
     </style>
 </head>
 <body class="bg-gray-50">
@@ -57,6 +62,14 @@
     @include('components.footer')
 
     @include('components.flash-message')
+
+    {{-- Style tweak DataTable agar senada dengan desain --}}
+    <style>
+        /* Horizontal scroll on mobile */
+        @media (max-width: 640px) {
+            .dataTables_wrapper .dataTables_scroll { overflow-x: auto; }
+        }
+    </style>
 
     <script>
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');

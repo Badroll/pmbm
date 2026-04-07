@@ -71,10 +71,9 @@ class User extends Model implements AuthenticatableContract
     }
 
 
-    public static function getAdmin(){
+    public static function getUsers(){
         return self
             ::where("U_ROLE", "!=", "ROLE_SUPERADMIN")
-            ->where("U_ROLE", "!=", "ROLE_SISWA")
             ->get();
     }
 

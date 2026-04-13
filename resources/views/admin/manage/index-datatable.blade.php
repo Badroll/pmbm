@@ -87,6 +87,12 @@
                     class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition">
             </div>
 
+            <div id="siswa-field" class="hidden">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Nama Siswa</label>
+                <input id="form-siswa-nama" type="text" disabled
+                    class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm">
+            </div>
+
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-medium text-gray-500 mb-1">Role</label>
@@ -217,7 +223,21 @@ $(document).ready(function () {
         if (e.target === this) closeModal();
     });
 
+
+    document.getElementById('form-role').addEventListener('change', function () {
+        toggleSiswaField(this.value);
+    });
+
 });
+
+function toggleSiswaField(role) {
+    const el = document.getElementById('siswa-field');
+    if (role === 'ROLE_SISWA') {
+        el.classList.remove('hidden');
+    } else {
+        el.classList.add('hidden');
+    }
+}
 
 // ─── Modal helpers ────────────────────────────────────────────────────────────
 function openCreate() {
@@ -227,6 +247,9 @@ function openCreate() {
     document.getElementById('submit-btn').textContent        = 'Simpan';
     document.getElementById('confirm-password-wrap').classList.remove('hidden');
     document.getElementById('pw-hint').classList.add('hidden');
+    
+    toggleSiswaField('');
+
     showModal();
 }
 
@@ -246,6 +269,11 @@ function openEdit(id) {
     document.getElementById('form-username').value = row._raw.username;
     document.getElementById('form-role').value     = row._raw.role;
     document.getElementById('form-status').value   = row._raw.status;
+
+    toggleSiswaField(row._raw.role);
+    if (row._raw.role === 'ROLE_SISWA') {
+        document.getElementById('form-siswa-nama').value = row._raw.siswa_nama || '';
+    }
 
     showModal();
 }
@@ -269,6 +297,9 @@ function resetForm() {
     const err = document.getElementById('error-msg');
     err.textContent = '';
     err.classList.add('hidden');
+    
+    document.getElementById('form-siswa-nama').value = '';
+    toggleSiswaField('');
 }
 
 function showError(msg) {
@@ -289,6 +320,7 @@ async function submitForm() {
         status                : document.getElementById('form-status').value,
         password              : document.getElementById('form-password').value,
         password_confirmation : document.getElementById('form-password-confirmation').value,
+        //siswa_nama: document.getElementById('form-siswa-nama').value,
         _token                : token,
         ...(isEdit ? { id: document.getElementById('form-id').value } : {}),
     });

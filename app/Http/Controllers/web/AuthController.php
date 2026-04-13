@@ -220,9 +220,17 @@ class AuthController extends Controller
         }
         
         // ── Ambil semua admin (non-siswa) ──────────────────────────────────
-        $query = \DB::table('_user')  // sesuaikan nama tabel
-            ->whereNotIn('U_ROLE', ['ROLE_SUPERADMIN'])
-            ->select('U_ID', 'U_USERNAME', 'U_ROLE', 'U_ACCOUNT_STATUS', 'U_LOGIN_LAST');
+        $query = \DB::table('_user')
+            ->leftJoin('siswa', 'siswa.U_ID', '=', '_user.U_ID')
+            ->whereNotIn('_user.U_ROLE', ['ROLE_SUPERADMIN'])
+            ->select(
+                '_user.U_ID',
+                '_user.U_USERNAME',
+                '_user.U_ROLE',
+                '_user.U_ACCOUNT_STATUS',
+                '_user.U_LOGIN_LAST',
+                'siswa.SISWA_NAMA'
+            );
  
         // ── Filter role (dari dropdown filter) ────────────────────────────
         if ($request->filled('role') && $request->role !== 'all') {
@@ -237,7 +245,8 @@ class AuthController extends Controller
             $search = $request->input('search.value');
             $query->where(function ($q) use ($search) {
                 $q->where('U_USERNAME', 'like', "%{$search}%")
-                  ->orWhere('U_ROLE', 'like', "%{$search}%");
+                ->orWhere('U_ROLE', 'like', "%{$search}%")
+                ->orWhere('siswa.SISWA_NAMA', 'like', "%{$search}%");
             });
         }
  
@@ -266,14 +275,17 @@ class AuthController extends Controller
             $role    = $roleLabels[$u->U_ROLE] ?? ['label' => $u->U_ROLE, 'class' => 'bg-gray-100 text-gray-500'];
             $isActive = $u->U_ACCOUNT_STATUS === 'ACCOUNT_STATUS_ACTIVE';
  
-            $avatarLetter = strtoupper(substr($u->U_USERNAME, 0, 1));
+            $displayName = $u->U_ROLE === 'ROLE_SISWA' && $u->SISWA_NAMA
+                ? $u->SISWA_NAMA
+                : $u->U_USERNAME;
+            $avatarLetter = strtoupper(substr($displayName, 0, 1));
  
             $usernameHtml = "
                 <div class='flex items-center gap-3'>
                     <div class='w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs'>
                         {$avatarLetter}
                     </div>
-                    <span class='font-medium text-gray-800'>{$u->U_USERNAME}</span>
+                    <span class='font-medium text-gray-800'>{$displayName}</span>
                 </div>
             ";
  
@@ -327,6 +339,7 @@ class AuthController extends Controller
                     'username' => $u->U_USERNAME,
                     'role'     => $u->U_ROLE,
                     'status'   => $u->U_ACCOUNT_STATUS,
+                    'siswa_nama' => $u->SISWA_NAMA,
                 ],
             ];
         });

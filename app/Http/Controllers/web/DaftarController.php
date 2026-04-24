@@ -331,8 +331,8 @@ class DaftarController extends Controller
             //"JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
             "JALUR_AFIRMASI" => "https://chat.whatsapp.com/FnJsLeJsEHhEDdyCXBR6sh?mode=gi_t",
 
-            //"JALUR_PRESTASI" => "https://chat.whatsapp.com/C06zHp5zcKEKAR1ITtGikG?mode=hq2tswa",
-            "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu?mode=gi_t",
+            // "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu?mode=gi_t",
+            "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu",
         ];
         $msg = "
             Silahkan bergabung pada Grup WhatsApp pendaftar untuk mendapatkan informasi lebih lengkap

@@ -40,6 +40,11 @@ Route::prefix("berita")->name("berita.")->group(function () {
     Route::get("{slug}", [BeritaController::class, "show"])->name("show");
 });
 
+Route::prefix("jurnal")->name("jurnal.")->group(function () {
+    Route::get("/", [WebController::class, "jurnal"])->name("index");
+    Route::get("datatable", [WebController::class, "jurnalDatatable"])->name("datatable");
+});
+
 // -------------------------------------------------------------------------
 
 Route::middleware("loggedin")->group(function () {

@@ -36,6 +36,7 @@
             ?>
             <div class="hidden md:flex space-x-8">
                 <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
+                <a href="{{ url('/jurnal') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('jurnal') }}">Jurnal</a>
 
                 @if($isLoggedIn)
 
@@ -78,6 +79,7 @@
     <div id="mobile-menu" class="hidden md:hidden bg-blue-700">
         <div class="px-4 py-3 space-y-3">
             <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
+            <a href="{{ url('/jurnal') }}" class="{{ $navMenuClass }} {{ isActiveMobile('jurnal') }}">Jurnal</a>
 
             @if($isLoggedIn)
 

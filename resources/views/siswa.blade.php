@@ -10,9 +10,20 @@
                 <h1 class="text-xl font-bold text-gray-900">Data Pendaftar PMBM</h1>
                 <p class="mt-0.5 text-sm text-gray-500">Daftar seluruh murid yang telah mendaftar</p>
             </div>
-            <span class="inline-flex self-start sm:self-auto items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
-                {{ count($siswa) }} Pendaftar
-            </span>
+            {{-- Badge + Tombol Download --}}
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+                    {{ count($siswa) }} Pendaftar
+                </span>
+                <a href="/public/excel/data-pendaftar" target="_blank"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white text-xs font-semibold rounded-full transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download
+                </a>
+            </div>
         </div>
     </div>
 
@@ -71,6 +82,8 @@
             </div>
         </form>
     </div>
+
+    {{-- ... sisa kode tabel/card tidak berubah --}}
 
     @php
     $jalurMap = [

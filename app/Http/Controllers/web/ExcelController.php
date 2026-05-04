@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use Carbon\Carbon;
+
 use App\Models\Provinsi as mProvinsi;
 use App\Models\Kota as mKota;
 use App\Models\Kecamatan as mKecamatan;
@@ -105,6 +107,7 @@ class ExcelController extends Controller
 
 
     public function __construct(){
+        Carbon::setLocale('id');
     }
 
 
@@ -310,6 +313,206 @@ class ExcelController extends Controller
 
         return response()->download($pdfPath)->deleteFileAfterSend(true);
     }
+
+
+
+    // ================================== DATA PENDAFTAR ==================================
+    private const JALUR_CONFIG = [
+        'JALUR_REGULER'  => ['label' => 'Reguler',  'header_bg' => '3B4FCD', 'accent' => 'EEF0FD', 'tab' => '3B4FCD'],
+        'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'header_bg' => 'D97706', 'accent' => 'FEF3C7', 'tab' => 'D97706'],
+        'JALUR_PRESTASI' => ['label' => 'Prestasi', 'header_bg' => '7C3AED', 'accent' => 'F3EEFF', 'tab' => '7C3AED'],
+    ];
+ 
+    private const GENDER_MAP = [
+        'JENIS_KELAMIN_L' => 'Laki-laki',
+        'JENIS_KELAMIN_P' => 'Perempuan',
+    ];
+ 
+    private const COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    private const HEADERS  = ['No.', 'No. Pendaftaran', 'Nama Siswa', 'NISN', 'Jenis Kelamin', 'Tgl. Daftar', 'Skor'];
+    private const WIDTHS   = [6, 20, 32, 16, 16, 16, 12];
+ 
+    // ─── Entry point ─────────────────────────────────────────────────────────
+    public function dataPendaftar(): void
+    {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setTitle('Data Pendaftar')
+            ->setCreator('MTsN 2 Kota Semarang')
+            ->setDescription('Rekap data pendaftar per jalur penerimaan');
+ 
+        $sheetIndex = 0;
+        foreach (self::JALUR_CONFIG as $jalurKey => $config) {
+            $data = mSiswa::where('SISWA_JALUR', $jalurKey)
+                ->orderBy('SISWA_TGL_DAFTAR')
+                ->get();
+ 
+            $sheet = ($sheetIndex === 0)
+                ? $spreadsheet->getActiveSheet()
+                : $spreadsheet->createSheet();
+ 
+            $sheet->setTitle($config['label']);
+            $sheet->getSheetView()->setZoomScale(100);
+ 
+            // Warna tab sheet
+            $sheet->getTabColor()->setRGB($config['tab']);
+ 
+            $this->writeSheet($sheet, $config, $data);
+            $sheetIndex++;
+        }
+ 
+        // Aktifkan sheet pertama saat dibuka
+        $spreadsheet->setActiveSheetIndex(0);
+ 
+        $filename = "Data Pendaftar (" . date("YmdHis") . ").xlsx";
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+ 
+        (new Xlsx($spreadsheet))->save('php://output');
+        exit;
+    }
+ 
+    private function writeSheet($sheet, array $config, $data): void
+    {
+        $totalRows = $data->count();
+ 
+        // ── Judul & metadata (baris 1–3) ─────────────────────────────────────
+        $sheet->mergeCells('A1:G1');
+        $sheet->setCellValue('A1', 'DATA PENDAFTAR - JALUR ' . strtoupper($config['label']));
+        $sheet->getStyle('A1')->applyFromArray([
+            'font'      => ['bold' => true, 'size' => 13, 'color' => ['rgb' => $config['header_bg']], 'name' => 'Arial'],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(28);
+ 
+        $sheet->mergeCells('A2:G2');
+        $sheet->setCellValue('A2', 'Dicetak: ' . Carbon::now()->isoFormat('dddd, D MMMM Y — HH:mm') . ' WIB');
+        $sheet->getStyle('A2')->applyFromArray([
+            'font'      => ['italic' => true, 'size' => 9, 'color' => ['rgb' => '6B7280'], 'name' => 'Arial'],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+        ]);
+        $sheet->getRowDimension(2)->setRowHeight(16);
+        $sheet->getRowDimension(3)->setRowHeight(8);  // spasi kosong
+ 
+        // ── Header kolom (baris 4) ────────────────────────────────────────────
+        $headerRow = 4;
+        foreach (self::COLUMNS as $i => $col) {
+            $cell = $col . $headerRow;
+            $sheet->setCellValue($cell, self::HEADERS[$i]);
+            $sheet->getColumnDimension($col)->setWidth(self::WIDTHS[$i]);
+        }
+ 
+        $sheet->getStyle('A4:G4')->applyFromArray([
+            'font' => [
+                'bold'  => true,
+                'size'  => 9,
+                'color' => ['rgb' => 'FFFFFF'],
+                'name'  => 'Arial',
+            ],
+            'fill' => [
+                'fillType'   => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => $config['header_bg']],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_NONE],
+            ],
+        ]);
+        $sheet->getRowDimension($headerRow)->setRowHeight(22);
+ 
+        // ── Data baris ────────────────────────────────────────────────────────
+        if ($totalRows === 0) {
+            $emptyRow = 5;
+            $sheet->mergeCells("A{$emptyRow}:G{$emptyRow}");
+            $sheet->setCellValue("A{$emptyRow}", 'Tidak ada data untuk jalur ini.');
+            $sheet->getStyle("A{$emptyRow}")->applyFromArray([
+                'font'      => ['italic' => true, 'color' => ['rgb' => '9CA3AF'], 'name' => 'Arial'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+            ]);
+            return;
+        }
+ 
+        foreach ($data as $index => $s) {
+            $row    = $index + 5;
+            $isEven = ($index % 2 === 1);
+            $bgRgb  = $isEven ? $config['accent'] : 'FFFFFF';
+ 
+            $sheet->setCellValue("A{$row}", $index + 1);
+            $sheet->setCellValueExplicit("B{$row}", (string) $s->SISWA_NO, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue("C{$row}", $s->SISWA_NAMA);
+            $sheet->setCellValueExplicit("D{$row}", (string) $s->SISWA_NISN, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue("E{$row}", self::GENDER_MAP[$s->SISWA_JENIS_KELAMIN] ?? $s->SISWA_JENIS_KELAMIN);
+            $sheet->setCellValue("F{$row}", Carbon::parse($s->SISWA_TGL_DAFTAR)->format('d M Y'));
+            $sheet->setCellValue("G{$row}", $s->SISWA_SKOR);
+ 
+            // Zebra stripe background
+            $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $bgRgb]],
+                'font' => ['size' => 9, 'name' => 'Arial'],
+                'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+            ]);
+ 
+            // Alignment per kolom
+            $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("E{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("F{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("G{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+ 
+            $sheet->getRowDimension($row)->setRowHeight(18);
+        }
+ 
+        // ── Baris total (bawah data) ──────────────────────────────────────────
+        $totalRow  = $totalRows + 5;
+        $dataStart = 5;
+        $dataEnd   = $totalRows + 4;
+ 
+        $sheet->mergeCells("A{$totalRow}:E{$totalRow}");
+        $sheet->setCellValue("A{$totalRow}", 'Total Pendaftar');
+        $sheet->setCellValue("F{$totalRow}", "=AVERAGE(G{$dataStart}:G{$dataEnd})");
+        $sheet->setCellValue("G{$totalRow}", $totalRows . ' siswa');
+ 
+        $sheet->getStyle("A{$totalRow}:G{$totalRow}")->applyFromArray([
+            'font' => [
+                'bold'  => true,
+                'size'  => 9,
+                'name'  => 'Arial',
+                'color' => ['rgb' => $config['header_bg']],
+            ],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $config['accent']]],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'top' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => $config['header_bg']]],
+            ],
+        ]);
+        $sheet->getStyle("A{$totalRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getRowDimension($totalRow)->setRowHeight(20);
+ 
+        // ── Border luar tabel ─────────────────────────────────────────────────
+        $lastDataCell = 'G' . ($totalRow);
+        $sheet->getStyle("A4:{$lastDataCell}")->applyFromArray([
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => ['rgb' => 'D1D5DB'],
+                ],
+            ],
+        ]);
+ 
+        // ── Freeze pane di bawah header ───────────────────────────────────────
+        $sheet->freezePane('A5');
+ 
+        // ── Sembunyikan gridlines ─────────────────────────────────────────────
+        $sheet->setShowGridlines(false);
+    }
+
+
 
 
 }

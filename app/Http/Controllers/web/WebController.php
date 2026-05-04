@@ -77,8 +77,55 @@ class WebController extends Controller
         //     return compose("ERROR", "Anda tidak berhak mengakses");
         // }
 
+        // // RAW QUERY VERSION
+        // // ── Base query: ranking berdasarkan skor tertinggi ──────────────────
+        // $query = \DB::table('siswa')
+        //     ->select(
+        //         'SISWA_ID', 'SISWA_NAMA', 'SISWA_JALUR', 'SISWA_SKOR',
+        //         'SISWA_STATUS', 'SISWA_NISN', 'SISWA_TGL_LAHIR',
+        //         'SISWA_TES_CBT_AKADEMIK', 'SISWA_TES_CBT_PSIKO', 'SISWA_TES_QURAN',
+        //         'SISWA_AFIRMASI', 'SISWA_PRESTASI_KEJUARAAN', 'SISWA_PRESTASI_KEAGAMAAN',
+        //         'SISWA_NILAI_52_MTK', 'SISWA_NILAI_52_IPA', 'SISWA_NILAI_52_BIND', 'SISWA_NILAI_52_PAI',
+        //         'SISWA_NILAI_61_MTK', 'SISWA_NILAI_61_IPA', 'SISWA_NILAI_61_BIND', 'SISWA_NILAI_61_PAI',
+        //         \DB::raw('RANK() OVER (ORDER BY SISWA_SKOR DESC) AS ranking')
+        //     )
+        //     ;
+
+        // // ── Filter jalur ────────────────────────────────────────────────────
+        // if ($request->filled('jalur') && $request->jalur !== 'all') {
+        //     $query->where('SISWA_JALUR', $request->jalur);
+        // }
+
+        // // ── Wrap subquery supaya RANK() bisa di-filter & di-count ───────────
+        // $wrapped = \DB::table(\DB::raw("({$query->toSql()}) as sub"))
+        //     ->mergeBindings($query);
+
+        // $totalRecords = $wrapped->count();
+
+        // // ── Global search ───────────────────────────────────────────────────
+        // if ($request->filled('search.value')) {
+        //     $search = $request->input('search.value');
+        //     $wrapped->where(function ($q) use ($search) {
+        //         $q->where('SISWA_NAMA', 'like', "%{$search}%")
+        //         ->orWhere('SISWA_NISN', 'like', "%{$search}%");
+        //     });
+        // }
+
+        // $filteredRecords = $wrapped->count();
+
+        // // ── Sorting (hanya ranking yang orderable di front-end) ─────────────
+        // $orderDir = $request->input('order.0.dir', 'asc') === 'desc' ? 'desc' : 'asc';
+        // $wrapped->orderBy('ranking', $orderDir);
+
+        // // ── Pagination ──────────────────────────────────────────────────────
+        // $start  = (int) $request->input('start', 0);
+        // $length = (int) $request->input('length', 10);
+        // $rows   = $wrapped->offset($start)->limit($length)->get();
+
+
+        // MODEL
         // ── Base query: ranking berdasarkan skor tertinggi ──────────────────
-        $query = \DB::table('siswa')
+        $query = mSiswa::query()
             ->select(
                 'SISWA_ID', 'SISWA_NAMA', 'SISWA_JALUR', 'SISWA_SKOR',
                 'SISWA_STATUS', 'SISWA_NISN', 'SISWA_TGL_LAHIR',
@@ -86,9 +133,8 @@ class WebController extends Controller
                 'SISWA_AFIRMASI', 'SISWA_PRESTASI_KEJUARAAN', 'SISWA_PRESTASI_KEAGAMAAN',
                 'SISWA_NILAI_52_MTK', 'SISWA_NILAI_52_IPA', 'SISWA_NILAI_52_BIND', 'SISWA_NILAI_52_PAI',
                 'SISWA_NILAI_61_MTK', 'SISWA_NILAI_61_IPA', 'SISWA_NILAI_61_BIND', 'SISWA_NILAI_61_PAI',
-                \DB::raw('RANK() OVER (ORDER BY SISWA_SKOR DESC) AS ranking')
-            )
-            ;
+                DB::raw('RANK() OVER (ORDER BY SISWA_SKOR DESC) AS ranking')
+            );
 
         // ── Filter jalur ────────────────────────────────────────────────────
         if ($request->filled('jalur') && $request->jalur !== 'all') {
@@ -96,8 +142,8 @@ class WebController extends Controller
         }
 
         // ── Wrap subquery supaya RANK() bisa di-filter & di-count ───────────
-        $wrapped = \DB::table(\DB::raw("({$query->toSql()}) as sub"))
-            ->mergeBindings($query);
+        $wrapped = DB::table(DB::raw("({$query->toSql()}) as sub"))
+            ->mergeBindings($query->getQuery()); // penting: getQuery()
 
         $totalRecords = $wrapped->count();
 
@@ -112,14 +158,16 @@ class WebController extends Controller
 
         $filteredRecords = $wrapped->count();
 
-        // ── Sorting (hanya ranking yang orderable di front-end) ─────────────
+        // ── Sorting ─────────────────────────────────────────────────────────
         $orderDir = $request->input('order.0.dir', 'asc') === 'desc' ? 'desc' : 'asc';
         $wrapped->orderBy('ranking', $orderDir);
 
         // ── Pagination ──────────────────────────────────────────────────────
         $start  = (int) $request->input('start', 0);
         $length = (int) $request->input('length', 10);
-        $rows   = $wrapped->offset($start)->limit($length)->get();
+
+        $rows = $wrapped->offset($start)->limit($length)->get();
+
 
         // ── Label jalur ─────────────────────────────────────────────────────
         $jalurLabels = [
@@ -146,8 +194,12 @@ class WebController extends Controller
                 </div>
             ";
 
+            $model = new mSiswa((array) $row);
+            $model->exists = true;
+            $skor = $model->hitungSkor();
+
             $skorHtml = "
-                <span class='font-semibold text-gray-700'>{$row->SISWA_SKOR}</span>
+                <span class='font-semibold text-gray-700'>{$skor["TOTAL"]}</span>
             ";
 
             $rankHtml = "
@@ -168,22 +220,6 @@ class WebController extends Controller
                 </button>
             ";
 
-            // hitung komponen skor (sama persis logika hitungSkor())
-            $nilai = [
-                $row->SISWA_NILAI_52_MTK, $row->SISWA_NILAI_52_IPA,
-                $row->SISWA_NILAI_52_BIND, $row->SISWA_NILAI_52_PAI,
-                $row->SISWA_NILAI_61_MTK, $row->SISWA_NILAI_61_IPA,
-                $row->SISWA_NILAI_61_BIND, $row->SISWA_NILAI_61_PAI,
-            ];
-            $A = array_sum($nilai) / count($nilai);
-            $B = $row->SISWA_TES_CBT_AKADEMIK;
-            $C = $row->SISWA_TES_CBT_PSIKO;
-            $D = $row->SISWA_TES_QURAN;
-            $E = skorKhusus($row->SISWA_AFIRMASI);
-            $F = skorKhusus($row->SISWA_PRESTASI_KEJUARAAN);
-            $G = skorKhusus($row->SISWA_PRESTASI_KEAGAMAAN);
-            $H = \Carbon\Carbon::parse($row->SISWA_TGL_LAHIR)->age;
-
             return [
                 'ranking' => $rankHtml,
                 'judul'   => $judulHtml,
@@ -196,16 +232,18 @@ class WebController extends Controller
                     'skor'   => $row->SISWA_SKOR,
                     'status' => $row->SISWA_STATUS,
                     'nisn'   => $row->SISWA_NISN,
-                    'skor_detail' => [          // <-- tambahan
-                        'A' => $A,
-                        'B' => $B,
-                        'C' => $C,
-                        'D' => $D,
-                        'E' => $E,
-                        'F' => $F,
-                        'G' => $G,
-                        'H' => $H,
-                    ],
+                    // 'skor_detail' => [
+                    //     'A' => $A,
+                    //     'B' => $B,
+                    //     'C' => $C,
+                    //     'D' => $D,
+                    //     'E' => $E,
+                    //     'F' => $F,
+                    //     'G' => $G,
+                    //     'H' => $H,
+                    // ],
+                    'skor_detail' => $skor["POIN"],
+                    'skor_total' => $skor["TOTAL"]
                 ],
             ];
         });

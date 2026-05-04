@@ -130,25 +130,50 @@ class Siswa extends Model
         /* ======================
         * H : Umur
         * ====================== */
-        $H = Carbon::parse($siswa->SISWA_TGL_LAHIR)->age;
-        // $H = Carbon::parse($siswa->SISWA_TGL_LAHIR)
-        //     ->diffInYears(Carbon::create(2026, 7, 1));
+        $H = number_format(
+            Carbon::parse($siswa->SISWA_TGL_LAHIR)
+            ->diffInDays(Carbon::create(2026, 7, 1)) / 365.25,
+            2
+        );
 
         /* ======================
         * HITUNG SKOR
         * ====================== */
-        $skor = $A 
-            + (3 * $B)
-            + (2 * $C)
-            + (2 * $D)
-            + (2 * $E)
-            + (3 * ($F + $G))
-            + $H;
 
-        $this->SISWA_SKOR = $skor;
-        $this->save();
+        $poin = [
+            ["A - rata-rata nilai rapot", $A, 1],
+            ["B - CBT, Tes akademik", $B, 3],
+            ["C - CBT, Psikotest", $C, 2],
+            ["D - Skor tes baca Al Quran", $D, 2],
+            ["E - Skor afirmasi", $E, 2],
+            ["F - Nilai prestasi kejuaraan", $F, 3],
+            ["G - Nilai prestasi keagamaan (tahfidz)", $G, 3],
+            ["H - Umur calon murid baru", $H, 1],
+        ];
 
-        return $skor;
+        $skor = 0;
+        foreach ($poin as $item) {
+            $skor += $item[1] * $item[2];
+        }
+
+        // update if has any change
+        // logcmd($this->SISWA_SKOR);
+        // logcmd($skor);
+        if($this->SISWA_SKOR != $skor){
+            //logcmd("diff");
+            $this->SISWA_SKOR = $skor;
+            if($this->ranking){
+                unset($this->ranking);
+            }
+            //logcmd($this->toArray());
+            $this->save();
+        }
+        //logcmd("============");
+
+        return [
+            "POIN" => $poin,
+            "TOTAL" => $skor
+        ];
     }
 
 }

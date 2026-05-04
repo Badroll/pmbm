@@ -204,14 +204,32 @@ function renderModal(raw) {
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 px-3">
-                            ${row('A (rata-rata nilai rapot)', s.A.toFixed(2), 'x1', s.A.toFixed(2))}
-                            ${row('B (CBT, Tes akademik)', s.B.toFixed(2), 'x3', (3*s.B).toFixed(2))}
-                            ${row('C (CBT, Psikotest)', s.C.toFixed(2), 'x2', (2*s.C).toFixed(2))}
-                            ${row('D (Skor tes baca Al Quran)', s.D.toFixed(2), 'x2', (2*s.D).toFixed(2))}
-                            ${row('E (Skor afirmasi)', s.E.toFixed(2), 'x2', (2*s.E).toFixed(2))}
-                            ${row('F (Nilai prestasi kejuaraan)', s.F.toFixed(2), 'x3', (3*s.F).toFixed(2))}
-                            ${row('G (Nilai prestasi keagamaan (tahfidz))', s.G.toFixed(2), 'x3', (3*s.G).toFixed(2))}
-                            ${row('H (Umur calon murid baru)', s.H,            'x1', s.H)}
+                            ${
+                                s.map(item => {
+                                    const [label, nilai, bobot] = item;
+
+                                    // filter jalur
+                                    if (label.startsWith('E') && raw.jalur !== "JALUR_AFIRMASI") return '';
+                                    if ((label.startsWith('F') || label.startsWith('G')) && raw.jalur !== "JALUR_PRESTASI") return '';
+
+                                    const isUmur = label.startsWith('H');
+
+                                    const nilaiFormatted = isUmur
+                                        ? nilai
+                                        : Number(nilai).toFixed(2);
+
+                                    const hasil = isUmur
+                                        ? nilai
+                                        : (nilai * bobot).toFixed(2);
+
+                                    return row(
+                                        label,
+                                        nilaiFormatted,
+                                        `x${bobot}`,
+                                        hasil
+                                    );
+                                }).join('')
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -219,7 +237,7 @@ function renderModal(raw) {
                 {{-- Total --}}
                 <div class="flex justify-between items-center mt-3 px-3 py-2.5 bg-blue-50 rounded-xl">
                     <span class="text-sm font-semibold text-blue-700">Total Skor</span>
-                    <span class="text-lg font-bold text-blue-700">${raw.skor}</span>
+                    <span class="text-lg font-bold text-blue-700">${raw.skor_total}</span>
                 </div>
             </div>
 

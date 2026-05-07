@@ -97,6 +97,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 // Phpword
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -330,7 +331,7 @@ class ExcelController extends Controller
  
     private const COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
     private const HEADERS  = ['No.', 'No. Pendaftaran', 'Nama Siswa', 'NISN', 'Jenis Kelamin', 'Tgl. Daftar', 'Skor'];
-    private const WIDTHS   = [6, 20, 32, 16, 16, 16, 12];
+    private const WIDTHS   = [6, 15, 32, 16, 16, 16, 8];
  
     // ─── Entry point ─────────────────────────────────────────────────────────
     public function dataPendaftar(): void
@@ -415,7 +416,7 @@ class ExcelController extends Controller
                 'startColor' => ['rgb' => $config['header_bg']],
             ],
             'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
                 'vertical'   => Alignment::VERTICAL_CENTER,
             ],
             'borders' => [
@@ -442,9 +443,9 @@ class ExcelController extends Controller
             $bgRgb  = $isEven ? $config['accent'] : 'FFFFFF';
  
             $sheet->setCellValue("A{$row}", $index + 1);
-            $sheet->setCellValueExplicit("B{$row}", (string) $s->SISWA_NO, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue("B{$row}", (string) str_pad($s->SISWA_ID, 4, '0', STR_PAD_LEFT), DataType::TYPE_STRING);
             $sheet->setCellValue("C{$row}", $s->SISWA_NAMA);
-            $sheet->setCellValueExplicit("D{$row}", (string) $s->SISWA_NISN, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit("D{$row}", (string) $s->SISWA_NISN, DataType::TYPE_STRING);
             $sheet->setCellValue("E{$row}", self::GENDER_MAP[$s->SISWA_JENIS_KELAMIN] ?? $s->SISWA_JENIS_KELAMIN);
             $sheet->setCellValue("F{$row}", Carbon::parse($s->SISWA_TGL_DAFTAR)->format('d M Y'));
             $sheet->setCellValue("G{$row}", $s->SISWA_SKOR);
@@ -457,10 +458,13 @@ class ExcelController extends Controller
             ]);
  
             // Alignment per kolom
-            $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("E{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("F{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("G{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("B{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("C{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("F{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("G{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
  
             $sheet->getRowDimension($row)->setRowHeight(18);
         }
@@ -471,9 +475,9 @@ class ExcelController extends Controller
         $dataEnd   = $totalRows + 4;
  
         $sheet->mergeCells("A{$totalRow}:E{$totalRow}");
+        $sheet->mergeCells("F{$totalRow}:G{$totalRow}");
         $sheet->setCellValue("A{$totalRow}", 'Total Pendaftar');
-        $sheet->setCellValue("F{$totalRow}", "=AVERAGE(G{$dataStart}:G{$dataEnd})");
-        $sheet->setCellValue("G{$totalRow}", $totalRows . ' siswa');
+        $sheet->setCellValue("F{$totalRow}", $totalRows . ' siswa');
  
         $sheet->getStyle("A{$totalRow}:G{$totalRow}")->applyFromArray([
             'font' => [
@@ -492,6 +496,7 @@ class ExcelController extends Controller
             ],
         ]);
         $sheet->getStyle("A{$totalRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle("F{$totalRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getRowDimension($totalRow)->setRowHeight(20);
  
         // ── Border luar tabel ─────────────────────────────────────────────────

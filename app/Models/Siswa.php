@@ -78,6 +78,11 @@ class Siswa extends Model
         return $this->hasOne(_reference::class, "R_ID", "SISWA_PRESTASI_KEAGAMAAN");
     }
 
+    //
+    public function pengerjaan(){
+        return $this->hasMany(Pengerjaan::class, "SISWA_ID", "SISWA_ID");
+    }
+
 
     // CUSTOM ---------------------------------------------------------------------------------------------------------
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\web\MasterController;
 use App\Http\Controllers\web\DaftarController;
 use App\Http\Controllers\web\BeritaController;
 use App\Http\Controllers\web\ExcelController;
+use App\Http\Controllers\web\ExamController;
 
 
 /*
@@ -88,6 +89,13 @@ Route::middleware("loggedin")->group(function () {
             Route::delete('/{id}',                  [BeritaController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/toggle-status',      [BeritaController::class, 'toggleStatus'])->name('toggleStatus');
         });
+    });
+
+    Route::prefix('exam')->name("exam.")->group(function () {
+        Route::get('/', [ExamController::class, 'index'])->name('index');
+        Route::post('verify-token', [ExamController::class, 'verifyToken'])->name('verify-token');
+        Route::post('save-answer', [ExamController::class, 'saveAnswer'])->name('save-answer');
+        Route::post('finish', [ExamController::class, 'finish'])->name('finish');
     });
 
 });

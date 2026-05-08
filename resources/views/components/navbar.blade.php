@@ -56,6 +56,11 @@
                         <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
                         <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
                         <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
+
+                        @if($sessionUserId == 1)
+                            <a href="{{ url('/exam?jenis=Akademik') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">Tes CBT</a>
+                        @endif
+                        
                     @endif
 
                     <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>

@@ -607,7 +607,7 @@
 
         <div class="input-group">
             <label>Token Ujian</label>
-            <input type="text" id="input-token" placeholder="Contoh: TK-2024-001" autocomplete="off" autofocus>
+            <input type="text" id="input-token" placeholder="" autocomplete="off" autofocus>
         </div>
 
         <button class="btn-primary" id="btn-verify" onclick="verifyToken()">

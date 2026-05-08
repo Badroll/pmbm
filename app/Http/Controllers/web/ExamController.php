@@ -42,6 +42,14 @@ class ExamController extends Controller
     
         // Cari pengerjaan berdasarkan token (PGRJN_ID atau kolom token custom)
         // Sesuaikan query ini dengan logika token aplikasi Anda
+
+        if ($token != "DEF456") {
+            return response()->json([
+                'success' => false,
+                'message' => 'token salah.'
+            ], 422);
+        }
+
         $pengerjaan = mPengerjaan::where('SISWA_ID', $loginUser->siswa->SISWA_ID)
             ->where('PGRJN_SELESAI', '0000-00-00 00:00:00')   // belum selesai
             ->first();
@@ -49,7 +57,7 @@ class ExamController extends Controller
         if (!$pengerjaan) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token tidak valid atau ujian sudah selesai.'
+                'message' => 'ujian sudah selesai.'
             ], 422);
         }
     

@@ -58,7 +58,7 @@
                         <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
 
                         @if($sessionUserId == 1)
-                            <a href="{{ url('/exam?jenis=Akademik') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">Tes CBT</a>
+                            <a href="{{ url('/exam?jenis=Akademik') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">Tes Akademik</a>
                         @endif
                         
                     @endif

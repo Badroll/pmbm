@@ -607,7 +607,7 @@
 
         <div class="input-group">
             <label>Token Ujian</label>
-            <input type="text" id="input-token" placeholder="" autocomplete="off" autofocus>
+            <input type="text" id="input-token" placeholder="" autocomplete="off" autofocus value="DEF456">
         </div>
 
         <button class="btn-primary" id="btn-verify" onclick="verifyToken()">
@@ -719,285 +719,558 @@
     </div>
 </div>
 
+{{-- ========================= --}}
+{{-- UPDATE BAGIAN JAVASCRIPT --}}
+{{-- ========================= --}}
+
 <script>
+
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let state = {
     pgrjn_id   : null,
     soal       : [],
-    jawaban    : {},      // { EXAM_ID: 'A'|'B'|'C'|'D' }
+    jawaban    : {},
     currentIdx : 0,
     timerInt   : null,
     sisaDetik  : 0,
-    saving     : {},      // { EXAM_ID: bool }
+    saving     : {},
 };
 
 $.ajaxSetup({
-    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
 });
 
-// ─── TOKEN VERIFY ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// VERIFY TOKEN
+// ─────────────────────────────────────────────────────────────────────────────
 function verifyToken() {
-    const token = $('#input-token').val().trim();
-    if (!token) { showTokenError('Masukkan token terlebih dahulu.'); return; }
 
-    $('#btn-verify').prop('disabled', true).text('Memeriksa...');
+    const token = $('#input-token').val().trim();
+
+    if (!token) {
+        showTokenError('Masukkan token terlebih dahulu.');
+        return;
+    }
+
+    $('#btn-verify')
+        .prop('disabled', true)
+        .text('Memeriksa...');
+
     $('#token-error').hide();
 
-    $.post('{{ route("exam.verify-token") }}', { token })
-        .done(function(res) {
-            if (res.success) {
-                initExam(res);
-            } else {
-                showTokenError(res.message || 'Token tidak valid.');
-                $('#btn-verify').prop('disabled', false).text('Mulai Ujian →');
-            }
-        })
-        .fail(function(xhr) {
-            const msg = xhr.responseJSON?.message || 'Terjadi kesalahan. Coba lagi.';
+    $.post('{{ route("exam.verify-token") }}', {
+        token
+    })
+
+    .done(function(res) {
+
+        if (res.success) {
+
+            initExam(res);
+
+        } else {
+
+            showTokenError(res.message || 'Token tidak valid.');
+
+            $('#btn-verify')
+                .prop('disabled', false)
+                .text('Mulai Ujian →');
+        }
+    })
+
+    .fail(function(xhr) {
+
+        let msg = xhr.responseJSON?.message || 'Terjadi kesalahan.';
+
+        // =====================================================
+        // SEMUA TEST SUDAH SELESAI
+        // =====================================================
+
+        if (xhr.responseJSON?.finished_all) {
+
+            alert('Semua tes telah selesai.');
+
+            window.location.href = '/';
+
+            return;
+        }
+
+        // =====================================================
+        // WAITING TEST
+        // =====================================================
+
+        if (xhr.responseJSON?.waiting) {
+
             showTokenError(msg);
-            $('#btn-verify').prop('disabled', false).text('Mulai Ujian →');
-        });
+
+        } else {
+
+            showTokenError(msg);
+        }
+
+        $('#btn-verify')
+            .prop('disabled', false)
+            .text('Mulai Ujian →');
+    });
 }
 
+// ENTER
 $('#input-token').on('keypress', function(e) {
-    if (e.which === 13) verifyToken();
+
+    if (e.which === 13) {
+        verifyToken();
+    }
 });
 
 function showTokenError(msg) {
-    $('#token-error').text(msg).show();
+
+    $('#token-error')
+        .text(msg)
+        .show();
 }
 
-// ─── INIT EXAM ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT EXAM
+// ─────────────────────────────────────────────────────────────────────────────
 function initExam(data) {
+
     state.pgrjn_id  = data.pgrjn_id;
     state.soal      = data.soal;
     state.sisaDetik = data.sisa_detik;
     state.jawaban   = {};
     state.currentIdx = 0;
 
-    // map existing jawaban
+    // MAP EXISTING JAWABAN
     if (data.jawaban) {
+
         Object.entries(data.jawaban).forEach(([examId, jwb]) => {
+
             state.jawaban[examId] = jwb;
         });
     }
 
-    // Header
-    $('#header-jenis').text('Ujian ' + data.jenis);
+    // HEADER
+    $('#header-jenis').text('Tes ' + data.jenis);
+
     $('#total-count').text(state.soal.length);
 
-    // Build nav & render
+    // BUILD UI
     buildNavGrid();
+
     renderSoal(0);
+
     updateProgress();
 
-    // Show exam screen
+    // SHOW EXAM SCREEN
     $('#screen-token').hide();
+
     $('#screen-exam').show();
 
-    // Start timer
+    // TIMER
     startTimer(state.sisaDetik);
 
     $('#loading-overlay').hide();
 }
 
-// ─── SOAL RENDER ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER SOAL
+// ─────────────────────────────────────────────────────────────────────────────
 function renderSoal(idx) {
+
     state.currentIdx = idx;
+
     const s = state.soal[idx];
+
     const total = state.soal.length;
+
     const selected = state.jawaban[s.EXAM_ID] || null;
 
     const opts = [
-        { key: 'A', text: s.EXAM_A, bobot: s.EXAM_A_BOBOT },
-        { key: 'B', text: s.EXAM_B, bobot: s.EXAM_B_BOBOT },
-        { key: 'C', text: s.EXAM_C, bobot: s.EXAM_C_BOBOT },
-        { key: 'D', text: s.EXAM_D, bobot: s.EXAM_D_BOBOT },
+        { key: 'A', text: s.EXAM_A },
+        { key: 'B', text: s.EXAM_B },
+        { key: 'C', text: s.EXAM_C },
+        { key: 'D', text: s.EXAM_D },
     ].filter(o => o.text);
 
     const optsHtml = opts.map(o => `
-        <label class="option-label ${selected === o.key ? 'selected' : ''}" data-val="${o.key}" onclick="selectOption('${s.EXAM_ID}', '${o.key}', this)">
-            <input type="radio" name="soal_${s.EXAM_ID}" value="${o.key}" ${selected === o.key ? 'checked' : ''}>
+        <label class="option-label ${selected === o.key ? 'selected' : ''}"
+               data-val="${o.key}"
+               onclick="selectOption('${s.EXAM_ID}', '${o.key}', this)">
+
+            <input type="radio"
+                   name="soal_${s.EXAM_ID}"
+                   value="${o.key}"
+                   ${selected === o.key ? 'checked' : ''}>
+
             <span class="opt-badge">${o.key}</span>
+
             <span class="opt-text">${escHtml(o.text)}</span>
         </label>
     `).join('');
 
     $('#soal-container').html(`
         <div class="soal-card" id="soal-${s.EXAM_ID}">
+
             <div class="soal-header">
-                <div class="soal-number">${s.EXAM_NO || (idx + 1)}</div>
-                <div class="soal-text">${escHtml(s.EXAM_KET)}</div>
+
+                <div class="soal-number">
+                    ${s.EXAM_NO || (idx + 1)}
+                </div>
+
+                <div class="soal-text">
+                    ${escHtml(s.EXAM_KET)}
+                </div>
+
             </div>
-            <div class="options-grid">${optsHtml}</div>
-            <div class="save-indicator" id="save-ind-${s.EXAM_ID}"></div>
+
+            <div class="options-grid">
+                ${optsHtml}
+            </div>
+
+            <div class="save-indicator"
+                 id="save-ind-${s.EXAM_ID}">
+            </div>
+
         </div>
     `);
 
-    // Counter & nav buttons
     $('#soal-counter').text(`Soal ${idx + 1} dari ${total}`);
+
     $('#btn-prev').prop('disabled', idx === 0);
+
     $('#btn-next').prop('disabled', idx === total - 1);
 
-    // Highlight active nav
     $('.nav-btn').removeClass('active');
+
     $(`.nav-btn[data-idx="${idx}"]`).addClass('active');
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SELECT OPTION
+// ─────────────────────────────────────────────────────────────────────────────
 function selectOption(examId, val, labelEl) {
-    // Update UI
-    $(`#soal-${examId} .option-label`).removeClass('selected');
-    $(labelEl).addClass('selected');
 
-    // Update state
+    $(`#soal-${examId} .option-label`)
+        .removeClass('selected');
+
+    $(labelEl)
+        .addClass('selected');
+
     state.jawaban[examId] = val;
 
-    // Update nav
     updateNavBtn(examId);
+
     updateProgress();
 
-    // Save to server
     saveAnswer(examId, val);
 }
 
-// ─── SAVE ANSWER ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SAVE ANSWER
+// ─────────────────────────────────────────────────────────────────────────────
 function saveAnswer(examId, val) {
+
     const ind = $(`#save-ind-${examId}`);
-    ind.attr('class', 'save-indicator saving').html('⟳ Menyimpan...');
+
+    ind.attr('class', 'save-indicator saving')
+       .html('⟳ Menyimpan...');
 
     $.post('{{ route("exam.save-answer") }}', {
+
         pgrjn_id : state.pgrjn_id,
         exam_id  : examId,
         jawaban  : val,
+
     })
+
     .done(function() {
-        ind.attr('class', 'save-indicator saved').html('✓ Tersimpan');
-        setTimeout(() => ind.html(''), 2000);
+
+        ind.attr('class', 'save-indicator saved')
+           .html('✓ Tersimpan');
+
+        setTimeout(() => {
+
+            ind.html('');
+
+        }, 2000);
     })
+
     .fail(function(xhr) {
-        ind.attr('class', 'save-indicator error-save').html('✗ Gagal menyimpan');
+
+        ind.attr('class', 'save-indicator error-save')
+           .html('✗ Gagal menyimpan');
+
         if (xhr.status === 403) {
-            // Waktu habis dari server
+
             clearInterval(state.timerInt);
+
             doTimeUp();
         }
     });
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
 function navigate(dir) {
+
     const next = state.currentIdx + dir;
-    if (next < 0 || next >= state.soal.length) return;
+
+    if (next < 0 || next >= state.soal.length) {
+        return;
+    }
+
     renderSoal(next);
 }
 
 function buildNavGrid() {
+
     const html = state.soal.map((s, i) => {
-        const cls = state.jawaban[s.EXAM_ID] ? 'answered' : '';
-        return `<button class="nav-btn ${cls}" data-idx="${i}" data-id="${s.EXAM_ID}" onclick="renderSoal(${i})">${s.EXAM_NO || i+1}</button>`;
+
+        const cls = state.jawaban[s.EXAM_ID]
+            ? 'answered'
+            : '';
+
+        return `
+            <button class="nav-btn ${cls}"
+                    data-idx="${i}"
+                    data-id="${s.EXAM_ID}"
+                    onclick="renderSoal(${i})">
+
+                ${s.EXAM_NO || i + 1}
+
+            </button>
+        `;
     }).join('');
+
     $('#nav-grid').html(html);
 }
 
 function updateNavBtn(examId) {
-    const soalIdx = state.soal.findIndex(s => s.EXAM_ID == examId);
+
+    const soalIdx = state.soal.findIndex(
+        s => s.EXAM_ID == examId
+    );
+
     if (soalIdx < 0) return;
+
     const btn = $(`.nav-btn[data-idx="${soalIdx}"]`);
+
     if (state.jawaban[examId]) {
+
         btn.addClass('answered');
+
     } else {
+
         btn.removeClass('answered');
     }
 
     const answered = Object.keys(state.jawaban).length;
+
     $('#answered-count').text(answered);
 }
 
 function updateProgress() {
+
     const answered = Object.keys(state.jawaban).length;
+
     const total = state.soal.length;
-    const pct = total > 0 ? (answered / total * 100).toFixed(1) : 0;
+
+    const pct = total > 0
+        ? (answered / total * 100).toFixed(1)
+        : 0;
+
     $('#progress-bar').css('width', pct + '%');
+
     $('#answered-count').text(answered);
 }
 
-// ─── TIMER ───────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────────────────────────────────────
 function startTimer(detik) {
+
     state.sisaDetik = detik;
+
     renderTimer();
+
+    clearInterval(state.timerInt);
+
     state.timerInt = setInterval(function() {
+
         state.sisaDetik--;
+
         renderTimer();
+
         if (state.sisaDetik <= 0) {
+
             clearInterval(state.timerInt);
+
             doTimeUp();
         }
+
     }, 1000);
 }
 
 function renderTimer() {
+
     const s = state.sisaDetik;
+
     const m = Math.floor(s / 60);
+
     const sec = s % 60;
-    const str = String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+
+    const str =
+        String(m).padStart(2, '0') +
+        ':' +
+        String(sec).padStart(2, '0');
+
     const el = $('#timer-display');
+
     el.text(str);
+
     el.removeClass('warning danger');
-    if (s <= 60) el.addClass('danger');
-    else if (s <= 300) el.addClass('warning');
+
+    if (s <= 60) {
+
+        el.addClass('danger');
+
+    } else if (s <= 300) {
+
+        el.addClass('warning');
+    }
 }
 
 function doTimeUp() {
-    // Waktu habis → refresh otomatis (token sudah tidak valid)
-    alert('Waktu ujian telah habis. Halaman akan disegarkan.');
-    window.location.reload();
+
+    alert('Waktu ujian telah habis.');
+
+    finishExam();
 }
 
-// ─── FINISH ───────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// FINISH
+// ─────────────────────────────────────────────────────────────────────────────
 function showFinishModal() {
+
     $('#finish-modal').css('display', 'flex');
 }
 
 function hideFinishModal() {
+
     $('#finish-modal').hide();
 }
 
 function finishExam() {
+
     hideFinishModal();
+
     $('#loading-overlay').css('display','flex');
 
-    $.post('{{ route("exam.finish") }}', { pgrjn_id: state.pgrjn_id })
-        .done(function(res) {
-            clearInterval(state.timerInt);
-            $('#loading-overlay').hide();
-            showDone(res);
-        })
-        .fail(function() {
-            $('#loading-overlay').hide();
-            alert('Gagal mengumpulkan. Coba lagi.');
-        });
+    $.post('{{ route("exam.finish") }}', {
+
+        pgrjn_id: state.pgrjn_id
+
+    })
+
+    .done(function(res) {
+
+        clearInterval(state.timerInt);
+
+        $('#loading-overlay').hide();
+
+        // =====================================================
+        // ADA TEST BERIKUTNYA
+        // =====================================================
+
+        if (res.next_test === 'Psikotest') {
+
+            alert('Tes Akademik selesai. Selanjutnya Psikotest akan dimulai.');
+
+            // RESET STATE
+            state = {
+                pgrjn_id   : null,
+                soal       : [],
+                jawaban    : {},
+                currentIdx : 0,
+                timerInt   : null,
+                sisaDetik  : 0,
+                saving     : {},
+            };
+
+            // RESET UI
+            $('#screen-exam').hide();
+
+            $('#screen-token').show();
+
+            // AUTO VERIFY ULANG
+            verifyToken();
+
+            return;
+        }
+
+        // =====================================================
+        // SEMUA TEST SELESAI
+        // =====================================================
+
+        alert('Semua tes selesai.');
+
+        window.location.href = '/';
+    })
+
+    .fail(function() {
+
+        $('#loading-overlay').hide();
+
+        alert('Gagal mengumpulkan. Coba lagi.');
+    });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DONE SCREEN
+// ─────────────────────────────────────────────────────────────────────────────
 function showDone(res) {
+
     $('#screen-exam').hide();
+
     $('#score-nilai').text(res.nilai);
+
     $('#score-benar').text(res.benar);
+
     $('#score-salah').text(res.total - res.benar);
+
     $('#score-total').text(res.total);
+
     $('#screen-done').css('display', 'flex');
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 function escHtml(str) {
+
     if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    return str
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
 }
 
-// Hide loading on ready
+// ─────────────────────────────────────────────────────────────────────────────
+// READY
+// ─────────────────────────────────────────────────────────────────────────────
 $(document).ready(function() {
+
     $('#loading-overlay').hide();
+
     $('#screen-done').hide();
 });
+
 </script>
+
 </body>
 </html>

@@ -607,7 +607,7 @@
 
         <div class="input-group">
             <label>Token Ujian</label>
-            <input type="text" id="input-token" placeholder="" autocomplete="off" autofocus value="DEF456">
+            <input type="text" id="input-token" placeholder="" autocomplete="off" autofocus value="">
         </div>
 
         <button class="btn-primary" id="btn-verify" onclick="verifyToken()">

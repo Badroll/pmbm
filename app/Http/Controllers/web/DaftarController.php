@@ -325,14 +325,14 @@ class DaftarController extends Controller
         ]);
 
         $waGrup = [
-            //"JALUR_REGULER" => "https://chat.whatsapp.com/IFw7mXauoxiBjpJQ91IiTR?mode=gi_t",
-            "JALUR_REGULER" => "https://chat.whatsapp.com/JZCi5wUZ3jlIaliL9hozLC?mode=gi_t",
+            //"JALUR_REGULER" => "https://chat.whatsapp.com/JZCi5wUZ3jlIaliL9hozLC?mode=gi_t",
+            "JALUR_REGULER" => "https://chat.whatsapp.com/Lsy2g1wDpjA3o7pf5ZuY2Q",
 
-            //"JALUR_AFIRMASI" => "https://chat.whatsapp.com/ByZRTfYRVlOAh7U2E97hrU?mode=gi_t",
-            "JALUR_AFIRMASI" => "https://chat.whatsapp.com/FnJsLeJsEHhEDdyCXBR6sh?mode=gi_t",
+            //"JALUR_AFIRMASI" => "https://chat.whatsapp.com/FnJsLeJsEHhEDdyCXBR6sh?mode=gi_t",
+            "JALUR_AFIRMASI" => "https://chat.whatsapp.com/BHoNjxXCtw6Ap8INyNZnCw",
 
-            // "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu?mode=gi_t",
-            "JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu",
+            //"JALUR_PRESTASI" => "https://chat.whatsapp.com/BgENQff1i2iAYF7EaGcxXu",
+            "JALUR_PRESTASI" => "https://chat.whatsapp.com/IALv1nnspd7IxwxMrdc3kW"
         ];
         $msg = "
             Silahkan bergabung pada Grup WhatsApp pendaftar untuk mendapatkan informasi lebih lengkap

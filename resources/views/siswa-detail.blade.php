@@ -78,9 +78,12 @@
                 {{-- Main Info --}}
                 <div class="flex-1 min-w-0">
                     <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                            {{ $siswa->SISWA_NAMA }}
-                        </h1>
+                        
+                        <a href="/daftar?userId={{ $siswa->U_ID }}"
+                        >
+                        <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight leading-tight"
+                        >{{ $siswa->SISWA_NAMA }}</h1>
+                        </a>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 mb-3">

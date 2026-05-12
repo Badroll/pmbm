@@ -33,6 +33,7 @@ class AuthController extends Controller
                 "ROLE_SUPERADMIN" => "profil",
                 "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
+                "ROLE_ADMIN_BTA" => "profil",
             ];
             return redirect($redirectRole[$role])->with("success", "Selamat datang");
         }
@@ -268,6 +269,7 @@ class AuthController extends Controller
         $roleLabels = [
             'ROLE_ADMIN_BERITA' => ['label' => 'Admin Berita',      'class' => 'bg-violet-100 text-violet-700'],
             'ROLE_ADMIN_BERKAS' => ['label' => 'Admin Verifikasi',  'class' => 'bg-sky-100 text-sky-700'],
+            'ROLE_ADMIN_BTA' => ['label' => 'Admin BTA',  'class' => 'bg-sky-100 text-indigo-700'],
             'ROLE_SISWA'        => ['label' => 'Siswa',             'class' => 'bg-blue-100 text-blue-700'],
         ];
  

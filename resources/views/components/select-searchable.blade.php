@@ -45,9 +45,11 @@
         <input type="hidden" id="{{ $id }}" name="{{ $name }}" value="" required>
 
         <button type="button"
-            @click="open = !open; $nextTick(() => { if(open) $refs.searchInput.focus() })"
-            class="w-full flex items-center justify-between px-4 py-3 bg-white border rounded-lg transition"
-            :class="open ? 'border-blue-500 ring-2 ring-blue-500' : 'border-gray-300'">
+            @click="if (!{{ $disabled ? 'true' : 'false' }}) { open = !open; $nextTick(() => { if(open) $refs.searchInput.focus() }) }"
+            class="w-full flex items-center justify-between px-4 py-3 bg-white border rounded-lg transition {{ $disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : '' }}"
+            :class="open ? 'border-blue-500 ring-2 ring-blue-500' : 'border-gray-300'"
+            {{ $disabled ? 'disabled' : '' }}>
+
             <span :class="selected ? 'text-gray-900' : 'text-gray-400'"
                   x-text="selected ? selected.label : '{{ $placeholder }}'"></span>
             <svg class="w-4 h-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"

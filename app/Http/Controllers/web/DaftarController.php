@@ -26,6 +26,34 @@ class DaftarController extends Controller
     }
 
 
+    // public function daftar(Request $request){
+    //     $loginUser = $request->loginUser;
+    //     $req = $request->all();
+
+    //     $refProvinsi = mProvinsi::all();
+    //     $refKota = mKota::all();
+    //     $refKecamatan = mKecamatan::all();
+    //     $refKelurahan = mKelurahan::all();
+
+    //     $siswa = mSiswa::getByUserId($loginUser->U_ID);
+    //     if(!in_array($loginUser->U_ROLE, ["ROLE_SISWA"])) {
+    //         $userId = $req->userId ?? null;
+    //         if($userId){
+    //             $siswa = mSiswa::getByUserId($userId);
+    //         }
+    //     }
+
+    //     $viewData = [
+    //         "refProvinsi" => $refProvinsi,
+    //         "refKota" => $refKota,
+    //         "refKecamatan" => $refKecamatan,
+    //         "refKelurahan" => $refKelurahan,
+    //         "siswa" => $siswa,
+    //     ];
+    //     //dd($viewData);
+    //     return view("daftar", $viewData);
+    // }
+
     public function daftar(Request $request){
         $loginUser = $request->loginUser;
         $req = $request->all();
@@ -36,21 +64,36 @@ class DaftarController extends Controller
         $refKelurahan = mKelurahan::all();
 
         $siswa = mSiswa::getByUserId($loginUser->U_ID);
+        
+        // Admin bisa akses data siswa tertentu via ?userId=xxx
         if(!in_array($loginUser->U_ROLE, ["ROLE_SISWA"])) {
-            $userId = $req->userId ?? null;
+            $userId = $req['userId'] ?? null;
             if($userId){
                 $siswa = mSiswa::getByUserId($userId);
             }
         }
+        //dd($siswa);
+
+        // Tentukan hak edit per section berdasarkan role
+        $role = $loginUser->U_ROLE;
+        $editPermissions = [
+            'section_pribadi'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
+            'section_sekolah'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
+            'section_jalur'     => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI']),
+            'section_dokumen'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
+        ];
 
         $viewData = [
-            "refProvinsi" => $refProvinsi,
-            "refKota" => $refKota,
-            "refKecamatan" => $refKecamatan,
-            "refKelurahan" => $refKelurahan,
-            "siswa" => $siswa,
+            "refProvinsi"     => $refProvinsi,
+            "refKota"         => $refKota,
+            "refKecamatan"    => $refKecamatan,
+            "refKelurahan"    => $refKelurahan,
+            "siswa"           => $siswa,
+            "editPermissions" => $editPermissions,
+            "loginRole"       => $role,
+            "isAdminEdit"     => $req['userId'] ?? null,
         ];
-        //dd($viewData);
+
         return view("daftar", $viewData);
     }
     
@@ -196,7 +239,9 @@ class DaftarController extends Controller
             'file_rapor_61' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        $record = mSiswa::getByUserId($loginUser->U_ID);
+        //$record = mSiswa::getByUserId($loginUser->U_ID);
+        $record = mSiswa::find($request->siswaId);
+        //dd($record);
         if(!$record){
             return compose("ERROR", "Data pendaftaran tidak ditemukan");
         }
@@ -218,35 +263,35 @@ class DaftarController extends Controller
             // UPDATE
             // ======================
             $savedRow = [
-                'SISWA_JALUR' => $request->jalur_pendaftaran,
+                'SISWA_JALUR' => $request->jalur_pendaftaran ?? $record->SISWA_JALUR,
 
-                // 'SISWA_NAMA' => $request->nama_lengkap,
-                // 'SISWA_NISN' => $request->nisn,
-                // 'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin,
-                // 'SISWA_AYAH' => $request->nama_ayah,
-                // 'SISWA_IBU' => $request->nama_ibu,
-                // 'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir,
-                // 'SISWA_TGL_LAHIR' => $request->tanggal_lahir,
-                // 'SISWA_WA' => $request->no_wa,
+                'SISWA_NAMA' => $request->nama_lengkap ?? $record->SISWA_NAMA,
+                'SISWA_NISN' => $request->nisn ?? $record->SISWA_NISN,
+                'SISWA_JENIS_KELAMIN' => $request->jenis_kelamin ?? $record->SISWA_JENIS_KELAMIN,
+                'SISWA_AYAH' => $request->nama_ayah ?? $record->SISWA_AYAH,
+                'SISWA_IBU' => $request->nama_ibu ?? $record->SISWA_IBU,
+                'SISWA_TEMPAT_LAHIR' => $request->tempat_lahir ?? $record->SISWA_TEMPAT_LAHIR,
+                'SISWA_TGL_LAHIR' => $request->tanggal_lahir ?? $record->SISWA_TGL_LAHIR,
+                'SISWA_WA' => $request->no_wa ?? $record->SISWA_WA,
 
-                // 'SISWA_ALAMAT_PROVINSI' => $request->provinsi,
-                // 'SISWA_ALAMAT_KOTA' => $request->kota,
-                // 'SISWA_ALAMAT_KECAMATAN' => $request->kecamatan,
-                // 'SISWA_ALAMAT_KELURAHAN' => $request->kelurahan,
-                // 'SISWA_ALAMAT' => $request->alamat,
+                'SISWA_ALAMAT_PROVINSI' => $request->provinsi ?? $record->SISWA_ALAMAT_PROVINSI,
+                'SISWA_ALAMAT_KOTA' => $request->kota ?? $record->SISWA_ALAMAT_KOTA,
+                'SISWA_ALAMAT_KECAMATAN' => $request->kecamatan ?? $record->SISWA_ALAMAT_KECAMATAN,
+                'SISWA_ALAMAT_KELURAHAN' => $request->kelurahan ?? $record->SISWA_ALAMAT_KELURAHAN,
+                'SISWA_ALAMAT' => $request->alamat ?? $record->SISWA_ALAMAT,
 
-                // 'SISWA_SEKOLAH' => $request->asal_sekolah,
-                // 'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus,
+                'SISWA_SEKOLAH' => $request->asal_sekolah ?? $record->SISWA_SEKOLAH,
+                'SISWA_SEKOLAH_TAHUN_LULUS' => $request->tahun_lulus ?? $record->SISWA_SEKOLAH_TAHUN_LULUS,
 
-                // 'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk,
-                // 'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa,
-                // 'SISWA_NILAI_52_BIND' => $request->nilai_52_bind,
-                // 'SISWA_NILAI_52_PAI' => $request->nilai_52_pai,
+                'SISWA_NILAI_52_MTK' => $request->nilai_52_mtk ?? $record->SISWA_NILAI_52_MTK,
+                'SISWA_NILAI_52_IPA' => $request->nilai_52_ipa ?? $record->SISWA_NILAI_52_IPA,
+                'SISWA_NILAI_52_BIND' => $request->nilai_52_bind ?? $record->SISWA_NILAI_52_BIND,
+                'SISWA_NILAI_52_PAI' => $request->nilai_52_pai ?? $record->SISWA_NILAI_52_PAI,
 
-                // 'SISWA_NILAI_61_MTK' => $request->nilai_61_mtk,
-                // 'SISWA_NILAI_61_IPA' => $request->nilai_61_ipa,
-                // 'SISWA_NILAI_61_BIND' => $request->nilai_61_bind,
-                // 'SISWA_NILAI_61_PAI' => $request->nilai_61_pai,
+                'SISWA_NILAI_61_MTK' => $request->nilai_61_mtk ?? $record->SISWA_NILAI_61_MTK,
+                'SISWA_NILAI_61_IPA' => $request->nilai_61_ipa ?? $record->SISWA_NILAI_61_IPA,
+                'SISWA_NILAI_61_BIND' => $request->nilai_61_bind ?? $record->SISWA_NILAI_61_BIND,
+                'SISWA_NILAI_61_PAI' => $request->nilai_61_pai ?? $record->SISWA_NILAI_61_PAI,
 
                 'SISWA_FILE_FOTO' => $fileFotoPath,
                 'SISWA_FILE_NISN' => $fileNisnPath,
@@ -271,20 +316,28 @@ class DaftarController extends Controller
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = $request->pelaksanaan_kejuaraan ?? "";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = $request->hafalan_quran ?? "";
             }
+            //dd($savedRow);
 
             $record->update($savedRow);
             $record->hitungSkor();
 
             DB::commit();
 
-            $this->sendInbox($record, $request->jalur_pendaftaran, "Pembaruan data pendaftaran");
+            if($loginUser->U_ROLE == "SISWA"){
+                $this->sendInbox($record, $request->jalur_pendaftaran, "Pembaruan data pendaftaran");
+            }
 
             return compose("SUCCESS", "Data pendaftaran berhasil diperbarui");
 
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return compose("ERROR", "Terjadi kesalahan internal", $e->getMessage());
+        } catch (\Exception $e) {
+            return compose("ERROR", "Terjadi kesalahan internal", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
         }
+        
     }
 
 
@@ -351,7 +404,7 @@ class DaftarController extends Controller
     {
         $loginUser = $request->loginUser;
 
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
@@ -387,7 +440,7 @@ class DaftarController extends Controller
         $loginUser = $request->loginUser;
         $req = $request->all();
 
-        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])){
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA"])){
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
@@ -399,6 +452,26 @@ class DaftarController extends Controller
         ];
         //dd($viewData);
         return view("siswa-detail", $viewData);
+    }
+
+
+    public function updateBTA(Request $request){
+        $loginUser = $request->loginUser;
+        $req = $request->all();
+
+        // if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])){
+        //     return compose("ERROR", "Anda tidak berhak mengakses");
+        // }
+
+        $siswa = mSiswa::find($req["siswaId"]);
+        $siswa->SISWA_TES_QURAN = $req["nilai"];
+        $siswa->save();
+        $siswa->hitungSkor();
+
+        return response()->json([
+            'success'   => true,
+        ]);
+
     }
 
 

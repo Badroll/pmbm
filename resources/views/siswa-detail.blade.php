@@ -293,11 +293,21 @@
                     </div>
 
                     <!-- Tes Quran -->
-                    <div class="relative overflow-hidden rounded-2xl p-5 text-center" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
-                        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #059669;"></div>
-                        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">Tes baca Al-Qur'an</p>
-                        <p class="text-4xl font-black text-emerald-700 leading-none">{{ number_format($siswa->SISWA_TES_QURAN, 1) }}</p>
-                    </div>
+                    <div 
+        onclick="editNilaiQuran({{ $siswa->SISWA_ID }}, '{{ $siswa->SISWA_TES_QURAN }}')"
+        class="relative overflow-hidden rounded-2xl p-5 text-center cursor-pointer transition hover:scale-[1.02] active:scale-[0.98]"
+        style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);"
+    >
+        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #059669;"></div>
+
+        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">
+            Tes baca Al-Qur'an
+        </p>
+
+        <p class="text-4xl font-black text-emerald-700 leading-none">
+            {{ number_format($siswa->SISWA_TES_QURAN, 1) }}
+        </p>
+    </div>
 
                 </div>
             </div>
@@ -510,6 +520,81 @@
 </div>
 
 @push('scripts')
-<script></script>
+<script>
+async function editNilaiQuran(siswaId, currentValue)
+{
+    const { value: nilai } = await Swal.fire({
+        title: 'Edit Nilai Tes Baca Al-Qur\'an',
+        input: 'number',
+        inputValue: currentValue,
+        inputAttributes: {
+            step: '0.1',
+            min: '0',
+            max: '100'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        cancelButtonText: 'Batal',
+        inputValidator: (value) => {
+            if (value === '' || value === null) {
+                return 'Nilai wajib diisi';
+            }
+        }
+    });
+
+    if (nilai) {
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch("/admin/bta/update", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                siswaId: siswaId,
+                nilai: nilai
+            })
+        })
+        .then(async response => {
+
+            const res = await response.json();
+
+            if (!response.ok) {
+                throw new Error(res.message || 'Gagal update nilai');
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Nilai berhasil diperbarui',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+
+        })
+        .catch(err => {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: err.message
+            });
+
+        });
+
+    }
+}
+</script>
 @endpush
 @endsection

@@ -74,7 +74,7 @@ Route::middleware("loggedin")->group(function () {
     Route::prefix('admin')->name("admin.")->group(function () {
         Route::prefix("manage")->name("manage.")->group(function () {
             Route::get('/',                        [AuthController::class, 'admin'])->name('admin');
-            Route::get('datatable',                        [AuthController::class, 'datatable'])->name('datatable');
+            Route::get('datatable',                [AuthController::class, 'datatable'])->name('datatable');
             Route::post('/',                       [AuthController::class, 'createAdmin'])->name('create');
             Route::post('{id}',                    [AuthController::class, 'updateAdmin'])->name('update');
             Route::delete('{id}',                  [AuthController::class, 'deleteAdmin'])->name('deleteAdmin');
@@ -88,6 +88,9 @@ Route::middleware("loggedin")->group(function () {
             Route::post('/{id}',                    [BeritaController::class, 'update'])->name('update');
             Route::delete('/{id}',                  [BeritaController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/toggle-status',      [BeritaController::class, 'toggleStatus'])->name('toggleStatus');
+        });
+        Route::prefix("bta")->name("bta.")->group(function () {
+            Route::post('update',                   [DaftarController::class, 'updateBTA'])->name('updateBTA');
         });
     });
 

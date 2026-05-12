@@ -4,6 +4,7 @@
     $sessionUserRole = Session::get("SESSION_U_ROLE");
     $isSuperadmin = $sessionUserRole == "ROLE_SUPERADMIN";
     $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
+    $isAdminBTA = $sessionUserRole == "ROLE_ADMIN_BTA";
     $isAdminBerita = $sessionUserRole == "ROLE_ADMIN_BERITA";
     $isSiswa = $sessionUserRole == "ROLE_SISWA";
 
@@ -48,7 +49,7 @@
                         <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/berita*') }}">Berita & Pengumuman</a>
                     @endif
 
-                    @if($isSuperadmin || $isAdminBerkas)
+                    @if($isSuperadmin || $isAdminBerkas || $isAdminBTA)
                         <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftar</a>
                     @endif
 
@@ -96,7 +97,7 @@
                     <a href="{{ url('/admin/berita') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/berita*') }}">Berita & Pengumuman</a>
                 @endif
 
-                @if($isSuperadmin || $isAdminBerkas)
+                @if($isSuperadmin || $isAdminBerkas || $isAdminBTA)
                     <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftar</a>
                 @endif
 

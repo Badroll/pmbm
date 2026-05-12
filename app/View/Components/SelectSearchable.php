@@ -12,6 +12,7 @@ class SelectSearchable extends Component
     public $options;
     public $placeholder;
     public $searchPlaceholder;
+    public $disabled;
 
     public function __construct(
         $label,
@@ -19,7 +20,8 @@ class SelectSearchable extends Component
         $id,
         $options,
         $placeholder = '-- Pilih --',
-        $searchPlaceholder = 'Cari...'
+        $searchPlaceholder = 'Cari...',
+        $disabled
     ) {
         $this->label = $label;
         $this->name = $name;
@@ -27,6 +29,7 @@ class SelectSearchable extends Component
         $this->options = $options;
         $this->placeholder = $placeholder;
         $this->searchPlaceholder = $searchPlaceholder;
+        $this->disabled = $disabled;
     }
 
     public function render()

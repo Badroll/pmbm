@@ -12,10 +12,41 @@ use App\Models\_setting as _setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use Carbon\Carbon;
+
 class ExamController extends Controller
 {
+
+    public function monitor(Request $request)
+    {
+        $req = $request->all();
+        $loginUser = $request->loginUser;
+
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_CBT"])) {
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+
+        $rData = [
+            "token" => _setting::find("CBT_TOKEN")->S_VALUE
+        ];
+
+        return view('exam.monitor', $rData);
+    }
+
+    public function refreshToken(Request $request)
+    {
+        $req = $request->all();
+
+        $newToken = strtoupper(Str::random(6));
+        _setting::find("CBT_TOKEN")->update([
+            "S_VALUE" => $newToken,
+        ]);
+
+        return compose("SUCCESS", "new token", $newToken);
+    }
+
 
     public function index(Request $request)
     {

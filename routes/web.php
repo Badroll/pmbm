@@ -99,6 +99,9 @@ Route::middleware("loggedin")->group(function () {
         Route::post('verify-token', [ExamController::class, 'verifyToken'])->name('verify-token');
         Route::post('save-answer', [ExamController::class, 'saveAnswer'])->name('save-answer');
         Route::post('finish', [ExamController::class, 'finish'])->name('finish');
+        
+        Route::get('monitor', [ExamController::class, 'monitor'])->name('monitor');
+        Route::post('refresh-token', [ExamController::class, 'refreshToken'])->name('refreshToken');
     });
 
 });

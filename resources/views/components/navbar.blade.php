@@ -6,6 +6,7 @@
     $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
     $isAdminBTA = $sessionUserRole == "ROLE_ADMIN_BTA";
     $isAdminBerita = $sessionUserRole == "ROLE_ADMIN_BERITA";
+    $isAdminCBT = $sessionUserRole == "ROLE_ADMIN_CBT";
     $isSiswa = $sessionUserRole == "ROLE_SISWA";
 
     function isActiveDesktop($path){
@@ -50,7 +51,7 @@
                     @endif
 
                     @if($isSuperadmin || $isAdminBerkas || $isAdminBTA)
-                        <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa') }}">Data Pendaftar</a>
+                        <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('siswa*') }}">Data Pendaftar</a>
                     @endif
 
                     @if($isSiswa)
@@ -62,6 +63,10 @@
                             <a href="{{ url('/exam') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">CBT</a>
                         @endif
                         
+                    @endif
+                    
+                    @if($isSuperadmin || $isAdminCBT)
+                        <a href="{{ url('/exam/monitor') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam/monitor') }}">Monitor CBT</a>
                     @endif
 
                     <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('profil') }}">Profil</a>
@@ -98,13 +103,17 @@
                 @endif
 
                 @if($isSuperadmin || $isAdminBerkas || $isAdminBTA)
-                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa') }}">Data Pendaftar</a>
+                    <a href="{{ url('/siswa') }}" class="{{ $navMenuClass }} {{ isActiveMobile('siswa*') }}">Data Pendaftar</a>
                 @endif
 
                 @if($isSiswa)
                     <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
                     <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
+                @endif
+
+                @if($isSuperadmin || $isAdminCBT)
+                    <a href="{{ url('/exam/monitor') }}" class="{{ $navMenuClass }} {{ isActiveMobile('exam/monitor') }}">Monitor CBT</a>
                 @endif
 
                 <a href="{{ url('/profil') }}" class="{{ $navMenuClass }} {{ isActiveMobile('profil') }}">Profil</a>

@@ -36,6 +36,7 @@
             <option value="ROLE_ADMIN_BERITA">Admin Berita</option>
             <option value="ROLE_ADMIN_BERKAS">Admin Verifikasi</option>
             <option value="ROLE_ADMIN_BTA">Admin BTA</option>
+            <option value="ROLE_ADMIN_CBT">Admin CBT</option>
             <option value="ROLE_SISWA">Siswa</option>
         </select>
 
@@ -103,6 +104,7 @@
                         <option value="ROLE_ADMIN_BERITA">Admin Berita</option>
                         <option value="ROLE_ADMIN_BERKAS">Admin Verifikasi</option>
                         <option value="ROLE_ADMIN_BTA">Admin BTA</option>
+                        <option value="ROLE_ADMIN_CBT">Admin CBT</option>
                     </select>
                 </div>
 

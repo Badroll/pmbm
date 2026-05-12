@@ -381,6 +381,7 @@
             color: var(--text-dark);
             padding-top: 8px;
             flex: 1;
+            white-space: pre-line;
         }
 
         /* Option Buttons */
@@ -919,9 +920,7 @@ function renderSoal(idx) {
                     ${s.EXAM_NO || (idx + 1)}
                 </div>
 
-                <div class="soal-text">
-                    ${escHtml(s.EXAM_KET)}
-                </div>
+                <div class="soal-text">${(s.EXAM_KET).trim()}</div>
 
             </div>
 

@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
-
 class ExamController extends Controller
 {
 
@@ -52,24 +51,6 @@ class ExamController extends Controller
         }
 
         // =========================================================
-        // WINDOW WAKTU
-        // =========================================================
-
-        $tesAmulai   = _setting::find("CBT_A_WAKTU_MULAI")->S_VALUE;
-        $tesASelesai = _setting::find("CBT_A_WAKTU_SELESAI")->S_VALUE;
-
-        $tesBmulai   = _setting::find("CBT_B_WAKTU_MULAI")->S_VALUE;
-        $tesBSelesai = _setting::find("CBT_B_WAKTU_SELESAI")->S_VALUE;
-
-        $tesAmulai   = Carbon::parse($tesAmulai);
-        $tesASelesai = Carbon::parse($tesASelesai);
-
-        $tesBmulai   = Carbon::parse($tesBmulai);
-        $tesBSelesai = Carbon::parse($tesBSelesai);
-
-        $now = Carbon::now();
-
-        // =========================================================
         // AMBIL DATA PENGERJAAN
         // =========================================================
 
@@ -77,51 +58,54 @@ class ExamController extends Controller
             ->where('PGRJN_JENIS', 'Akademik')
             ->first();
 
+        if(!$pengerjaanAkademik){
+            $pengerjaanAkademik = mPengerjaan::create([
+               "SISWA_ID" => $loginUser->siswa->SISWA_ID,
+               "PGRJN_JENIS" => "Akademik"
+            ]);
+        }
+
         $pengerjaanPsikotest = mPengerjaan::where('SISWA_ID', $loginUser->siswa->SISWA_ID)
             ->where('PGRJN_JENIS', 'Psikotest')
             ->first();
 
+        if(!$pengerjaanPsikotest){
+            $pengerjaanPsikotest = mPengerjaan::create([
+               "SISWA_ID" => $loginUser->siswa->SISWA_ID,
+               "PGRJN_JENIS" => "Psikotest"
+            ]);
+        }
+
         $pengerjaan = null;
 
         // =========================================================
-        // LOGIC PEMILIHAN TEST
+        // PRIORITAS TEST
         // =========================================================
 
         /*
-        PRIORITAS:
+        RULE:
 
-        1. Jika waktu Akademik BELUM lewat:
-        → paksa Akademik
+        1. Jika Akademik belum selesai:
+           → paksa Akademik
 
-        2. Jika waktu Akademik SUDAH lewat:
-        → paksa Psikotest
+        2. Jika Akademik selesai:
+           → lanjut Psikotest
         */
 
-        if ($now->lte($tesASelesai)) {
-
-            // =========================
-            // AKADEMIK
-            // =========================
+        if (
+            $pengerjaanAkademik &&
+            $pengerjaanAkademik->PGRJN_SELESAI == '0000-00-00 00:00:00'
+        ) {
 
             $pengerjaan = $pengerjaanAkademik;
 
-            $windowMulai   = $tesAmulai;
-            $windowSelesai = $tesASelesai;
-
         } else {
 
-            // =========================
-            // PSIKOTEST
-            // =========================
-
             $pengerjaan = $pengerjaanPsikotest;
-
-            $windowMulai   = $tesBmulai;
-            $windowSelesai = $tesBSelesai;
         }
 
         // =========================================================
-        // JIKA TIDAK ADA PENGERJAAN
+        // VALIDASI PENGERJAAN
         // =========================================================
 
         if (!$pengerjaan) {
@@ -133,7 +117,7 @@ class ExamController extends Controller
         }
 
         // =========================================================
-        // JIKA SUDAH SELESAI
+        // VALIDASI SUDAH SELESAI
         // =========================================================
 
         if ($pengerjaan->PGRJN_SELESAI != '0000-00-00 00:00:00') {
@@ -146,28 +130,18 @@ class ExamController extends Controller
         }
 
         // =========================================================
-        // VALIDASI BELUM MULAI
+        // DURASI TEST
         // =========================================================
 
-        if ($now->lt($windowMulai)) {
+        $durasiMenit = 0;
 
-            return response()->json([
-                'success' => false,
-                'waiting' => true,
-                'message' => 'Tes '.$pengerjaan->PGRJN_JENIS.' belum dimulai.'
-            ], 422);
-        }
+        if ($pengerjaan->PGRJN_JENIS == 'Akademik') {
 
-        // =========================================================
-        // VALIDASI SUDAH LEWAT
-        // =========================================================
+            $durasiMenit = 60;
 
-        if ($now->gt($windowSelesai)) {
+        } else {
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Waktu tes '.$pengerjaan->PGRJN_JENIS.' telah selesai.'
-            ], 422);
+            $durasiMenit = 30;
         }
 
         // =========================================================
@@ -182,12 +156,38 @@ class ExamController extends Controller
         }
 
         // =========================================================
-        // HITUNG SISA WAKTU
+        // HITUNG DEADLINE
+        // =========================================================
+
+        $mulai = Carbon::parse($pengerjaan->PGRJN_MULAI);
+
+        $deadline = $mulai->copy()->addMinutes($durasiMenit);
+
+        $now = Carbon::now();
+
+        // =========================================================
+        // VALIDASI WAKTU HABIS
+        // =========================================================
+
+        if ($now->greaterThan($deadline)) {
+
+            // auto finish
+            $pengerjaan->PGRJN_SELESAI = $deadline;
+            $pengerjaan->save();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Waktu tes telah habis.'
+            ], 422);
+        }
+
+        // =========================================================
+        // HITUNG SISA DETIK
         // =========================================================
 
         $sisaDetik = max(
             0,
-            $now->diffInSeconds($windowSelesai, false)
+            $now->diffInSeconds($deadline, false)
         );
 
         // =========================================================
@@ -236,28 +236,50 @@ class ExamController extends Controller
             ->first();
 
         if (!$pengerjaan) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Sesi tidak valid.'
             ], 403);
         }
 
-        $durasiMenit = 90;
+        // =========================================================
+        // DURASI TEST
+        // =========================================================
+
+        $durasiMenit = 0;
+
+        if ($pengerjaan->PGRJN_JENIS == 'Akademik') {
+
+            $durasiMenit = 60;
+
+        } else {
+
+            $durasiMenit = 30;
+        }
+
+        // =========================================================
+        // VALIDASI WAKTU
+        // =========================================================
 
         $mulai = Carbon::parse($pengerjaan->PGRJN_MULAI);
 
-        if (
-            Carbon::now()->greaterThan(
-                $mulai->copy()->addMinutes($durasiMenit)
-            )
-        ) {
+        $deadline = $mulai->copy()->addMinutes($durasiMenit);
+
+        if (Carbon::now()->greaterThan($deadline)) {
+
+            // auto finish
+            $pengerjaan->PGRJN_SELESAI = $deadline;
+            $pengerjaan->save();
 
             return response()->json([
                 'success' => false,
                 'message' => 'Waktu habis.'
             ], 403);
         }
+
+        // =========================================================
+        // SIMPAN JAWABAN
+        // =========================================================
 
         mPengerjaanJawaban::updateOrCreate(
             [
@@ -293,28 +315,18 @@ class ExamController extends Controller
         // =========================================================
 
         $jawaban = mPengerjaanJawaban::where('PGRJN_ID', $pengerjaan->PGRJN_ID)
-            ->with('examSoal')
+            ->with('exam')
             ->get();
 
         $totalSoal = mExam::where('EXAM_JENIS', $pengerjaan->PGRJN_JENIS)
             ->count();
 
-        $benar = 0;
-
+        $nilai = 0;
         foreach ($jawaban as $j) {
-
-            if (
-                $j->examSoal &&
-                strtoupper($j->JWB_KET) === strtoupper($j->examSoal->EXAM_KUNCI)
-            ) {
-
-                $benar++;
-            }
+            $exam = $j->exam;
+            $field = "EXAM_" . strtoupper($j->JWB_KET) . "_BOBOT";
+            $nilai += (float) ($exam->$field ?? 0);
         }
-
-        $nilai = $totalSoal > 0
-            ? round(($benar / $totalSoal) * 100, 2)
-            : 0;
 
         // =========================================================
         // UPDATE PENGERJAAN
@@ -322,11 +334,13 @@ class ExamController extends Controller
 
         $pengerjaan->PGRJN_SELESAI = Carbon::now();
         $pengerjaan->PGRJN_NILAI   = $nilai;
-
         $pengerjaan->save();
+        
+        $pengerjaan->siswa->{"SISWA_TES_CBT_".strtoupper($pengerjaan->PGRJN_JENIS)} = $nilai;
+        $pengerjaan->siswa->save();
 
         // =========================================================
-        // CEK NEXT TEST
+        // NEXT TEST
         // =========================================================
 
         $nextTest = null;
@@ -353,7 +367,7 @@ class ExamController extends Controller
         return response()->json([
             'success'   => true,
             'nilai'     => $nilai,
-            'benar'     => $benar,
+            'benar'     => "",
             'total'     => $totalSoal,
             'next_test' => $nextTest,
         ]);

@@ -23,7 +23,7 @@ class PengerjaanJawaban extends Model
         return $this->belongsTo(Pengerjaan::class, "PGRJN_ID", "PGRJN_ID");
     }
 
-    public function examSoal(){
+    public function exam(){
         return $this->belongsTo(Exam::class, "EXAM_ID", "EXAM_ID");
     }
 

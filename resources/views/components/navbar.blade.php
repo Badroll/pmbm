@@ -59,7 +59,7 @@
                         <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
                         <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
 
-                        @if($sessionUserId == 1)
+                        @if(in_array($sessionUserId, [1, 19, 20]))
                             <a href="{{ url('/exam') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">CBT</a>
                         @endif
                         

@@ -364,11 +364,8 @@ class ExamController extends Controller
         // =========================================================
 
         $pengerjaan->PGRJN_SELESAI = Carbon::now();
-        $pengerjaan->PGRJN_NILAI   = $nilai;
+        $pengerjaan->PGRJN_NILAI = $nilai;
         $pengerjaan->save();
-        
-        $pengerjaan->siswa->{"SISWA_TES_CBT_".strtoupper($pengerjaan->PGRJN_JENIS)} = $nilai;
-        $pengerjaan->siswa->save();
 
         // =========================================================
         // NEXT TEST
@@ -377,19 +374,23 @@ class ExamController extends Controller
         $nextTest = null;
 
         if ($pengerjaan->PGRJN_JENIS == 'Akademik') {
-
             $next = mPengerjaan::where('SISWA_ID', $pengerjaan->SISWA_ID)
                 ->where('PGRJN_JENIS', 'Psikotest')
                 ->first();
-
             if (
                 $next &&
                 $next->PGRJN_SELESAI == '0000-00-00 00:00:00'
             ) {
-
                 $nextTest = 'Psikotest';
             }
+
+            $pengerjaan->siswa->SISWA_TES_CBT_AKADEMIK = $nilai;
         }
+        else{
+            $pengerjaan->siswa->SISWA_TES_CBT_PSIKO = $nilai;
+        }
+
+        $pengerjaan->siswa->save();
 
         // =========================================================
         // RETURN

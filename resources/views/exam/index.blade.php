@@ -895,15 +895,31 @@ function renderSoal(idx) {
         { key: 'D', text: s.EXAM_D },
     ].filter(o => o.text);
 
+    // const optsHtml = opts.map(o => `
+    //     <label class="option-label ${selected === o.key ? 'selected' : ''}"
+    //            data-val="${o.key}"
+    //            onclick="selectOption('${s.EXAM_ID}', '${o.key}', this)">
+
+    //         <input type="radio"
+    //                name="soal_${s.EXAM_ID}"
+    //                value="${o.key}"
+    //                ${selected === o.key ? 'checked' : ''}>
+
+    //         <span class="opt-badge">${o.key}</span>
+
+    //         <span class="opt-text">${escHtml(o.text)}</span>
+    //     </label>
+    // `).join('');
+
     const optsHtml = opts.map(o => `
         <label class="option-label ${selected === o.key ? 'selected' : ''}"
-               data-val="${o.key}"
-               onclick="selectOption('${s.EXAM_ID}', '${o.key}', this)">
+            data-val="${o.key}">
 
             <input type="radio"
-                   name="soal_${s.EXAM_ID}"
-                   value="${o.key}"
-                   ${selected === o.key ? 'checked' : ''}>
+                name="soal_${s.EXAM_ID}"
+                value="${o.key}"
+                ${selected === o.key ? 'checked' : ''}
+                onchange="selectOption('${s.EXAM_ID}', '${o.key}', this)">
 
             <span class="opt-badge">${o.key}</span>
 
@@ -949,12 +965,30 @@ function renderSoal(idx) {
 // ─────────────────────────────────────────────────────────────────────────────
 // SELECT OPTION
 // ─────────────────────────────────────────────────────────────────────────────
-function selectOption(examId, val, labelEl) {
+// function selectOption(examId, val, labelEl) {
+
+//     $(`#soal-${examId} .option-label`)
+//         .removeClass('selected');
+
+//     $(labelEl)
+//         .addClass('selected');
+
+//     state.jawaban[examId] = val;
+
+//     updateNavBtn(examId);
+
+//     updateProgress();
+
+//     saveAnswer(examId, val);
+// }
+
+function selectOption(examId, val, inputEl) {
 
     $(`#soal-${examId} .option-label`)
         .removeClass('selected');
 
-    $(labelEl)
+    $(inputEl)
+        .closest('.option-label')
         .addClass('selected');
 
     state.jawaban[examId] = val;

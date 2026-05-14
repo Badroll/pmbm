@@ -15,7 +15,7 @@
 
     <div class="min-h-screen flex items-center justify-center bg-gray-50">
         <div class="text-center">
-            <p class="text-gray-500 text-base">Pendaftaran dibuka pada <span class="font-semibold text-gray-700">30 Maret {{ date('Y') }}</span></p>
+            <p class="text-gray-500 text-base">Pendaftaran dibuka pada <span class="font-semibold text-gray-700">30 Maret s.d 13 Mei {{ date('Y') }}</span></p>
         </div>
     </div>
 

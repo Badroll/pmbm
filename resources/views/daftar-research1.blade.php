@@ -91,7 +91,7 @@
                             </p>
                         @else
                             <p class="mt-1 text-sm {{ $textClass }} opacity-80">
-                                
+                                Anda masih dapat mengubah jalur pendaftaran hingga menjelang penutupan pendaftaran.
                             </p>
                         @endif
                     </div>
@@ -118,357 +118,10 @@
                 @endif
                 
                 <!-- Section 1: Data Pribadi -->
-                <div class="p-8 border-b border-gray-200">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">1</div>
-                        <h2 class="text-2xl font-bold text-gray-800">Data Pribadi</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Nama Lengkap -->
-                        <div class="md:col-span-2">
-                            <label for="nama_lengkap" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nama Lengkap <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                id="nama_lengkap" 
-                                name="nama_lengkap" 
-                                value="{{ old('nama_lengkap', $isEdit ? $siswa->SISWA_NAMA : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Nama lengkap sesuai ijazah"
-                                {{ $dis('section_pribadi') }}
-                                required
-                                >
-                            @error('nama_lengkap')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- NISN -->
-                        <div>
-                            <label for="nisn" class="block text-sm font-semibold text-gray-700 mb-2">
-                                NISN <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                id="nisn" 
-                                name="nisn" 
-                                value="{{ old('nisn', $isEdit ? $siswa->SISWA_NISN : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="NISN"
-                                maxlength="10"
-                                pattern="[0-9]{10}"
-                                {{ $dis('section_pribadi') }}
-                                required>
-                            @error('nisn')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Jenis Kelamin -->
-                        <div>
-                            <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Jenis Kelamin <span class="text-red-500">*</span>
-                            </label>
-                            <select id="jenis_kelamin" 
-                                    name="jenis_kelamin" 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    {{ $dis('section_pribadi') }}
-                                    required>
-                                <option value="">-- Pilih Jenis Kelamin --</option>
-                                <option value="JENIS_KELAMIN_L" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_L' ? 'selected' : '' }}>Laki-laki</option>
-                                <option value="JENIS_KELAMIN_P" {{ old('jenis_kelamin', $isEdit ? $siswa->SISWA_JENIS_KELAMIN : '') == 'JENIS_KELAMIN_P' ? 'selected' : '' }}>Perempuan</option>
-                            </select>
-                            @error('jenis_kelamin')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <!-- Nama Ayah -->
-                        <div>
-                            <label for="nama_ayah" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nama Ayah <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                id="nama_ayah" 
-                                name="nama_ayah" 
-                                value="{{ old('nama_ayah', $isEdit ? $siswa->SISWA_AYAH : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Nama Ayah"
-                                {{ $dis('section_pribadi') }}
-                                required>
-                            @error('nama_ayah')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <!-- Nama Ibu -->
-                        <div>
-                            <label for="nama_ibu" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nama Ibu <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                id="nama_ibu" 
-                                name="nama_ibu" 
-                                value="{{ old('nama_ibu', $isEdit ? $siswa->SISWA_IBU : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Nama Rumisih"
-                                {{ $dis('section_pribadi') }}
-                                required>
-                            @error('nama_ibu')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <x-select-searchable
-                            label="Tempat Kelahiran"
-                            name="tempat_lahir"
-                            id="tempat_lahir"
-                            :options="$refKota->map(function ($o) {
-                                return [
-                                    'value' => $o->KOTA_ID,
-                                    'label' => $o->KOTA_JENIS . ' ' . $o->KOTA_NAMA,
-                                ];
-                            })->values()"
-                            placeholder="-- Pilih Kota --"
-                            :disabled="!($perm['section_pribadi'] ?? true) || $isLocked"
-                        />
-
-                        <!-- Tanggal Lahir -->
-                        <div>
-                            <label for="tanggal_lahir" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Tanggal Lahir <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" 
-                                id="tanggal_lahir" 
-                                name="tanggal_lahir" 
-                                value="{{ old('tanggal_lahir', $isEdit ? $siswa->SISWA_TGL_LAHIR : '') }}"
-                                min="2011-07-10"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                {{ $dis('section_pribadi')  }}
-                                required>
-                            @error('tanggal_lahir')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- No HP -->
-                        <div>
-                            <label for="no_wa" class="block text-sm font-semibold text-gray-700 mb-2">
-                                No. WhatsApp aktif <span class="text-red-500">*</span>
-                            </label>
-                            <input type="tel" 
-                                id="no_wa" 
-                                name="no_wa" 
-                                value="{{ old('no_wa', $isEdit ? $siswa->SISWA_WA : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="08xxxxxxxxxx"
-                                pattern="[0-9]{10,13}"
-                                {{ $dis('section_pribadi') }}
-                                required>
-                            @error('no_wa')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="md:col-span-2 mt-4">
-                            <div class="flex items-center">
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                                <span class="px-3 text-sm font-semibold text-gray-600">Alamat</span>
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                            </div>
-                        </div>
-
-                        <x-select-searchable
-                            label="Provinsi"
-                            name="provinsi"
-                            id="provinsi"
-                            :options="$refProvinsi->map(function ($o) {
-                                return [
-                                    'value' => $o->PROV_ID,
-                                    'label' => $o->PROV_NAMA,
-                                ];
-                            })->values()"
-                            placeholder="-- Pilih Provinsi --"
-                            :disabled="!($perm['section_pribadi'] ?? true) || $isLocked"
-                        />
-
-                        <x-select-searchable
-                            label="Kota/Kabupaten"
-                            name="kota"
-                            id="kota"
-                            :options="collect()"
-                            placeholder="-- Pilih Kota/Kabupaten --"
-                            :disabled="!($perm['section_pribadi'] ?? true) || $isLocked"
-                        />
-
-                        <x-select-searchable
-                            label="Kecamatan"
-                            name="kecamatan"
-                            id="kecamatan"
-                            :options="collect()"
-                            placeholder="-- Pilih Kecamatan --"
-                            :disabled="!($perm['section_pribadi'] ?? true) || $isLocked"
-                        />
-
-                        <x-select-searchable
-                            label="Kelurahan"
-                            name="kelurahan"
-                            id="kelurahan"
-                            :options="collect()"
-                            placeholder="-- Pilih Kelurahan/Desa --"
-                            :disabled="!($perm['section_pribadi'] ?? true) || $isLocked"
-                        />
-
-                        <!-- Alamat -->
-                        <div class="md:col-span-2">
-                            <label for="alamat" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Alamat Lengkap <span class="text-red-500">*</span>
-                            </label>
-                            <textarea id="alamat" 
-                                    name="alamat" 
-                                    rows="3"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    placeholder="Alamat lengkap"
-                                    {{ $dis('section_pribadi') }}
-                                    required>{{ old('alamat', $isEdit ? $siswa->SISWA_ALAMAT : '') }}</textarea>
-                            @error('alamat')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
+                <!-- .... -->
 
                 <!-- Section 2: Data Sekolah Asal -->
-                <div class="p-8 border-b border-gray-200">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">2</div>
-                        <h2 class="text-2xl font-bold text-gray-800">Asal Sekolah</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Nama Sekolah -->
-                        <div class="md:col-span-2">
-                            <label for="asal_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nama Sekolah <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                id="asal_sekolah" 
-                                name="asal_sekolah" 
-                                value="{{ old('asal_sekolah', $isEdit ? $siswa->SISWA_SEKOLAH : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Nama Asal Sekolah"
-                                {{ $dis('section_sekolah')  }}
-                                required>
-                            @error('asal_sekolah')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Tahun Lulus -->
-                        <div>
-                            <label for="tahun_lulus" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Tahun Lulus <span class="text-red-500">*</span>
-                            </label>
-                            <select id="tahun_lulus" 
-                                    name="tahun_lulus" 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                {{ $dis('section_sekolah') }}
-                                    required>
-                                <option value="">-- Pilih Tahun --</option>
-                                @foreach(['2026','2025','2024','2023','2022','2021'] as $yr)
-                                    <option value="{{ $yr }}" 
-                                        {{ old('tahun_lulus', $isEdit ? $siswa->SISWA_SEKOLAH_TAHUN_LULUS : '') == $yr ? 'selected' : '' }}>
-                                        {{ $yr }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('tahun_lulus')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        {{--
-                        <!-- Nilai Rata-rata -->
-                        <div>
-                            <label for="nilai_rata" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nilai Rata-rata Ijazah <span class="text-red-500">*</span>
-                            </label>
-                            <input type="number" 
-                                id="nilai_rata" 
-                                name="nilai_rata" 
-                                value="{{ old('nilai_rata', $isEdit ? $siswa->SISWA_NILAI_RATA : '') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Contoh: 85.50"
-                                step="0.01" min="0" max="100"
-                                {{ $dis('section_sekolah') }}
-                                required>
-                            @error('nilai_rata')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        --}}
-
-                        <!-- Nilai Kelas 5 Sem 2 -->
-                        <div class="md:col-span-2 mt-4">
-                            <div class="flex items-center">
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                                <span class="px-3 text-sm font-semibold text-gray-600">Nilai rapor kelas 5 semester 2</span>
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="nilai_52_mtk" class="block text-sm font-semibold text-gray-700 mb-2">Matematika <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_52_mtk" name="nilai_52_mtk" value="{{ old('nilai_52_mtk', $isEdit ? $siswa->SISWA_NILAI_52_MTK : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_52_mtk')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_52_ipa" class="block text-sm font-semibold text-gray-700 mb-2">IPA <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_52_ipa" name="nilai_52_ipa" value="{{ old('nilai_52_ipa', $isEdit ? $siswa->SISWA_NILAI_52_IPA : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_52_ipa')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_52_bind" class="block text-sm font-semibold text-gray-700 mb-2">Bahasa Indonesia <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_52_bind" name="nilai_52_bind" value="{{ old('nilai_52_bind', $isEdit ? $siswa->SISWA_NILAI_52_BIND : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_52_bind')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_52_pai" class="block text-sm font-semibold text-gray-700 mb-2">PAI / Aqidah Akhlak <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_52_pai" name="nilai_52_pai" value="{{ old('nilai_52_pai', $isEdit ? $siswa->SISWA_NILAI_52_PAI : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_52_pai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-
-                        <!-- Nilai Kelas 6 Sem 1 -->
-                        <div class="md:col-span-2 mt-4">
-                            <div class="flex items-center">
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                                <span class="px-3 text-sm font-semibold text-gray-600">Nilai rapor kelas 6 semester 1</span>
-                                <div class="h-px bg-gray-300 flex-1"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="nilai_61_mtk" class="block text-sm font-semibold text-gray-700 mb-2">Matematika <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_61_mtk" name="nilai_61_mtk" value="{{ old('nilai_61_mtk', $isEdit ? $siswa->SISWA_NILAI_61_MTK : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_61_mtk')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_61_ipa" class="block text-sm font-semibold text-gray-700 mb-2">IPA <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_61_ipa" name="nilai_61_ipa" value="{{ old('nilai_61_ipa', $isEdit ? $siswa->SISWA_NILAI_61_IPA : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_61_ipa')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_61_bind" class="block text-sm font-semibold text-gray-700 mb-2">Bahasa Indonesia <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_61_bind" name="nilai_61_bind" value="{{ old('nilai_61_bind', $isEdit ? $siswa->SISWA_NILAI_61_BIND : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_61_bind')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="nilai_61_pai" class="block text-sm font-semibold text-gray-700 mb-2">PAI / Aqidah Akhlak <span class="text-red-500">*</span></label>
-                            <input type="number" id="nilai_61_pai" name="nilai_61_pai" value="{{ old('nilai_61_pai', $isEdit ? $siswa->SISWA_NILAI_61_PAI : '') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Contoh: 85.50" step="0.01" min="0" max="100" {{ $dis('section_sekolah') }} required>
-                            @error('nilai_61_pai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-                </div>
+                <!-- .... -->
 
                 <!-- Section 3: Pilihan Jalur Pendaftaran -->
                 <div class="p-8 border-b border-gray-200">
@@ -1126,9 +779,7 @@
                         >
                         <label for="persetujuan" class="text-sm text-gray-700">
                             Saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan. 
-                            @if(!$isAdminEdit)
-                                Apabila dikemudian hari terbukti tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.
-                            @endif
+                            Apabila dikemudian hari terbukti tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.
                         </label>
                     </div>
 
@@ -1136,11 +787,7 @@
                         <button type="submit" 
                                 class="flex-1 bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg flex items-center justify-center">
                             <!-- <i class="fas fa-paper-plane mr-2"></i> -->
-                            @if($isAdminEdit)
-                                S I M P A N
-                            @else
-                                D A F T A R
-                            @endif
+                            D A F T A R
                         </button>
                     </div>
                 </div>
@@ -1202,7 +849,7 @@
     );
 
     // File Upload Preview & Remove
-    const fileInputs = ['file_foto'];
+    const fileInputs = ['file_foto's];
 
     fileInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
@@ -1469,10 +1116,10 @@
 
         const confirm = await Swal.fire({
             icon: 'question',
-            title: '{{ $isAdminEdit ? "Simpan Perubahan?" : "Konfirmasi Pendaftaran?" }}',
-            html: '{{ $isAdminEdit ? "Pastikan data yang diubah sudah benar." : "Pastikan data pendaftaran sudah benar." }}',
+            title: 'Konfirmasi Pendaftaran?',
+            html: 'Pastikan data pendaftaran sudah benar.<br><b></b>',
             showCancelButton: true,
-            confirmButtonText: '{{ $isAdminEdit ? "Ya, Simpan" : "Ya, Daftar" }}',
+            confirmButtonText: 'Ya, Daftar',
             cancelButtonText: 'Batal'
         })
 
@@ -1482,7 +1129,7 @@
 
         try {
             Swal.fire({
-                title: '{{ $isAdminEdit ? "Menyimpan..." : "Mendaftarkan..." }}',
+                title: 'Mendaftarkan...',
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading()
             })
@@ -1504,7 +1151,7 @@
                 return
             }
 
-            await Swal.fire({ icon: 'success', title: '{{ $isAdminEdit ? "Berhasil Disimpan" : "Berhasil Mendaftar" }}', text: data.MESSAGE })
+            await Swal.fire({ icon: 'success', title: 'Berhasil Mendaftar', text: data.MESSAGE })
             window.location.reload()
             @if(!$isAdminEdit)
                 window.open("/inbox", "_blank")

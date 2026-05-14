@@ -35,6 +35,8 @@
             <option value="all">Semua</option>
             <option value="ROLE_ADMIN_BERITA">Admin Berita</option>
             <option value="ROLE_ADMIN_BERKAS">Admin Verifikasi</option>
+            <option value="ROLE_ADMIN_PRESTASI">Admin Prestasi</option>
+            <option value="ROLE_ADMIN_AFIRMASI">Admin Afirmasi</option>
             <option value="ROLE_ADMIN_BTA">Admin BTA</option>
             <option value="ROLE_ADMIN_CBT">Admin CBT</option>
             <option value="ROLE_SISWA">Siswa</option>
@@ -103,6 +105,8 @@
                         <option value="">Pilih Role</option>
                         <option value="ROLE_ADMIN_BERITA">Admin Berita</option>
                         <option value="ROLE_ADMIN_BERKAS">Admin Verifikasi</option>
+                        <option value="ROLE_ADMIN_PRESTASI">Admin Prestasi</option>
+                        <option value="ROLE_ADMIN_AFIRMASI">Admin Afirmasi</option>
                         <option value="ROLE_ADMIN_BTA">Admin BTA</option>
                         <option value="ROLE_ADMIN_CBT">Admin CBT</option>
                     </select>

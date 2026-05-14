@@ -233,7 +233,7 @@
                                 </svg>
                                 Detail
                             </a>
-                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]))
+                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI"]))
                                 <a href="/daftar?userId={{ $s->U_ID }}" target="_blank"
                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition whitespace-nowrap">
                                     <!-- <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

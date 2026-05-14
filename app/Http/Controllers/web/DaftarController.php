@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use Carbon\Carbon;
+
 use App\Models\Siswa as mSiswa;
 use App\Models\User as mUser;
 use App\Models\Provinsi as mProvinsi;
@@ -72,15 +74,30 @@ class DaftarController extends Controller
                 $siswa = mSiswa::getByUserId($userId);
             }
         }
-        //dd($siswa);
 
-        // Tentukan hak edit per section berdasarkan role
+        $openDate = Carbon::create(2026, 3, 30, 0, 0, 0);
+        $closeDate = Carbon::create(2026, 5, 13, 23, 59, 59);
+        $now = Carbon::now();
+        $isInRange = $now->gte($openDate) && $now->lte($closeDate);
+
         $role = $loginUser->U_ROLE;
+        $isSiswa = $role === 'ROLE_SISWA';
+
+        $isEdit = isset($siswa);
+        $siswaStatus = $isEdit ? $siswa->SISWA_STATUS : null;
+
+        // Locked hanya berlaku untuk siswa, admin selalu bisa edit (sesuai permission)
+        $isAdminRole = in_array($role, ['ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI', 'ROLE_ADMIN_AFIRMASI', 'ROLE_SUPERADMIN']);
+        $isStatusLocked = in_array($siswaStatus, ['STATUS_TERVERIFIKASI', 'STATUS_MENUNGGU', 'STATUS_LOLOS', 'STATUS_DITOLAK', 'STATUS_CADANGAN', 'STATUS_DITERIMA', 'STATUS_MENGUNDURKAN', 'STATUS_TERDAFTAR']);
+        $isLocked = $isStatusLocked && !$isAdminRole;
+
         $editPermissions = [
-            'section_pribadi'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
-            'section_sekolah'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
-            'section_jalur'     => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI']),
-            'section_dokumen'   => in_array($role, ['ROLE_SUPERADMIN', 'ROLE_SISWA', 'ROLE_ADMIN_BERKAS']),
+            'section_pribadi'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
+            'section_sekolah'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
+            'section_jalur_radio'    => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
+            'section_jalur_prestasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI']),
+            'section_jalur_afirmasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_AFIRMASI']),
+            'section_dokumen'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
         ];
 
         $viewData = [
@@ -92,6 +109,13 @@ class DaftarController extends Controller
             "editPermissions" => $editPermissions,
             "loginRole"       => $role,
             "isAdminEdit"     => $req['userId'] ?? null,
+            "openDate"        => $openDate,
+            "closeDate"       => $closeDate,
+            "now"             => $now,
+            "isLocked"        => $isLocked,
+            "isOpen"          => !$isSiswa || $isInRange,  // admin selalu "open", siswa cek range
+            "isEdit"          => $isEdit,
+            "siswaStatus"     => $siswaStatus,
         ];
 
         return view("daftar", $viewData);
@@ -404,7 +428,7 @@ class DaftarController extends Controller
     {
         $loginUser = $request->loginUser;
 
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
@@ -440,7 +464,7 @@ class DaftarController extends Controller
         $loginUser = $request->loginUser;
         $req = $request->all();
 
-        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA"])){
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_BTA", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 

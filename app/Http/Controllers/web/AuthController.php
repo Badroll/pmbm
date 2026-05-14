@@ -33,6 +33,8 @@ class AuthController extends Controller
                 "ROLE_SUPERADMIN" => "profil",
                 "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
+                "ROLE_ADMIN_PRESTASI" => "profil",
+                "ROLE_ADMIN_AFIRMASI" => "profil",
                 "ROLE_ADMIN_BTA" => "profil",
                 "ROLE_ADMIN_CBT" => "profil",
             ];
@@ -54,6 +56,8 @@ class AuthController extends Controller
                 "ROLE_SUPERADMIN" => "profil",
                 "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
+                "ROLE_ADMIN_PRESTASI" => "profil",
+                "ROLE_ADMIN_AFIRMASI" => "profil",
                 "ROLE_ADMIN_BTA" => "profil",
                 "ROLE_ADMIN_CBT" => "profil",
             ];
@@ -272,6 +276,8 @@ class AuthController extends Controller
         $roleLabels = [
             'ROLE_ADMIN_BERITA' => ['label' => 'Admin Berita',      'class' => 'bg-violet-100 text-violet-700'],
             'ROLE_ADMIN_BERKAS' => ['label' => 'Admin Verifikasi',  'class' => 'bg-sky-100 text-sky-700'],
+            'ROLE_ADMIN_PRESTASI' => ['label' => 'Admin Prestasi',  'class' => 'bg-sky-100 text-sky-700'],
+            'ROLE_ADMIN_AFIRMASI' => ['label' => 'Admin Afirmasi',  'class' => 'bg-sky-100 text-sky-700'],
             'ROLE_ADMIN_BTA' => ['label' => 'Admin BTA',  'class' => 'bg-sky-100 text-green-700'],
             'ROLE_ADMIN_CBT' => ['label' => 'Admin CBT',  'class' => 'bg-sky-100 text-indigo-700'],
             'ROLE_SISWA'        => ['label' => 'Siswa',             'class' => 'bg-blue-100 text-blue-700'],

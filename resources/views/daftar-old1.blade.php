@@ -2,6 +2,16 @@
 @section('title', 'Form Pendaftaran - PMBM')
 @section('content')
 
+@php
+    $openDate = \Carbon\Carbon::create(2026, 3, 30, 0, 0, 0, 'Asia/Jakarta');
+    $closeDate = \Carbon\Carbon::create(2026, 5, 13, 23, 59, 59, 'Asia/Jakarta');
+
+    $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+    $isOpen = $now->gte($openDate) //&& $now->lte($closeDate)
+    ;
+@endphp
+
 @if (!$isOpen)
 
     <div class="min-h-screen flex items-center justify-center bg-gray-50">
@@ -13,31 +23,41 @@
 @else
 
     @php
+        $isEdit = isset($siswa);
         $isAdminEdit = isset($isAdminEdit);
         $formAction = url('daftar');
+        $siswaStatus = $isEdit ? $siswa->SISWA_STATUS : null;
+        $isLocked = in_array($siswaStatus, ['STATUS_TERVERIFIKASI', 'STATUS_MENUNGGU', 'STATUS_LOLOS', 'STATUS_DITOLAK', 'STATUS_CADANGAN', 'STATUS_DITERIMA', 'STATUS_MENGUNDURKAN', 'STATUS_TERDAFTAR']);
+
+        $enableForm = isset($siswa) ? "disabled" : "";
 
         $statusConfig = [
-            'STATUS_PENDING'       => ['label' => 'Pendaftaran Terkirim', 'color' => 'blue',   'icon' => 'fa-clock'],
-            'STATUS_TERVERIFIKASI' => ['label' => 'Terverifikasi',        'color' => 'green',  'icon' => 'fa-check-circle'],
-            'STATUS_MENUNGGU'      => ['label' => 'Menunggu Hasil Tes',   'color' => 'yellow', 'icon' => 'fa-clock'],
+            'STATUS_PENDING'        => ['label' => 'Pendaftaran Terkirim',  'color' => 'blue',      'icon' => 'fa-clock'],
+            'STATUS_TERVERIFIKASI'  => ['label' => 'Terverifikasi',         'color' => 'green',     'icon' => 'fa-check-circle'],
+            'STATUS_MENUNGGU'       => ['label' => 'Menunggu Hasil Tes',    'color' => 'yellow',    'icon' => 'fa-clock'],
         ];
 
-        $currentStatus = $siswaStatus
-            ? ($statusConfig[$siswaStatus] ?? ['label' => $siswaStatus, 'color' => 'gray', 'icon' => 'fa-info-circle'])
-            : null;
+        $currentStatus = $siswaStatus ? ($statusConfig[$siswaStatus] ?? ['label' => $siswaStatus, 'color' => 'gray', 'icon' => 'fa-info-circle']) : null;
 
+        // Ambil permission dari controller
         $perm = $editPermissions ?? [
-            'section_pribadi'        => true,
-            'section_sekolah'        => true,
-            'section_jalur_radio'    => true,
-            'section_jalur_prestasi' => true,
-            'section_jalur_afirmasi' => true,
-            'section_dokumen'        => true,
+            'section_pribadi'  => true,
+            'section_sekolah'  => true,
+            'section_jalur'    => true,
+            'section_prestasi' => true,
+            'section_dokumen'  => true,
         ];
 
+        // Helper: disabled string per section
+        // Section locked jika: (form sudah submit & status locked) ATAU role tidak punya izin
         $dis = function(string $section) use ($isLocked, $perm): string {
             return ($isLocked || !($perm[$section] ?? false)) ? 'disabled' : '';
         };
+
+        // Override $enableForm — untuk siswa tetap pakai logika lama
+        // Untuk admin, selalu "ada siswa" jadi $enableForm = 'disabled' by default,
+        // tapi kita override per section di bawah
+
     @endphp
     
 
@@ -91,7 +111,7 @@
                             </p>
                         @else
                             <p class="mt-1 text-sm {{ $textClass }} opacity-80">
-                                
+                                Anda masih dapat mengubah jalur pendaftaran hingga menjelang penutupan pendaftaran.
                             </p>
                         @endif
                     </div>
@@ -483,7 +503,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Jalur Reguler -->
                             <label class="jalur-card cursor-pointer">
-                                <input type="radio" name="jalur_pendaftaran" value="JALUR_REGULER" {{ $jalurSelected === 'JALUR_REGULER' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur_radio') }} required>
+                                <input type="radio" name="jalur_pendaftaran" value="JALUR_REGULER" {{ $jalurSelected === 'JALUR_REGULER' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur') }} required>
                                 <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                     <div class="flex flex-col items-center text-center">
                                         <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
@@ -501,7 +521,7 @@
 
                             <!-- Jalur Prestasi -->
                             <label class="jalur-card cursor-pointer">
-                                <input type="radio" name="jalur_pendaftaran" value="JALUR_PRESTASI" {{ $jalurSelected === 'JALUR_PRESTASI' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur_radio') }} required>
+                                <input type="radio" name="jalur_pendaftaran" value="JALUR_PRESTASI" {{ $jalurSelected === 'JALUR_PRESTASI' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur') }} required>
                                 <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                     <div class="flex flex-col items-center text-center">
                                         <div class="bg-yellow-100 text-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
@@ -519,7 +539,7 @@
 
                             <!-- Jalur Afirmasi -->
                             <label class="jalur-card cursor-pointer">
-                                <input type="radio" name="jalur_pendaftaran" value="JALUR_AFIRMASI" {{ $jalurSelected === 'JALUR_AFIRMASI' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur_radio') }} required>
+                                <input type="radio" name="jalur_pendaftaran" value="JALUR_AFIRMASI" {{ $jalurSelected === 'JALUR_AFIRMASI' ? 'checked' : '' }} class="hidden jalur-input" {{ $dis('section_jalur') }} required>
                                 <div class="border-2 border-gray-300 rounded-xl p-6 transition-all duration-300 hover:border-blue-400 hover:shadow-lg jalur-option">
                                     <div class="flex flex-col items-center text-center">
                                         <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
@@ -556,7 +576,7 @@
                                 <select id="pilihan_afirmasi" 
                                     name="pilihan_afirmasi" 
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    {{ $dis('section_jalur_afirmasi') }}
+                                    {{ $dis('section_jalur') }}
                                     >
                                     <option value="">-- Pilih --</option>
                                     @foreach(getReferences("AFIRMASI") as $i => $v)
@@ -602,7 +622,7 @@
                                         <select id="tingkat_juara" 
                                                 name="tingkat_juara" 
                                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                                {{ $dis('section_jalur_prestasi') }}
+                                                {{ $dis('section_jalur') }}
                                                 >
                                             <option value="">-- Pilih --</option>
                                             @foreach(getReferences("PRESTASI_KEJUARAAN") as $i => $v)
@@ -621,7 +641,7 @@
                                             value="{{ old('penyelenggara_kejuaraan', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL ?? '') : '') }}"
                                             placeholder=""
                                             class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-                                            {{ $dis('section_jalur_prestasi') }}
+                                            {{ $dis('section_jalur') }}
                                             >
                                         @error('penyelenggara_kejuaraan')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -634,7 +654,7 @@
                                         <select id="pelaksanaan_kejuaraan" 
                                                 name="pelaksanaan_kejuaraan" 
                                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                                {{ $dis('section_jalur_prestasi') }}
+                                                {{ $dis('section_jalur') }}
                                                 >
                                             <option value="Offline" {{ old('pelaksanaan_kejuaraan', $isEdit ? $siswa->SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN : '') == 'Offline' ? 'selected' : '' }}>Offline</option>
                                             <option value="Online" {{ old('pelaksanaan_kejuaraan', $isEdit ? $siswa->SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN : '') == 'Online' ? 'selected' : '' }}>Online</option>
@@ -651,7 +671,7 @@
                                             value="{{ old('keterangan_kejuaraan', $isEdit ? ($siswa->SISWA_PRESTASI_KEJUARAAN_KETERANGAN ?? '') : '') }}"
                                             placeholder=""
                                             class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-                                            {{ $dis('section_jalur_prestasi') }}
+                                            {{ $dis('section_jalur') }}
                                             >
                                         @error('keterangan_kejuaraan')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -684,7 +704,7 @@
                                     <select id="hafalan_quran" 
                                         name="hafalan_quran" 
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                        {{ $dis('section_jalur_prestasi') }}
+                                        {{ $dis('section_jalur') }}
                                         >
                                         <option value="">-- Pilih --</option>
                                         @foreach(getReferences("PRESTASI_KEAGAMAAN") as $i => $v)
@@ -1126,9 +1146,7 @@
                         >
                         <label for="persetujuan" class="text-sm text-gray-700">
                             Saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan. 
-                            @if(!$isAdminEdit)
-                                Apabila dikemudian hari terbukti tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.
-                            @endif
+                            Apabila dikemudian hari terbukti tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.
                         </label>
                     </div>
 
@@ -1136,11 +1154,7 @@
                         <button type="submit" 
                                 class="flex-1 bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg flex items-center justify-center">
                             <!-- <i class="fas fa-paper-plane mr-2"></i> -->
-                            @if($isAdminEdit)
-                                S I M P A N
-                            @else
-                                D A F T A R
-                            @endif
+                            D A F T A R
                         </button>
                     </div>
                 </div>
@@ -1202,7 +1216,7 @@
     );
 
     // File Upload Preview & Remove
-    const fileInputs = ['file_foto'];
+    const fileInputs = ['file_foto', 'file_nisn', 'file_kk', 'file_akta', 'file_rapor_52', 'file_rapor_61'];
 
     fileInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
@@ -1469,10 +1483,10 @@
 
         const confirm = await Swal.fire({
             icon: 'question',
-            title: '{{ $isAdminEdit ? "Simpan Perubahan?" : "Konfirmasi Pendaftaran?" }}',
-            html: '{{ $isAdminEdit ? "Pastikan data yang diubah sudah benar." : "Pastikan data pendaftaran sudah benar." }}',
+            title: 'Konfirmasi Pendaftaran?',
+            html: 'Pastikan data pendaftaran sudah benar.<br><b></b>',
             showCancelButton: true,
-            confirmButtonText: '{{ $isAdminEdit ? "Ya, Simpan" : "Ya, Daftar" }}',
+            confirmButtonText: 'Ya, Daftar',
             cancelButtonText: 'Batal'
         })
 
@@ -1482,7 +1496,7 @@
 
         try {
             Swal.fire({
-                title: '{{ $isAdminEdit ? "Menyimpan..." : "Mendaftarkan..." }}',
+                title: 'Mendaftarkan...',
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading()
             })
@@ -1504,7 +1518,7 @@
                 return
             }
 
-            await Swal.fire({ icon: 'success', title: '{{ $isAdminEdit ? "Berhasil Disimpan" : "Berhasil Mendaftar" }}', text: data.MESSAGE })
+            await Swal.fire({ icon: 'success', title: 'Berhasil Mendaftar', text: data.MESSAGE })
             window.location.reload()
             @if(!$isAdminEdit)
                 window.open("/inbox", "_blank")

@@ -4,7 +4,11 @@
 
 @php
     $openDate = \Carbon\Carbon::create(2026, 3, 30, 0, 0, 0, 'Asia/Jakarta');
-    $isOpen = \Carbon\Carbon::now('Asia/Jakarta')->gte($openDate);
+    $closeDate = \Carbon\Carbon::create(2026, 5, 13, 23, 59, 59, 'Asia/Jakarta');
+
+    $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+    $isOpen = $now->gte($openDate) && $now->lte($closeDate);
 @endphp
 
 @if (!$isOpen)

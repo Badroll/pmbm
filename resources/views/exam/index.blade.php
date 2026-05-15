@@ -1220,7 +1220,7 @@ function finishExam() {
 
         if (res.next_test === 'Psikotest') {
 
-            alert('Tes Akademik selesai. Selanjutnya Psikotest akan dimulai.');
+            alert('Tes Akademik selesai dengan nilai = '+res.nilai+'. Selanjutnya Psikotest akan dimulai.');
 
             // RESET STATE
             state = {
@@ -1248,7 +1248,7 @@ function finishExam() {
         // SEMUA TEST SELESAI
         // =====================================================
 
-        alert('Semua tes selesai.');
+        alert('Semua tes selesai dengan nilai = '+res.nilai);
 
         window.location.href = '/';
     })

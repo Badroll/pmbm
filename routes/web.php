@@ -65,6 +65,7 @@ Route::middleware("loggedin")->group(function () {
     Route::prefix("siswa")->group(function () {
         Route::get("/", [DaftarController::class, "siswa"]);
         Route::get("/{siswaId}", [DaftarController::class, "siswaDetail"]);
+        Route::post("update-status", [DaftarController::class, "siswaUpdateStatus"]);
     });
 
     Route::prefix("kartu")->group(function () {

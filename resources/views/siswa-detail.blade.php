@@ -3,6 +3,8 @@
 @section('content')
 
 @php
+    $role = Session::get("SESSION_U_ROLE");
+
     $jalurMap = [
         'JALUR_REGULER'  => ['label' => 'Reguler',  'class' => 'bg-blue-100 text-blue-700 ring-1 ring-blue-200'],
         'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'class' => 'bg-amber-100 text-amber-700 ring-1 ring-amber-200'],
@@ -297,20 +299,22 @@
 
                     <!-- Tes Quran -->
                     <div 
-        onclick="editNilaiQuran({{ $siswa->SISWA_ID }}, '{{ $siswa->SISWA_TES_QURAN }}')"
-        class="relative overflow-hidden rounded-2xl p-5 text-center cursor-pointer transition hover:scale-[1.02] active:scale-[0.98]"
-        style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);"
-    >
-        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #059669;"></div>
+                        @if(in_array($role, ["ROLE_ADMIN_BTA"]))
+                            onclick="editNilaiQuran({{ $siswa->SISWA_ID }}, '{{ $siswa->SISWA_TES_QURAN }}')"
+                        @endif
+                        class="relative overflow-hidden rounded-2xl p-5 text-center cursor-pointer transition hover:scale-[1.02] active:scale-[0.98]"
+                        style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);"
+                    >
+                        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20" style="background: #059669;"></div>
 
-        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">
-            Tes baca Al-Qur'an
-        </p>
+                        <p class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">
+                            Tes baca Al-Qur'an
+                        </p>
 
-        <p class="text-4xl font-black text-emerald-700 leading-none">
-            {{ number_format($siswa->SISWA_TES_QURAN, 1) }}
-        </p>
-    </div>
+                        <p class="text-4xl font-black text-emerald-700 leading-none">
+                            {{ number_format($siswa->SISWA_TES_QURAN, 1) }}
+                        </p>
+                    </div>
 
                 </div>
             </div>
@@ -344,7 +348,7 @@
                         </div> -->
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold text-gray-400 mb-1">Afirmasi</p>
-                            <p class="text-sm font-semibold text-gray-800 truncate">{{ $siswa->refAfirmasi->R_INFO }}</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate">{{ $siswa->refAfirmasi->R_INFO ?? "" }}</p>
                             @if($siswa->SISWA_AFIRMASI_FILE)
                             <a href="{{ asset('storage/' . $siswa->SISWA_AFIRMASI_FILE) }}" target="_blank"
                                 class="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
@@ -379,7 +383,7 @@
                         </div> -->
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold text-gray-400 mb-1">Prestasi Kejuaraan</p>
-                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKejuaraan->R_INFO }}</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKejuaraan->R_INFO ?? "" }}</p>
                             @if($siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL)
                                 <p class="text-xs text-gray-500 mt-0.5 truncate">{{ $siswa->SISWA_PRESTASI_KEJUARAAN_JUDUL }}</p>
                             @endif
@@ -417,7 +421,7 @@
                         </div> -->
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold text-gray-400 mb-1">Hafalan Al-Qur'an</p>
-                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKeagamaan->R_INFO }}</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ $siswa->refPrestasiKeagamaan->R_INFO ?? "" }}</p>
                             @if($siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE)
                             <a href="{{ asset('storage/' . $siswa->SISWA_PRESTASI_KEAGAMAAN_FIILE) }}" target="_blank"
                                 class="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">

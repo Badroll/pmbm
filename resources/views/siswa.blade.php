@@ -98,7 +98,7 @@
     ];
     $statusMap = [
         'STATUS_PENDING'    => ['label' => 'Pendaftaran Terkirim',      'class' => 'bg-yellow-100 text-yellow-700', 'dot' => 'bg-yellow-400'],
-        'STATUS_VERIFIKASI' => ['label' => 'Terverifikasi',             'class' => 'bg-blue-100 text-blue-700',     'dot' => 'bg-blue-400'],
+        'STATUS_TERVERIFIKASI' => ['label' => 'Terverifikasi',             'class' => 'bg-blue-100 text-blue-700',     'dot' => 'bg-blue-400'],
         'STATUS_MENUNGGU'   => ['label' => 'Menunggu Hasil Tes',        'class' => 'bg-yellow-100 text-green-700',  'dot' => 'bg-yellow-400'],
     ];
     @endphp
@@ -219,10 +219,25 @@
                             <span class="font-bold text-gray-800">{{ number_format($s->SISWA_SKOR, 1) }}</span>
                         </td>
                         <td class="px-5 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap {{ $status['class'] }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $status['dot'] }}"></span>
-                                {{ $status['label'] }}
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap {{ $status['class'] }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $status['dot'] }}"></span>
+                                    {{ $status['label'] }}
+                                </span>
+                                @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]) && $s->SISWA_STATUS == "STATUS_PENDING")
+                                <a href=""
+                                    onclick="verif({{ $s->SISWA_ID }}); return false;"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M9 12l2 2 4-4"/>
+                                    </svg>
+                                    Verifikasi
+                                </a>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-5 py-4 text-center">
                             <a href="siswa/{{ $s->SISWA_ID }}"
@@ -233,14 +248,24 @@
                                 </svg>
                                 Detail
                             </a>
-                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI"]))
+                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI", "ROLE_ADMIN_BTA"]))
                                 <a href="/daftar?userId={{ $s->U_ID }}" target="_blank"
                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition whitespace-nowrap">
-                                    <!-- <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg> -->
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
                                     Edit
+                                </a>
+                            @endif
+                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]))
+                                <a href="{{ url('/public/excel') }}/kartu-pendaftaran?siswaId={{ $s->SISWA_ID }}" target="_blank"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                    </svg>
+                                    Kartu
                                 </a>
                             @endif
                         </td>
@@ -272,6 +297,76 @@
 </div>
 @push('scripts')
 <script>
+
+    async function verif(siswaId){
+
+        const confirm = await Swal.fire({
+            title: 'Verifikasi?',
+            text: 'Tandai siswa telah terverifikasi berkas',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal'
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+
+        Swal.fire({
+            title: 'Memverifikasi...',
+            text: 'Mohon tunggu',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        try {
+            const res = await fetch(`/siswa/update-status`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                body: new URLSearchParams({
+                    id: siswaId,
+                    status: "STATUS_TERVERIFIKASI"
+                }),
+            });
+            const data = await res.json();
+
+            Swal.close();
+            if (data.STATUS !== 'SUCCESS') {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.MESSAGE
+                }); 
+                return
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Terverifikasi',
+                text: data.MESSAGE,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            location.reload();
+
+        } catch (err) {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: err.message || 'Terjadi kesalahan'
+            });
+        }
+    }
+
 </script>
 @endpush
 @endsection

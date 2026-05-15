@@ -498,5 +498,21 @@ class DaftarController extends Controller
 
     }
 
+    public function siswaUpdateStatus(Request $request){
+        $loginUser = $request->loginUser;
+        $req = $request->all();
+
+        if(!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])){
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+
+        $siswa = mSiswa::find($req["id"]);
+        $siswa->SISWA_STATUS = $req["status"];
+        $siswa->save();
+
+        return compose("SUCCESS", "Status diperbarui");
+
+    }
+
 
 }

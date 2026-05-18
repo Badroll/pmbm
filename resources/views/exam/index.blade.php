@@ -1041,6 +1041,19 @@ function saveAnswer(examId, val) {
 
             doTimeUp();
         }
+
+        // Session expired / CSRF token mismatch
+        if (xhr.status === 419) {
+
+            ind.attr('class', 'save-indicator error-save')
+               .html('Login kadaluarsa, mengalihkan...');
+
+            setTimeout(() => {
+
+                window.location.href = '/auth/logout';
+
+            }, 2000);
+        }
     });
 }
 

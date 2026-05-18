@@ -94,6 +94,9 @@ class ExamController extends Controller
                "SISWA_ID" => $loginUser->siswa->SISWA_ID,
                "PGRJN_JENIS" => "Akademik"
             ]);
+            $pengerjaanAkademik = mPengerjaan::where('SISWA_ID', $loginUser->siswa->SISWA_ID)
+                ->where('PGRJN_JENIS', 'Akademik')
+                ->first();
         }
 
         $pengerjaanPsikotest = mPengerjaan::where('SISWA_ID', $loginUser->siswa->SISWA_ID)
@@ -105,6 +108,9 @@ class ExamController extends Controller
                "SISWA_ID" => $loginUser->siswa->SISWA_ID,
                "PGRJN_JENIS" => "Psikotest"
             ]);
+            $pengerjaanPsikotest = mPengerjaan::where('SISWA_ID', $loginUser->siswa->SISWA_ID)
+                ->where('PGRJN_JENIS', 'Psikotest')
+                ->first();
         }
 
         $pengerjaan = null;

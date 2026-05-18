@@ -92,12 +92,12 @@ class DaftarController extends Controller
         $isLocked = $isStatusLocked && !$isAdminRole;
 
         $editPermissions = [
-            'section_pribadi'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
-            'section_sekolah'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
-            'section_jalur_radio'    => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
-            'section_jalur_prestasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI']),
-            'section_jalur_afirmasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_AFIRMASI']),
-            'section_dokumen'        => ($isSiswa && $isInRange) || $role === 'ROLE_ADMIN_BERKAS',
+            'section_pribadi'        => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS']),
+            'section_sekolah'        => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS']),
+            'section_jalur_radio'    => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS']),
+            'section_jalur_prestasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_PRESTASI']),
+            'section_jalur_afirmasi' => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS', 'ROLE_ADMIN_AFIRMASI']),
+            'section_dokumen'        => ($isSiswa && $isInRange) || in_array($role, ['ROLE_SUPERADMIN', 'ROLE_ADMIN_BERKAS']),
         ];
 
         $viewData = [
@@ -286,8 +286,9 @@ class DaftarController extends Controller
             // ======================
             // UPDATE
             // ======================
+            $jalur = $request->jalur_pendaftaran ?? $record->SISWA_JALUR;
             $savedRow = [
-                'SISWA_JALUR' => $request->jalur_pendaftaran ?? $record->SISWA_JALUR,
+                'SISWA_JALUR' => $jalur,
 
                 'SISWA_NAMA' => $request->nama_lengkap ?? $record->SISWA_NAMA,
                 'SISWA_NISN' => $request->nisn ?? $record->SISWA_NISN,
@@ -324,7 +325,15 @@ class DaftarController extends Controller
                 'SISWA_FILE_RAPOR_52' => $fileRapor52Path,
                 'SISWA_FILE_RAPOR_61' => $fileRapor61Path,
             ];
-            if($request->jalur_pendaftaran == "JALUR_AFIRMASI"){
+            if($jalur == "JALUR_REGULER"){
+                $savedRow['SISWA_AFIRMASI'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_KETERANGAN'] = "-";
+                $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = "Offline";
+                $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
+            }
+            if($jalur == "JALUR_AFIRMASI"){
                 $savedRow['SISWA_AFIRMASI'] = $request->pilihan_afirmasi;
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = "";
@@ -332,7 +341,7 @@ class DaftarController extends Controller
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_PELAKSANAAN'] = "Offline";
                 $savedRow['SISWA_PRESTASI_KEAGAMAAN'] = "";
             }
-            if($request->jalur_pendaftaran == "JALUR_PRESTASI"){
+            if($jalur == "JALUR_PRESTASI"){
                 $savedRow['SISWA_AFIRMASI'] = "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN'] = $request->tingkat_juara ?? "";
                 $savedRow['SISWA_PRESTASI_KEJUARAAN_JUDUL'] = $request->penyelenggara_kejuaraan ?? "";

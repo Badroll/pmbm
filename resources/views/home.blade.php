@@ -132,7 +132,7 @@
 
         <!-- Download Juknis -->
         <div class="flex mt-8 justify-center">
-            <a href="{{ asset('pdf/juknis.pdf') }}" target="_blank"
+            <a href="{{ asset('pdf/juknis-2.pdf') }}" target="_blank"
                 class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
                 <i class="fas fa-book-reader"></i>
                 Baca Juknis (Petunjuk Teknis)

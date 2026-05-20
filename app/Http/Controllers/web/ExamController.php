@@ -24,7 +24,7 @@ class ExamController extends Controller
         $req = $request->all();
         $loginUser = $request->loginUser;
 
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_CBT"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_CBT", "ROLE_ADMIN_APLIKASI"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 

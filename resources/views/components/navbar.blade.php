@@ -3,6 +3,7 @@
     $sessionUserId = Session::get("SESSION_U_ID");
     $sessionUserRole = Session::get("SESSION_U_ROLE");
     $isSuperadmin = $sessionUserRole == "ROLE_SUPERADMIN";
+    $isAdminAplikasi = $sessionUserRole == "ROLE_ADMIN_APLIKASI";
     $isAdminBerkas = $sessionUserRole == "ROLE_ADMIN_BERKAS";
     $isAdminPrestasi = $sessionUserRole == "ROLE_ADMIN_PRESTASI";
     $isAdminAfirmasi = $sessionUserRole == "ROLE_ADMIN_AFIRMASI";
@@ -44,7 +45,7 @@
 
                 @if($isLoggedIn)
 
-                    @if($isSuperadmin)
+                    @if($isSuperadmin || $isAdminAplikasi)
                         <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Akun</a>
                     @endif
 
@@ -67,7 +68,7 @@
                         
                     @endif
                     
-                    @if($isSuperadmin || $isAdminCBT)
+                    @if($isSuperadmin || $isAdminCBT || $isAdminAplikasi)
                         <a href="{{ url('/exam/monitor') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam/monitor') }}">Monitor CBT</a>
                     @endif
 
@@ -96,7 +97,7 @@
 
             @if($isLoggedIn)
 
-                @if($isSuperadmin)
+                @if($isSuperadmin || $isAdminAplikasi)
                     <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/manage*') }}">Akun</a>
                 @endif
 
@@ -114,7 +115,7 @@
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
                 @endif
 
-                @if($isSuperadmin || $isAdminCBT)
+                @if($isSuperadmin || $isAdminCBT || $isAdminAplikasi)
                     <a href="{{ url('/exam/monitor') }}" class="{{ $navMenuClass }} {{ isActiveMobile('exam/monitor') }}">Monitor CBT</a>
                 @endif
 

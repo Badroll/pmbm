@@ -31,6 +31,7 @@ class AuthController extends Controller
             $redirectRole = [
                 "ROLE_SISWA" => "/",
                 "ROLE_SUPERADMIN" => "profil",
+                "ROLE_ADMIN_APLIKASI" => "profil",
                 "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
                 "ROLE_ADMIN_PRESTASI" => "profil",
@@ -54,6 +55,7 @@ class AuthController extends Controller
             $redirectRole = [
                 "ROLE_SISWA" => "/",
                 "ROLE_SUPERADMIN" => "profil",
+                "ROLE_ADMIN_APLIKASI" => "profil",
                 "ROLE_ADMIN_BERITA" => "profil",
                 "ROLE_ADMIN_BERKAS" => "profil",
                 "ROLE_ADMIN_PRESTASI" => "profil",
@@ -204,7 +206,7 @@ class AuthController extends Controller
 
     public function admin(Request $request){
         $loginUser = $request->loginUser;
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_APLIKASI"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
@@ -223,7 +225,7 @@ class AuthController extends Controller
     public function datatable(Request $request)
     {
         $loginUser = $request->loginUser;
-        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN"])) {
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_APLIKASI"])) {
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
         
@@ -274,6 +276,7 @@ class AuthController extends Controller
  
         // ── Format data untuk DataTable ────────────────────────────────────
         $roleLabels = [
+            'ROLE_ADMIN_APLIKASI' => ['label' => 'Admin Aplikasi',  'class' => 'bg-sky-100 text-green-700'],
             'ROLE_ADMIN_BERITA' => ['label' => 'Admin Berita',      'class' => 'bg-violet-100 text-violet-700'],
             'ROLE_ADMIN_BERKAS' => ['label' => 'Admin Verifikasi',  'class' => 'bg-sky-100 text-sky-700'],
             'ROLE_ADMIN_PRESTASI' => ['label' => 'Admin Prestasi',  'class' => 'bg-sky-100 text-sky-700'],

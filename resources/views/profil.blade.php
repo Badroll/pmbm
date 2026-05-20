@@ -191,7 +191,7 @@
                         @method('PUT')
 
                         <!-- Current Password -->
-                        <div class="mb-6">
+                        <div class="mb-6 hidden">
                             <label for="current_password" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Password Saat Ini <span class="text-red-500">*</span>
                             </label>
@@ -325,7 +325,7 @@
                         </div> -->
 
                         <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-3 hidden">
+                        <div class="flex flex-col sm:flex-row gap-3">
                             <button type="submit" 
                                     class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-md hover:shadow-lg flex items-center justify-center">
                                 <i class="fas fa-key mr-2"></i>
@@ -347,199 +347,278 @@
 
 @push('scripts')
 <script>
-// Toggle password visibility
-function togglePassword(fieldId) {
-    const field = document.getElementById(fieldId);
-    const icon = document.getElementById(fieldId + '-icon');
-    
-    if (field.type === 'password') {
-        field.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        field.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    }
-}
-
-// Navigation active state
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = document.getElementById(fieldId + '-icon');
         
-        // Remove active from all
-        document.querySelectorAll('.nav-link').forEach(l => {
-            l.classList.remove('active', 'text-blue-600', 'bg-blue-50');
-            l.classList.add('text-gray-700');
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Navigation active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active from all
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active', 'text-blue-600', 'bg-blue-50');
+                l.classList.add('text-gray-700');
+            });
+            
+            // Add active to clicked
+            this.classList.add('active', 'text-blue-600', 'bg-blue-50');
+            this.classList.remove('text-gray-700');
+            
+            // Scroll to section
+            const target = this.getAttribute('href');
+            if (target.startsWith('#')) {
+                document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Phone number validation
+    document.getElementById('no_hp').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 13) {
+            this.value = this.value.slice(0, 13);
+        }
+    });
+
+    // Password strength checker for new password
+    document.getElementById('new_password').addEventListener('input', function(e) {
+        const password = e.target.value;
+        let strength = 0;
+        
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        
+        updateRequirement('new-req-length', hasLength);
+        updateRequirement('new-req-uppercase', hasUppercase);
+        updateRequirement('new-req-lowercase', hasLowercase);
+        updateRequirement('new-req-number', hasNumber);
+        
+        if (hasLength) strength++;
+        if (hasUppercase) strength++;
+        if (hasLowercase) strength++;
+        if (hasNumber) strength++;
+        
+        const bars = ['new-strength-bar-1', 'new-strength-bar-2', 'new-strength-bar-3', 'new-strength-bar-4'];
+        const colors = ['bg-red-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
+        const texts = ['Lemah', 'Cukup', 'Baik', 'Kuat'];
+        
+        bars.forEach((bar, index) => {
+            const element = document.getElementById(bar);
+            element.className = 'h-1 w-1/4 rounded';
+            
+            if (index < strength) {
+                element.classList.add(colors[strength - 1]);
+            } else {
+                element.classList.add('bg-gray-200');
+            }
         });
         
-        // Add active to clicked
-        this.classList.add('active', 'text-blue-600', 'bg-blue-50');
-        this.classList.remove('text-gray-700');
-        
-        // Scroll to section
-        const target = this.getAttribute('href');
-        if (target.startsWith('#')) {
-            document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
-
-// Phone number validation
-document.getElementById('no_hp').addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^0-9]/g, '');
-    if (this.value.length > 13) {
-        this.value = this.value.slice(0, 13);
-    }
-});
-
-// Password strength checker for new password
-document.getElementById('new_password').addEventListener('input', function(e) {
-    const password = e.target.value;
-    let strength = 0;
-    
-    const hasLength = password.length >= 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    
-    updateRequirement('new-req-length', hasLength);
-    updateRequirement('new-req-uppercase', hasUppercase);
-    updateRequirement('new-req-lowercase', hasLowercase);
-    updateRequirement('new-req-number', hasNumber);
-    
-    if (hasLength) strength++;
-    if (hasUppercase) strength++;
-    if (hasLowercase) strength++;
-    if (hasNumber) strength++;
-    
-    const bars = ['new-strength-bar-1', 'new-strength-bar-2', 'new-strength-bar-3', 'new-strength-bar-4'];
-    const colors = ['bg-red-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
-    const texts = ['Lemah', 'Cukup', 'Baik', 'Kuat'];
-    
-    bars.forEach((bar, index) => {
-        const element = document.getElementById(bar);
-        element.className = 'h-1 w-1/4 rounded';
-        
-        if (index < strength) {
-            element.classList.add(colors[strength - 1]);
+        const strengthText = document.getElementById('new-strength-text');
+        if (password.length > 0) {
+            strengthText.textContent = 'Kekuatan password: ' + texts[strength - 1];
+            strengthText.className = 'text-xs mt-1 ' + 
+                (strength === 1 ? 'text-red-500' : 
+                strength === 2 ? 'text-yellow-500' : 
+                strength === 3 ? 'text-blue-500' : 'text-green-500');
         } else {
-            element.classList.add('bg-gray-200');
+            strengthText.textContent = '';
         }
+        
+        checkNewPasswordMatch();
     });
-    
-    const strengthText = document.getElementById('new-strength-text');
-    if (password.length > 0) {
-        strengthText.textContent = 'Kekuatan password: ' + texts[strength - 1];
-        strengthText.className = 'text-xs mt-1 ' + 
-            (strength === 1 ? 'text-red-500' : 
-             strength === 2 ? 'text-yellow-500' : 
-             strength === 3 ? 'text-blue-500' : 'text-green-500');
-    } else {
-        strengthText.textContent = '';
+
+    function updateRequirement(id, met) {
+        const element = document.getElementById(id);
+        const icon = element.querySelector('i');
+        
+        if (met) {
+            icon.classList.remove('fa-circle', 'text-gray-300');
+            icon.classList.add('fa-check-circle', 'text-green-500');
+            element.classList.add('text-green-600');
+        } else {
+            icon.classList.remove('fa-check-circle', 'text-green-500');
+            icon.classList.add('fa-circle', 'text-gray-300');
+            element.classList.remove('text-green-600');
+        }
     }
-    
-    checkNewPasswordMatch();
-});
 
-function updateRequirement(id, met) {
-    const element = document.getElementById(id);
-    const icon = element.querySelector('i');
-    
-    if (met) {
-        icon.classList.remove('fa-circle', 'text-gray-300');
-        icon.classList.add('fa-check-circle', 'text-green-500');
-        element.classList.add('text-green-600');
-    } else {
-        icon.classList.remove('fa-check-circle', 'text-green-500');
-        icon.classList.add('fa-circle', 'text-gray-300');
-        element.classList.remove('text-green-600');
-    }
-}
+    // Check password confirmation match
+    document.getElementById('new_password_confirmation').addEventListener('input', checkNewPasswordMatch);
 
-// Check password confirmation match
-document.getElementById('new_password_confirmation').addEventListener('input', checkNewPasswordMatch);
-
-function checkNewPasswordMatch() {
-    const password = document.getElementById('new_password').value;
-    const confirmation = document.getElementById('new_password_confirmation').value;
-    const matchDiv = document.getElementById('new-password-match');
-    const nomatchDiv = document.getElementById('new-password-nomatch');
-    
-    if (confirmation.length > 0) {
-        if (password === confirmation) {
-            matchDiv.classList.remove('hidden');
-            nomatchDiv.classList.add('hidden');
+    function checkNewPasswordMatch() {
+        const password = document.getElementById('new_password').value;
+        const confirmation = document.getElementById('new_password_confirmation').value;
+        const matchDiv = document.getElementById('new-password-match');
+        const nomatchDiv = document.getElementById('new-password-nomatch');
+        
+        if (confirmation.length > 0) {
+            if (password === confirmation) {
+                matchDiv.classList.remove('hidden');
+                nomatchDiv.classList.add('hidden');
+            } else {
+                matchDiv.classList.add('hidden');
+                nomatchDiv.classList.remove('hidden');
+            }
         } else {
             matchDiv.classList.add('hidden');
-            nomatchDiv.classList.remove('hidden');
+            nomatchDiv.classList.add('hidden');
         }
-    } else {
-        matchDiv.classList.add('hidden');
-        nomatchDiv.classList.add('hidden');
     }
-}
 
-// Password form validation
-document.getElementById('password-form').addEventListener('submit', function(e) {
-    const currentPassword = document.getElementById('current_password').value;
-    const newPassword = document.getElementById('new_password').value;
-    const confirmation = document.getElementById('new_password_confirmation').value;
-    
-    if (!currentPassword || !newPassword || !confirmation) {
-        e.preventDefault();
-        alert('Semua field password harus diisi!');
-        return false;
-    }
-    
-    if (newPassword !== confirmation) {
-        e.preventDefault();
-        alert('Password baru dan konfirmasi tidak cocok!');
-        return false;
-    }
-    
-    if (newPassword.length < 8) {
-        e.preventDefault();
-        alert('Password baru minimal 8 karakter!');
-        return false;
-    }
-    
-    if (currentPassword === newPassword) {
-        e.preventDefault();
-        alert('Password baru tidak boleh sama dengan password lama!');
-        return false;
-    }
-    
-    // Show loading
-    const submitBtn = this.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
-});
-
-// Scroll spy for navigation
-window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('[id^="info-"], [id^="ganti-"]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (window.pageYOffset >= sectionTop) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active', 'text-blue-600', 'bg-blue-50');
-        link.classList.add('text-gray-700');
+    // Scroll spy for navigation
+    window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('[id^="info-"], [id^="ganti-"]');
+        const navLinks = document.querySelectorAll('.nav-link');
         
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active', 'text-blue-600', 'bg-blue-50');
-            link.classList.remove('text-gray-700');
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            if (window.pageYOffset >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active', 'text-blue-600', 'bg-blue-50');
+            link.classList.add('text-gray-700');
+            
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active', 'text-blue-600', 'bg-blue-50');
+                link.classList.remove('text-gray-700');
+            }
+        });
+    });
+
+
+    document.getElementById('password-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const form = this;
+
+        // ambil value form
+        const currentPassword = document.getElementById('current_password').value;
+        const newPassword     = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('new_password_confirmation').value;
+
+        // validasi sederhana
+        if (newPassword !== confirmPassword) {
+            Swal.fire({
+                icon : 'error',
+                title: 'Gagal',
+                text : 'Konfirmasi password tidak cocok'
+            });
+            return;
+        }
+
+        // payload custom
+        const payload = new URLSearchParams({
+            _token          : form.querySelector('[name="_token"]').value,
+            _method         : 'POST',
+
+            id              : "{{Session::get('SESSION_U_ID') }}", // ganti sesuai variable id user
+
+            password_lama   : currentPassword,
+            password   : newPassword,
+            konfirmasi      : confirmPassword,
+        });
+
+        Swal.fire({
+            title            : 'Menyimpan...',
+            text             : 'Mohon tunggu',
+            allowOutsideClick: false,
+            allowEscapeKey   : false,
+            didOpen          : () => Swal.showLoading(),
+        });
+
+        try {
+
+            const res = await fetch('/api/auth/update', {
+                method : 'POST',
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded',
+                    'Accept'       : 'application/json',
+                },
+                body: payload,
+            });
+
+            const data = await res.json();
+
+            Swal.close();
+
+            if (data.STATUS !== 'SUCCESS') {
+
+                // tampil validasi laravel jika ada
+                if (data.errors) {
+
+                    let msg = Object.values(data.errors)
+                        .flat()
+                        .join('\n');
+
+                    await Swal.fire({
+                        icon : 'error',
+                        title: 'Validasi Gagal',
+                        text : msg
+                    });
+
+                } else {
+
+                    await Swal.fire({
+                        icon : 'error',
+                        title: 'Gagal',
+                        text : data.MESSAGE || 'Terjadi kesalahan'
+                    });
+
+                }
+
+                return;
+            }
+
+            // reset form
+            form.reset();
+
+            // hide indikator password match jika ada
+            document.getElementById('new-password-match')?.classList.add('hidden');
+            document.getElementById('new-password-nomatch')?.classList.add('hidden');
+
+            await Swal.fire({
+                icon             : 'success',
+                title            : 'Berhasil',
+                text             : (data.MESSAGE || 'Password berhasil diubah') + '. Logout otomatis...',
+                timer            : 1500,
+                showConfirmButton: false
+            });
+
+            window.location.href = '/auth/logout';
+
+        } catch (err) {
+
+            Swal.close();
+
+            Swal.fire({
+                icon : 'error',
+                title: 'Gagal',
+                text : err.message || 'Terjadi kesalahan'
+            });
+
         }
     });
-});
+
 </script>
 @endpush
 

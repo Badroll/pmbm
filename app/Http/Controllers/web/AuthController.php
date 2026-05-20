@@ -152,8 +152,8 @@ class AuthController extends Controller
         try{
             $response = $this->mAPIauth->update($request);
             $response = $response->getData(true);
-        } catch(Exception $e){
-            return redirect()->back()->with("error", "Maaf, terjadi kesalahan", $e);
+        } catch(\Exception $e){
+            return redirect()->back()->with("error", "Maaf, terjadi kesalahan");
         }
 
         $status = $response["STATUS"];

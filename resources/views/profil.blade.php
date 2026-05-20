@@ -512,7 +512,7 @@
         const form = this;
 
         // ambil value form
-        const currentPassword = document.getElementById('current_password').value;
+        //const currentPassword = document.getElementById('current_password').value;
         const newPassword     = document.getElementById('new_password').value;
         const confirmPassword = document.getElementById('new_password_confirmation').value;
 
@@ -533,7 +533,7 @@
 
             id              : "{{Session::get('SESSION_U_ID') }}", // ganti sesuai variable id user
 
-            password_lama   : currentPassword,
+            //password_lama   : currentPassword,
             password   : newPassword,
             konfirmasi      : confirmPassword,
         });

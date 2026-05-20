@@ -243,7 +243,7 @@
                             @enderror
                             
                             <!-- Password Strength Indicator -->
-                            <!-- <div class="mt-3">
+                            <div class="mt-3 hidden">
                                 <div class="flex items-center space-x-1">
                                     <div id="new-strength-bar-1" class="h-1 w-1/4 bg-gray-200 rounded"></div>
                                     <div id="new-strength-bar-2" class="h-1 w-1/4 bg-gray-200 rounded"></div>
@@ -253,7 +253,7 @@
                                 <p id="new-strength-text" class="text-xs text-gray-500 mt-1"></p>
                             </div>
 
-                            <ul class="mt-2 text-xs text-gray-600 space-y-1">
+                            <ul class="mt-2 text-xs text-gray-600 space-y-1 hidden">
                                 <li class="flex items-center" id="new-req-length">
                                     <i class="fas fa-circle text-gray-300 text-xs mr-2"></i>
                                     Minimal 8 karakter
@@ -270,7 +270,7 @@
                                     <i class="fas fa-circle text-gray-300 text-xs mr-2"></i>
                                     Mengandung angka
                                 </li>
-                            </ul> -->
+                            </ul>
 
                         </div>
 

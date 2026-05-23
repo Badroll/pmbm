@@ -17,6 +17,8 @@ use App\Models\Kota as mKota;
 use App\Models\Kecamatan as mKecamatan;
 use App\Models\Kelurahan as mKelurahan;
 
+use App\Models\SiswaDaftar;
+
 use App\Services\InboxService as mInboxService;
 
 class DaftarController extends Controller
@@ -430,6 +432,69 @@ class DaftarController extends Controller
             'judul' => 'Grup WhatsApp Pendaftar',
             'isi' => trim($msg),
         ]);
+    }
+
+
+    public function daftarUlang(Request $request){
+        $loginUser = $request->loginUser;
+        $viewData = [
+            "siswa" => ($loginUser->siswa),
+            "formAction" => "/daftar-ulang",
+            "isEdit" => false,
+            "isLocked" => false
+        ];
+
+        return view("daftar-ulang", $viewData);
+    }
+
+    public function daftarUlangSave(Request $request)
+    {
+        $loginUser = $request->loginUser;
+        
+        // ambil semua fillable dari model
+        $fillable = (new SiswaDaftar())->getFillable();
+
+        // siapkan data
+        $data = [];
+
+        foreach ($fillable as $field) {
+            // skip field meta manual
+            if (in_array($field, ['SD_WAKTU_BUAT', 'SD_WAKTU_UBAH'])) {
+                continue;
+            }
+
+            // karena input form lowercase
+            // contoh: SD_NAMA_LENGKAP -> sd_nama_lengkap
+            $inputName = strtolower($field);
+
+            $data[$field] = $request->input($inputName);
+        }
+
+        // contoh otomatis ambil siswa_id dari user login
+        // sesuaikan sendiri jika beda
+        $data['SISWA_ID'] = $loginUser->siswa->SISWA_ID;
+
+        // waktu
+        $data['SD_WAKTU_UBAH'] = now();
+
+        // cek apakah sudah pernah daftar
+        $pendaftaran = SiswaDaftar::where('SISWA_ID', $data['SISWA_ID'])->first();
+
+        if ($pendaftaran) {
+
+            // UPDATE
+            $pendaftaran->update($data);
+
+        } else {
+
+            // INSERT
+            $data['SD_WAKTU_BUAT'] = now();
+
+            $pendaftaran = SiswaDaftar::create($data);
+        }
+        dd("ok");
+
+        //return redirect()->back()->with('success', 'Data pendaftaran berhasil disimpan.');
     }
 
 

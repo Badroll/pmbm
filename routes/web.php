@@ -58,6 +58,12 @@ Route::middleware("loggedin")->group(function () {
         Route::put("/", [DaftarController::class, "updateDaftar"]);
     });
 
+    Route::prefix("daftar-ulang")->group(function () {
+        Route::get("/", [DaftarController::class, "daftarUlang"]);
+        Route::post("/", [DaftarController::class, "daftarUlangSave"]);
+        // Route::put("/", [DaftarController::class, "updateDaftar"]);
+    });
+
     Route::prefix("inbox")->group(function () {
         Route::get("/", [WebController::class, "inbox"]);
     });

@@ -83,6 +83,11 @@ class Siswa extends Model
         return $this->hasMany(Pengerjaan::class, "SISWA_ID", "SISWA_ID");
     }
 
+    // daftar ulang
+    public function siswaDatar(){
+        return $this->hasOne(SiswaDaftar::class, "SISWA_ID", "SISWA_ID");
+    }
+
 
     // CUSTOM ---------------------------------------------------------------------------------------------------------
 

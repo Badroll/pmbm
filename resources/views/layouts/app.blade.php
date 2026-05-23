@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.tailwindcss.min.css">
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.tailwindcss.min.js"></script>
+    
+    {{-- AutoNumeric Library --}}
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.10.5/dist/autoNumeric.min.js"></script>
 
     <style>
         /* .flatpickr-input { width: 100%; }
@@ -220,6 +223,32 @@
                 previewContainer.removeClass("hidden");
             }
         }
+
+            /**
+         * Global AutoNumeric Initializer
+         * Semua input ber-class .autonumeric-rp otomatis jadi format Rupiah.
+         * Value yang dikirim ke server = angka murni (tanpa titik).
+         */
+        document.addEventListener('DOMContentLoaded', function () {
+            window.initAutoNumericRp = function (root = document) {
+                root.querySelectorAll('.autonumeric-rp').forEach(function (el) {
+                    if (el.dataset.anInit === '1') return;
+                    el.dataset.anInit = '1';
+
+                    new AutoNumeric(el, {
+                        digitGroupSeparator: '.',
+                        decimalCharacter: ',',
+                        decimalPlaces: 0,
+                        minimumValue: '0',
+                        maximumValue: '999999999999',
+                        unformatOnSubmit: true, // auto-unformat saat submit
+                        modifyValueOnWheel: false,
+                    });
+                });
+            };
+
+            window.initAutoNumericRp();
+    });
 
     </script>
 

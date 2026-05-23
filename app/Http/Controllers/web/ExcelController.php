@@ -627,20 +627,18 @@ class ExcelController extends Controller
 
             // ─── DETAIL SKOR ────────────────────────────────────
 
-            $sheet->setCellValue("G{$row}", round($detail[0], 2));
-            $sheet->setCellValue("H{$row}", round($detail[1], 2));
-            $sheet->setCellValue("I{$row}", round($detail[2], 2));
-            $sheet->setCellValue("J{$row}", round($detail[3], 2));
-            $sheet->setCellValue("K{$row}", round($detail[4], 2));
-            $sheet->setCellValue("L{$row}", round($detail[5], 2));
-            $sheet->setCellValue("M{$row}", round($detail[6], 2));
-            $sheet->setCellValue("N{$row}", round($detail[7], 2));
-
-            // ─── TOTAL ──────────────────────────────────────────
+            $sheet->setCellValue("G{$row}", round($detail[0], 3));
+            $sheet->setCellValue("H{$row}", round($detail[1], 3));
+            $sheet->setCellValue("I{$row}", round($detail[2], 3));
+            $sheet->setCellValue("J{$row}", round($detail[3], 3));
+            $sheet->setCellValue("K{$row}", round($detail[4], 3));
+            $sheet->setCellValue("L{$row}", round($detail[5], 3));
+            $sheet->setCellValue("M{$row}", round($detail[6], 3));
+            $sheet->setCellValue("N{$row}", round($detail[7], 3));
 
             $sheet->setCellValue(
                 "O{$row}",
-                round($skor["TOTAL"], 2)
+                round($skor["TOTAL"], 3)
             );
 
             // ─── STYLE ──────────────────────────────────────────

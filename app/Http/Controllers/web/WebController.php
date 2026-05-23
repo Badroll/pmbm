@@ -73,68 +73,19 @@ class WebController extends Controller
     public function jurnalDatatable(Request $request)
     {
         $loginUser = $request->loginUser;
-        // if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN"])) {
-        //     return compose("ERROR", "Anda tidak berhak mengakses");
-        // }
-
-        // // RAW QUERY VERSION
-        // // ── Base query: ranking berdasarkan skor tertinggi ──────────────────
-        // $query = \DB::table('siswa')
-        //     ->select(
-        //         'SISWA_ID', 'SISWA_NAMA', 'SISWA_JALUR', 'SISWA_SKOR',
-        //         'SISWA_STATUS', 'SISWA_NISN', 'SISWA_TGL_LAHIR',
-        //         'SISWA_TES_CBT_AKADEMIK', 'SISWA_TES_CBT_PSIKO', 'SISWA_TES_QURAN',
-        //         'SISWA_AFIRMASI', 'SISWA_PRESTASI_KEJUARAAN', 'SISWA_PRESTASI_KEAGAMAAN',
-        //         'SISWA_NILAI_52_MTK', 'SISWA_NILAI_52_IPA', 'SISWA_NILAI_52_BIND', 'SISWA_NILAI_52_PAI',
-        //         'SISWA_NILAI_61_MTK', 'SISWA_NILAI_61_IPA', 'SISWA_NILAI_61_BIND', 'SISWA_NILAI_61_PAI',
-        //         \DB::raw('RANK() OVER (ORDER BY SISWA_SKOR DESC) AS ranking')
-        //     )
-        //     ;
-
-        // // ── Filter jalur ────────────────────────────────────────────────────
-        // if ($request->filled('jalur') && $request->jalur !== 'all') {
-        //     $query->where('SISWA_JALUR', $request->jalur);
-        // }
-
-        // // ── Wrap subquery supaya RANK() bisa di-filter & di-count ───────────
-        // $wrapped = \DB::table(\DB::raw("({$query->toSql()}) as sub"))
-        //     ->mergeBindings($query);
-
-        // $totalRecords = $wrapped->count();
-
-        // // ── Global search ───────────────────────────────────────────────────
-        // if ($request->filled('search.value')) {
-        //     $search = $request->input('search.value');
-        //     $wrapped->where(function ($q) use ($search) {
-        //         $q->where('SISWA_NAMA', 'like', "%{$search}%")
-        //         ->orWhere('SISWA_NISN', 'like', "%{$search}%");
-        //     });
-        // }
-
-        // $filteredRecords = $wrapped->count();
-
-        // // ── Sorting (hanya ranking yang orderable di front-end) ─────────────
-        // $orderDir = $request->input('order.0.dir', 'asc') === 'desc' ? 'desc' : 'asc';
-        // $wrapped->orderBy('ranking', $orderDir);
-
-        // // ── Pagination ──────────────────────────────────────────────────────
-        // $start  = (int) $request->input('start', 0);
-        // $length = (int) $request->input('length', 10);
-        // $rows   = $wrapped->offset($start)->limit($length)->get();
-
 
         // MODEL
         // ── Base query: ranking berdasarkan skor tertinggi ──────────────────
         $query = mSiswa::query()
-            ->select(
-                'SISWA_ID', 'SISWA_NAMA', 'SISWA_JALUR', 'SISWA_SKOR',
-                'SISWA_STATUS', 'SISWA_NISN', 'SISWA_TGL_LAHIR',
-                'SISWA_TES_CBT_AKADEMIK', 'SISWA_TES_CBT_PSIKO', 'SISWA_TES_QURAN',
-                'SISWA_AFIRMASI', 'SISWA_PRESTASI_KEJUARAAN', 'SISWA_PRESTASI_KEAGAMAAN',
-                'SISWA_NILAI_52_MTK', 'SISWA_NILAI_52_IPA', 'SISWA_NILAI_52_BIND', 'SISWA_NILAI_52_PAI',
-                'SISWA_NILAI_61_MTK', 'SISWA_NILAI_61_IPA', 'SISWA_NILAI_61_BIND', 'SISWA_NILAI_61_PAI',
-                DB::raw('RANK() OVER (ORDER BY SISWA_SKOR DESC) AS ranking')
-            );
+        ->select(
+            'SISWA_ID', 'SISWA_NAMA', 'SISWA_JALUR', 'SISWA_SKOR',
+            'SISWA_STATUS', 'SISWA_NISN', 'SISWA_TGL_LAHIR',
+            'SISWA_TES_CBT_AKADEMIK', 'SISWA_TES_CBT_PSIKO', 'SISWA_TES_QURAN',
+            'SISWA_AFIRMASI', 'SISWA_PRESTASI_KEJUARAAN', 'SISWA_PRESTASI_KEAGAMAAN',
+            'SISWA_NILAI_52_MTK', 'SISWA_NILAI_52_IPA', 'SISWA_NILAI_52_BIND', 'SISWA_NILAI_52_PAI',
+            'SISWA_NILAI_61_MTK', 'SISWA_NILAI_61_IPA', 'SISWA_NILAI_61_BIND', 'SISWA_NILAI_61_PAI',
+            DB::raw('ROW_NUMBER() OVER (ORDER BY SISWA_SKOR DESC, SISWA_TGL_LAHIR ASC, SISWA_ID ASC) AS ranking')
+        );
 
         // ── Filter jalur ────────────────────────────────────────────────────
         if ($request->filled('jalur') && $request->jalur !== 'all') {

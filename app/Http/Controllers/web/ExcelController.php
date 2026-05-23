@@ -348,10 +348,10 @@ class ExcelController extends Controller
         'A - Rapor',
         'B - CBT Akademik',
         'C - Psikotest',
-        'D - Quran',
+        'D - Baca Al Quran',
         'E - Afirmasi',
-        'F - Prestasi',
-        'G - Keagamaan',
+        'F - Prest. Akademik',
+        'G - Prest. Keagamaan',
         'H - Umur',
 
         'Total Skor'
@@ -368,10 +368,10 @@ class ExcelController extends Controller
         14,
         18,
         16,
+        20,
         14,
-        14,
-        14,
-        16,
+        20,
+        20,
         12,
 
         12

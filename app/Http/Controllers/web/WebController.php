@@ -149,8 +149,35 @@ class WebController extends Controller
             $model->exists = true;
             $skor = $model->hitungSkor();
 
+            // Ambil poin D (Tes Quran)
+            $poinD = 0;
+
+            foreach ($skor["POIN"] as $item) {
+                if (str_starts_with($item[0], 'D')) {
+                    $poinD = $item[1];
+                    break;
+                }
+            }
+
+            $warningQuran = '';
+
+            if ($poinD < 71) {
+                $warningQuran = "
+                    <div class='mt-1'>
+                        <span class='inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-700'>
+                            Tes Quran di bawah&nbsp;<i>passing grade</i>
+                        </span>
+                    </div>
+                ";
+            }
+
             $skorHtml = "
-                <span class='font-semibold text-gray-700'>{$skor["TOTAL"]}</span>
+                <div>
+                    <span class='font-semibold text-gray-700'>{$skor["TOTAL"]}</span>
+                    <!-- tampilkan warning
+                    {$warningQuran}
+                    -->
+                </div>
             ";
 
             $rankHtml = "

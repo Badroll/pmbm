@@ -222,12 +222,36 @@ function renderModal(raw) {
                                         ? nilai
                                         : (nilai * bobot).toFixed(2);
 
-                                    return row(
-                                        label,
-                                        nilaiFormatted,
-                                        `x${bobot}`,
-                                        hasil
-                                    );
+                                    // return row(
+                                    //     label,
+                                    //     nilaiFormatted,
+                                    //     `x${bobot}`,
+                                    //     hasil
+                                    // );
+
+                                    let extraWarning = '';
+
+                                    if (label.startsWith('D') && Number(nilai) < 71) {
+                                        extraWarning = `
+                                            <tr>
+                                                <td colspan="4" class="pb-3 px-3">
+                                                    <div class="mt-1 inline-flex items-center px-2 py-1 rounded-lg text-[11px] font-medium bg-red-100 text-red-700">
+                                                        Di bawah&nbsp;<i>passing grade</i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }
+
+                                    return `
+                                        ${row(
+                                            label,
+                                            nilaiFormatted,
+                                            `x${bobot}`,
+                                            hasil
+                                        )}
+                                        ${extraWarning}
+                                    `;
                                 }).join('')
                             }
                         </tbody>

@@ -949,7 +949,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_ayah') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
+                                @foreach(['Milik Sendiri','Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_ayah_status_rumah', $isEdit ? $sd->SD_AYAH_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
@@ -1021,7 +1021,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_ibu') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
+                                @foreach(['Milik Sendiri','Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_ibu_status_rumah', $isEdit ? $sd->SD_IBU_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
@@ -1093,7 +1093,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_wali') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
+                                @foreach(['Milik Sendiri','Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_wali_status_rumah', $isEdit ? $sd->SD_WALI_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>

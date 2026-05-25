@@ -391,9 +391,14 @@ private const JALUR_CONFIG = [
         foreach (self::JALUR_CONFIG as $jalurKey => $config) {
 
             $data = mSiswa::where('SISWA_JALUR', $jalurKey)
-                // ->orderByDesc('SISWA_SKOR')
-                // ->orderBy('SISWA_TGL_DAFTAR')
-                ->orderBy("SISWA_ID")
+                ->orderByRaw("
+                    CASE SISWA_STATUS
+                        WHEN 'STATUS_LOLOS' THEN 1
+                        WHEN 'STATUS_CADANGAN' THEN 2
+                        ELSE 3
+                    END ASC
+                ")
+                ->orderByDesc('SISWA_SKOR')
                 ->get();
 
             $sheet = ($sheetIndex === 0)

@@ -21,13 +21,15 @@ use App\Models\SiswaDaftar;
 use App\Models\_setting;
 
 use App\Services\InboxService as mInboxService;
+use App\Http\Controllers\web\ExcelController as mExcelController;
 
 class DaftarController extends Controller
 {
     protected $inboxService;
+    protected $mExcelController;
 
     public function __construct(){
-        $this->inboxService = new mInboxService();
+        $this->mExcelController = new mExcelController();
     }
 
 
@@ -440,10 +442,13 @@ class DaftarController extends Controller
         $loginUser = $request->loginUser;
         $viewData = [
             "siswa" => ($loginUser->siswa),
+            "sd" => ($loginUser->siswa->siswaDaftar),
             "formAction" => "/daftar-ulang",
-            "isEdit" => false,
+            "isEdit" => isset($loginUser->siswa->siswaDaftar) ? true : false,
             "isLocked" => false
         ];
+
+        //dd($viewData);
 
         return view("daftar-ulang", $viewData);
     }
@@ -493,9 +498,37 @@ class DaftarController extends Controller
 
             $pendaftaran = SiswaDaftar::create($data);
         }
-        dd("ok");
 
+        return $this->mExcelController->daftarUlang($pendaftaran->SISWA_ID);
         //return redirect()->back()->with('success', 'Data pendaftaran berhasil disimpan.');
+    }
+
+    public function pengumuman(Request $request){
+        $loginUser = $request->loginUser;
+
+        if(!$loginUser->siswa){
+            return redirect()->back()->with("warning", "anda tidak mendaftar");
+        }
+
+        $status = "ditolak";
+        if($loginUser->siswa->SISWA_STATUS == "STATUS_LOLOS"){
+            $status = "diterima";
+        }
+        if($loginUser->siswa->SISWA_STATUS == "STATUS_CADANGAN"){
+            $status = "cadangan";
+        }
+
+        $catatan = "";
+        if($loginUser->siswa->SISWA_TES_QURAN < 71){
+            $catatan = "Tidak lolos Baca Al-Qur`an";
+        }
+
+        return view('pengumuman', [
+            'status'  => $status,      // 'diterima' | 'tidak_diterima' | 'cadangan'
+            'nama'    => $loginUser->siswa->SISWA_NAMA,
+            'nomor'   => str_pad($loginUser->siswa->SISWA_NO, 4, '0', STR_PAD_LEFT),
+            'catatan' => $catatan, // hanya ditampilkan jika status 'tidak_diterima'
+        ]);
     }
 
 

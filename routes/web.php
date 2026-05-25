@@ -70,6 +70,10 @@ Route::middleware("loggedin")->group(function () {
 
     Route::prefix("siswa")->group(function () {
         Route::get("/", [DaftarController::class, "siswa"]);
+
+        Route::get("update-bulk-khusus", [DaftarController::class, "updateBulkKhusus"]);
+        Route::get("update-bulk-rollback", [DaftarController::class, "updateBulkRollback"]);
+
         Route::get("/{siswaId}", [DaftarController::class, "siswaDetail"]);
         Route::post("update-status", [DaftarController::class, "siswaUpdateStatus"]);
     });

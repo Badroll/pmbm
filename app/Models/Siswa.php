@@ -150,16 +150,54 @@ class Siswa extends Model
         * HITUNG SKOR
         * ====================== */
 
+        $isAfirmasi = ($siswa->SISWA_JALUR === 'JALUR_AFIRMASI');
+        $isPrestasi = ($siswa->SISWA_JALUR === 'JALUR_PRESTASI');
+
         $poin = [
             ["A - rata-rata nilai rapot", $A, 1],
             ["B - CBT, Tes akademik", $B, 3],
             ["C - CBT, Psikotest", $C, 2],
             ["D - Skor tes baca Al Quran", $D, 2],
-            ["E - Skor afirmasi", $E, 2],
-            ["F - Nilai prestasi kejuaraan", $F, 3],
-            ["G - Nilai prestasi keagamaan (tahfidz)", $G, 3],
+            ["E - Skor afirmasi", $isAfirmasi ? $E : 0, 2],
+            ["F - Nilai prestasi kejuaraan", $isPrestasi ? $F : 0, 3],
+            ["G - Nilai prestasi keagamaan (tahfidz)", $isPrestasi ? $G : 0, 3],
             ["H - Umur calon murid baru", $H, 1],
         ];
+
+        // $poin = [
+        //     ["A - rata-rata nilai rapot", $A, 1],
+        //     ["B - CBT, Tes akademik", $B, 3],
+        //     ["C - CBT, Psikotest", $C, 2],
+        //     ["D - Skor tes baca Al Quran", $D, 2],
+        // ];
+
+        // /* ======================
+        // * POIN KHUSUS BERDASARKAN JALUR
+        // * ====================== */
+        // if ($siswa->SISWA_JALUR === 'JALUR_AFIRMASI') {
+        //     $E = skorKhusus($siswa->SISWA_AFIRMASI);
+
+        //     $poin[] = ["E - Skor afirmasi", $E, 2];
+        // }
+
+        // if ($siswa->SISWA_JALUR === 'JALUR_PRESTASI') {
+        //     $F = skorKhusus($siswa->SISWA_PRESTASI_KEJUARAAN);
+        //     $G = skorKhusus($siswa->SISWA_PRESTASI_KEAGAMAAN);
+
+        //     $poin[] = ["F - Nilai prestasi kejuaraan", $F, 3];
+        //     $poin[] = ["G - Nilai prestasi keagamaan (tahfidz)", $G, 3];
+        // }
+
+        // /* ======================
+        // * H : Umur (selalu ada)
+        // * ====================== */
+        // $H = number_format(
+        //     Carbon::parse($siswa->SISWA_TGL_LAHIR)
+        //         ->diffInDays(Carbon::create(2026, 7, 1)) / 365.25,
+        //     2
+        // );
+
+        // $poin[] = ["H - Umur calon murid baru", $H, 1];
 
         $skor = 0;
         foreach ($poin as $item) {

@@ -18,6 +18,7 @@ use App\Models\Kecamatan as mKecamatan;
 use App\Models\Kelurahan as mKelurahan;
 
 use App\Models\SiswaDaftar;
+use App\Models\_setting;
 
 use App\Services\InboxService as mInboxService;
 
@@ -587,6 +588,174 @@ class DaftarController extends Controller
         return compose("SUCCESS", "Status diperbarui");
 
     }
+
+
+public function updateBulkKhusus(Request $request)
+{
+    $loginUser = $request->loginUser;
+
+    if ($loginUser->U_ROLE !== "ROLE_SUPERADMIN") {
+        return compose("ERROR", "Anda tidak berhak mengakses");
+    }
+
+    DB::beginTransaction();
+    
+    $flag = _setting::find("UPDATE_BULK");
+    if($flag->S_VALUE == "Y"){
+        DB::rollBack();
+        return redirect()->back()->with("info", "proses ini sudah dilakukan"); 
+    }
+
+    try {
+        $kuotaKhusus = 51;    // kuota untuk afirmasi & prestasi
+        $kuotaReguler = 238;  // kuota untuk reguler
+        $kuotaCadangan = 68;  // kuota cadangan dari reguler
+
+        // Proses jalur khusus (Afirmasi & Prestasi) - ada alih jalur ke reguler
+        $prosesJalurKhusus = function ($jalur) use ($kuotaKhusus) {
+            $rows = mSiswa::select('SISWA_ID')
+                ->where('SISWA_STATUS', 'STATUS_TERVERIFIKASI')
+                ->where('SISWA_TES_QURAN', '>', 70)
+                ->where('SISWA_JALUR', $jalur)
+                ->orderByDesc('SISWA_SKOR')
+                ->get();
+
+            $ids = [];
+            foreach ($rows as $r) {
+                $ids[] = $r->SISWA_ID;
+            }
+
+            $lolosIds = array_slice($ids, 0, $kuotaKhusus);
+            $alihIds  = array_slice($ids, $kuotaKhusus);
+
+            logcmd($alihIds);
+
+            if (!empty($lolosIds)) {
+                mSiswa::whereIn('SISWA_ID', $lolosIds)->update(['SISWA_STATUS' => 'STATUS_LOLOS']);
+            }
+
+            if (!empty($alihIds)) {
+                // Ubah jalur dulu ke reguler
+                mSiswa::whereIn('SISWA_ID', $alihIds)->update(['SISWA_JALUR' => 'JALUR_REGULER']);
+
+                // Hitung ulang skor satu per satu
+                $siswaAlih = mSiswa::whereIn('SISWA_ID', $alihIds)->get();
+                foreach ($siswaAlih as $s) {
+                    $s->hitungSkor();
+                }
+            }
+        };
+
+        // Proses jalur reguler - TIDAK ada alih jalur, sisanya tetap di reguler (tidak lolos)
+        $prosesJalurReguler = function () use ($kuotaReguler) {
+            $rows = mSiswa::select('SISWA_ID')
+                ->where('SISWA_STATUS', 'STATUS_TERVERIFIKASI')
+                ->where('SISWA_TES_QURAN', '>', 70)
+                ->where('SISWA_JALUR', 'JALUR_REGULER')
+                ->orderByDesc('SISWA_SKOR')
+                ->get();
+
+            $ids = [];
+            foreach ($rows as $r) {
+                $ids[] = $r->SISWA_ID;
+            }
+
+            $lolosIds = array_slice($ids, 0, $kuotaReguler);
+            // Tidak ada alih jalur untuk reguler, sisanya tetap STATUS_TERVERIFIKASI (tidak lolos)
+
+            logcmd("Reguler lolos: " . count($lolosIds));
+
+            if (!empty($lolosIds)) {
+                mSiswa::whereIn('SISWA_ID', $lolosIds)->update(['SISWA_STATUS' => 'STATUS_LOLOS']);
+            }
+        };
+
+        // Proses cadangan - ambil 68 teratas dari sisa reguler yang masih STATUS_TERVERIFIKASI
+        $prosesCadangan = function () use ($kuotaCadangan) {
+            $rows = mSiswa::select('SISWA_ID')
+                ->where('SISWA_STATUS', 'STATUS_TERVERIFIKASI')
+                ->where('SISWA_TES_QURAN', '>', 70)
+                ->where('SISWA_JALUR', 'JALUR_REGULER')
+                ->orderByDesc('SISWA_SKOR')
+                ->get();
+
+            $ids = [];
+            foreach ($rows as $r) {
+                $ids[] = $r->SISWA_ID;
+            }
+
+            $cadanganIds = array_slice($ids, 0, $kuotaCadangan);
+
+            logcmd("Cadangan: " . count($cadanganIds));
+
+            if (!empty($cadanganIds)) {
+                mSiswa::whereIn('SISWA_ID', $cadanganIds)->update(['SISWA_STATUS' => 'STATUS_CADANGAN']);
+            }
+        };
+
+        // Jalankan proses jalur khusus dulu (agar yang dialihkan ikut diproses di reguler)
+        $prosesJalurKhusus('JALUR_AFIRMASI');
+        $prosesJalurKhusus('JALUR_PRESTASI');
+
+        // Baru proses jalur reguler (sudah termasuk siswa yang dialihkan dari afirmasi/prestasi)
+        $prosesJalurReguler();
+
+        // Setelah reguler diproses, ambil 68 teratas dari sisa reguler sebagai cadangan
+        $prosesCadangan();
+
+        $flag->S_VALUE = "Y";
+        $flag->save();
+
+        DB::commit();
+        return redirect()->back()->with("success", "berhasil diperbarui massal");
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return compose("ERROR", "Gagal: " . $e->getMessage());
+    }
+}
+
+public function updateBulkRollback(Request $request)
+{
+    $loginUser = $request->loginUser;
+
+    if ($loginUser->U_ROLE !== "ROLE_SUPERADMIN") {
+        return compose("ERROR", "Anda tidak berhak mengakses");
+    }
+
+    DB::beginTransaction();
+    try {
+        $affectedRows = mSiswa::whereIn('SISWA_STATUS', [
+            'STATUS_LOLOS',
+            'STATUS_DITOLAK',
+            'STATUS_CADANGAN'
+        ])->update([
+            'SISWA_STATUS' => 'STATUS_TERVERIFIKASI'
+        ]);
+
+        _setting::find("UPDATE_BULK")->update([
+            "S_VALUE" => "N"
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Berhasil memverifikasi {$affectedRows} siswa",
+            'affected_rows' => $affectedRows
+        ], 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        logcmd('Error verifikasi siswa: ' . $e->getMessage());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal memverifikasi siswa',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
 
 }

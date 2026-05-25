@@ -9,7 +9,7 @@
 <div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
 
     {{-- Header --}}
-    <div class="mb-6">
+    <!-- <div class="mb-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
                 <h1 class="text-xl font-bold text-gray-900">Data Pendaftar PMBM</h1>
@@ -30,7 +30,112 @@
                 </a>
             </div>
         </div>
+    </div> -->
+
+    <div class="mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-bold text-gray-900">Data Pendaftar PMBM</h1>
+            <p class="mt-0.5 text-sm text-gray-500">Daftar seluruh murid yang telah mendaftar</p>
+        </div>
+        {{-- Badge + Tombol Aksi --}}
+        <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+
+            {{-- Tombol Update Lolos --}}
+            <button type="button" onclick="confirmUpdateLolos()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold rounded-full transition shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 13l4 4L19 7"/>
+                </svg>
+                UPDATE LOLOS
+            </button>
+
+            {{-- Tombol Rollback Update Lolos --}}
+            <button type="button" onclick="confirmRollbackLolos()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-500 active:bg-red-500 text-white text-xs font-semibold rounded-full transition shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 10h10a5 5 0 010 10h-2m-8-10l4-4m-4 4l4 4"/>
+                </svg>
+                ROLLBACK UPDATE LOLOS
+            </button>
+
+            
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+                {{ count($siswa) }} Pendaftar
+            </span>
+
+            {{-- Tombol Download --}}
+            <a href="/public/excel/data-pendaftar" target="_blank"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white text-xs font-semibold rounded-full transition shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Download
+            </a>
+        </div>
     </div>
+</div>
+
+{{-- Form Hidden untuk Update & Rollback --}}
+<form id="formUpdateLolos" action="{{ url('/siswa/update-bulk-khusus') }}" method="GET" class="hidden">
+    @csrf
+</form>
+
+<form id="formRollbackLolos" action="{{ url('/siswa/update-bulk-rollback') }}" method="GET" class="hidden">
+    @csrf
+</form>
+
+{{-- SweetAlert Konfirmasi (opsional, butuh SweetAlert2) --}}
+<script>
+    function confirmUpdateLolos() {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Update Status Lolos?',
+                text: 'Anda yakin ingin meng-update status kelolosan semua pendaftar?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Update!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formUpdateLolos').submit();
+                }
+            });
+        } else {
+            if (confirm('Anda yakin ingin meng-update status kelolosan semua pendaftar?')) {
+                document.getElementById('formUpdateLolos').submit();
+            }
+        }
+    }
+
+    function confirmRollbackLolos() {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Rollback Update Lolos?',
+                text: 'Tindakan ini akan mengembalikan status kelolosan ke kondisi sebelumnya. Lanjutkan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Rollback!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formRollbackLolos').submit();
+                }
+            });
+        } else {
+            if (confirm('Anda yakin ingin melakukan rollback update lolos?')) {
+                document.getElementById('formRollbackLolos').submit();
+            }
+        }
+    }
+</script>
 
     {{-- Filter & Search --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5">
@@ -64,7 +169,9 @@
                         <option value="_ALL_">Semua Status</option>
                         <option value="STATUS_PENDING"    {{ request('status') == 'STATUS_PENDING'    ? 'selected' : '' }}>Pendaftaran Terkirim</option>
                         <option value="STATUS_TERVERIFIKASI" {{ request('status') == 'STATUS_TERVERIFIKASI' ? 'selected' : '' }}>Terverifikasi</option>
-                        <option value="STATUS_MENUNGGU"   {{ request('status') == 'STATUS_MENUNGGU'   ? 'selected' : '' }}>Menunggu Hasil Tes</option>
+                        <option value="STATUS_LOLOS"   {{ request('status') == 'STATUS_LOLOS'   ? 'selected' : '' }}>Lolos Seleksi</option>
+                        <option value="STATUS_DITOLAK"   {{ request('status') == 'STATUS_DITOLAK'   ? 'selected' : '' }}>Tidak diterima</option>
+                        <option value="STATUS_CADANGAN"   {{ request('status') == 'STATUS_CADANGAN'   ? 'selected' : '' }}>Cadangan</option>
                     </select>
                 </div>
 
@@ -99,7 +206,9 @@
     $statusMap = [
         'STATUS_PENDING'    => ['label' => 'Pendaftaran Terkirim',      'class' => 'bg-yellow-100 text-yellow-700', 'dot' => 'bg-yellow-400'],
         'STATUS_TERVERIFIKASI' => ['label' => 'Terverifikasi',             'class' => 'bg-blue-100 text-blue-700',     'dot' => 'bg-blue-400'],
-        'STATUS_MENUNGGU'   => ['label' => 'Menunggu Hasil Tes',        'class' => 'bg-yellow-100 text-green-700',  'dot' => 'bg-yellow-400'],
+        'STATUS_LOLOS'   => ['label' => 'Lolos Seleksi',        'class' => 'bg-green-100 text-green-700',  'dot' => 'bg-green-500'],
+        'STATUS_CADANGAN'   => ['label' => 'Cadangan',        'class' => 'bg-yellow-100 text-yellow-700',  'dot' => 'bg-yellow-500'],
+        'STATUS_DITOLAK'   => ['label' => 'Tidak diterima',        'class' => 'bg-red-100 text-red-500',  'dot' => 'bg-red-500'],
     ];
     @endphp
 

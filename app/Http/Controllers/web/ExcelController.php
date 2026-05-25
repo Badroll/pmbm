@@ -318,7 +318,7 @@ class ExcelController extends Controller
 
 
     // ================================== DATA PENDAFTAR ==================================
-    private const JALUR_CONFIG = [
+private const JALUR_CONFIG = [
         'JALUR_REGULER'  => ['label' => 'Reguler',  'header_bg' => '3B4FCD', 'accent' => 'EEF0FD', 'tab' => '3B4FCD'],
         'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'header_bg' => 'D97706', 'accent' => 'FEF3C7', 'tab' => 'D97706'],
         'JALUR_PRESTASI' => ['label' => 'Prestasi', 'header_bg' => '7C3AED', 'accent' => 'F3EEFF', 'tab' => '7C3AED'],
@@ -329,12 +329,9 @@ class ExcelController extends Controller
         'JENIS_KELAMIN_P' => 'Perempuan',
     ];
  
-    // private const COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-    // private const HEADERS  = ['No.', 'No. Pendaftaran', 'Nama Siswa', 'NISN', 'Jenis Kelamin', 'Tgl. Daftar', 'Skor'];
-    // private const WIDTHS   = [6, 15, 32, 16, 16, 16, 8];
     private const COLUMNS = [
         'A', 'B', 'C', 'D', 'E', 'F',
-        'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'
+        'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
     ];
 
     private const HEADERS = [
@@ -343,7 +340,7 @@ class ExcelController extends Controller
         'Nama Siswa',
         'NISN',
         'Jenis Kelamin',
-        'Tgl. Daftar',
+        'Asal Sekolah',
 
         'A - Rapor',
         'B - CBT Akademik',
@@ -354,27 +351,29 @@ class ExcelController extends Controller
         'G - Prest. Keagamaan',
         'H - Umur',
 
-        'Total Skor'
+        'Total Skor',
+        'Status'
     ];
 
     private const WIDTHS = [
-        6,
-        6,
-        32,
-        18,
-        16,
-        16,
+        6,   // A
+        6,   // B
+        32,  // C
+        18,  // D
+        16,  // E
+        20,  // F
 
-        14,
-        18,
-        16,
-        20,
-        14,
-        20,
-        20,
-        12,
+        14,  // G
+        18,  // H
+        16,  // I
+        20,  // J (Baca Al Quran)
+        14,  // K
+        20,  // L
+        20,  // M
+        12,  // N
 
-        12
+        12,  // O
+        22   // P (Status)
     ];
  
     // ─── Entry point ─────────────────────────────────────────────────────────
@@ -392,8 +391,9 @@ class ExcelController extends Controller
         foreach (self::JALUR_CONFIG as $jalurKey => $config) {
 
             $data = mSiswa::where('SISWA_JALUR', $jalurKey)
-                ->orderByDesc('SISWA_SKOR')
-                ->orderBy('SISWA_TGL_DAFTAR')
+                // ->orderByDesc('SISWA_SKOR')
+                // ->orderBy('SISWA_TGL_DAFTAR')
+                ->orderBy("SISWA_ID")
                 ->get();
 
             $sheet = ($sheetIndex === 0)
@@ -408,21 +408,24 @@ class ExcelController extends Controller
 
             $this->writeSheet($sheet, $config, $data);
 
-            // ─── HAPUS KOLOM KHUSUS PER JALUR ─────────────────────
+            // ─── SEMBUNYIKAN KOLOM KHUSUS PER JALUR (Gunakan setVisible untuk keamanan data) ───
 
-            // Reguler → hapus K,L,M
+            // Reguler → Sembunyikan K (Afirmasi), L (Prest. Akademik), M (Prest. Keagamaan)
             if ($jalurKey === 'JALUR_REGULER') {
-                $sheet->removeColumn('K', 3);
+                $sheet->getColumnDimension('K')->setVisible(false);
+                $sheet->getColumnDimension('L')->setVisible(false);
+                $sheet->getColumnDimension('M')->setVisible(false);
             }
 
-            // Prestasi →
+            // Afirmasi → Sembunyikan L (Prest. Akademik), M (Prest. Keagamaan)
             if ($jalurKey === 'JALUR_AFIRMASI') {
-                $sheet->removeColumn('L', 2);
+                $sheet->getColumnDimension('L')->setVisible(false);
+                $sheet->getColumnDimension('M')->setVisible(false);
             }
 
-            // Prestasi →
+            // Prestasi → Sembunyikan K (Afirmasi)
             if ($jalurKey === 'JALUR_PRESTASI') {
-                $sheet->removeColumn('K', 1);
+                $sheet->getColumnDimension('K')->setVisible(false);
             }
 
             $sheetIndex++;
@@ -449,7 +452,7 @@ class ExcelController extends Controller
 
         // ─── TITLE ───────────────────────────────────────────────
 
-        $sheet->mergeCells('A1:O1');
+        $sheet->mergeCells('A1:P1'); // Diperluas ke P1
 
         $sheet->setCellValue(
             'A1',
@@ -463,7 +466,6 @@ class ExcelController extends Controller
                 'color' => ['rgb' => $config['header_bg']],
                 'name'  => 'Arial',
             ],
-
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
                 'vertical'   => Alignment::VERTICAL_CENTER,
@@ -474,7 +476,7 @@ class ExcelController extends Controller
 
         // ─── SUBTITLE ────────────────────────────────────────────
 
-        $sheet->mergeCells('A2:O2');
+        $sheet->mergeCells('A2:P2'); // Diperluas ke P2
 
         $sheet->setCellValue(
             'A2',
@@ -490,7 +492,6 @@ class ExcelController extends Controller
                 'color'  => ['rgb' => '6B7280'],
                 'name'   => 'Arial',
             ],
-
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
             ],
@@ -504,7 +505,6 @@ class ExcelController extends Controller
         $headerRow = 4;
 
         foreach (self::COLUMNS as $i => $col) {
-
             $sheet->setCellValue(
                 $col . $headerRow,
                 self::HEADERS[$i]
@@ -514,26 +514,22 @@ class ExcelController extends Controller
                 ->setWidth(self::WIDTHS[$i]);
         }
 
-        $sheet->getStyle('A4:O4')->applyFromArray([
-
+        $sheet->getStyle('A4:P4')->applyFromArray([
             'font' => [
                 'bold'  => true,
                 'size'  => 9,
                 'color' => ['rgb' => 'FFFFFF'],
                 'name'  => 'Arial',
             ],
-
             'fill' => [
                 'fillType'   => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => $config['header_bg']],
             ],
-
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical'   => Alignment::VERTICAL_CENTER,
                 'wrapText'   => true,
             ],
-
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_NONE
@@ -546,29 +542,20 @@ class ExcelController extends Controller
         // ─── EMPTY DATA ──────────────────────────────────────────
 
         if ($totalRows === 0) {
-
             $emptyRow = 5;
-
-            $sheet->mergeCells("A{$emptyRow}:O{$emptyRow}");
-
-            $sheet->setCellValue(
-                "A{$emptyRow}",
-                'Tidak ada data untuk jalur ini.'
-            );
+            $sheet->mergeCells("A{$emptyRow}:P{$emptyRow}");
+            $sheet->setCellValue("A{$emptyRow}", 'Tidak ada data untuk jalur ini.');
 
             $sheet->getStyle("A{$emptyRow}")->applyFromArray([
-
                 'font' => [
                     'italic' => true,
                     'color'  => ['rgb' => '9CA3AF'],
                     'name'   => 'Arial',
                 ],
-
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
                 ],
             ]);
-
             return;
         }
 
@@ -577,7 +564,6 @@ class ExcelController extends Controller
         foreach ($data as $index => $s) {
 
             $skor = $s->hitungSkor();
-
             $detail = [];
 
             foreach ($skor["POIN"] as $item) {
@@ -585,12 +571,9 @@ class ExcelController extends Controller
             }
 
             $row = $index + 5;
-
             $isEven = ($index % 2 === 1);
 
-            $bgRgb = $isEven
-                ? $config['accent']
-                : 'FFFFFF';
+            $bgRgb = $isEven ? $config['accent'] : 'FFFFFF';
 
             // ─── MAIN DATA ───────────────────────────────────────
 
@@ -602,10 +585,7 @@ class ExcelController extends Controller
                 DataType::TYPE_STRING
             );
 
-            $sheet->setCellValue(
-                "C{$row}",
-                $s->SISWA_NAMA
-            );
+            $sheet->setCellValue("C{$row}", $s->SISWA_NAMA);
 
             $sheet->setCellValueExplicit(
                 "D{$row}",
@@ -615,53 +595,76 @@ class ExcelController extends Controller
 
             $sheet->setCellValue(
                 "E{$row}",
-                self::GENDER_MAP[$s->SISWA_JENIS_KELAMIN]
-                    ?? $s->SISWA_JENIS_KELAMIN
+                self::GENDER_MAP[$s->SISWA_JENIS_KELAMIN] ?? $s->SISWA_JENIS_KELAMIN
             );
 
             $sheet->setCellValue(
                 "F{$row}",
-                Carbon::parse($s->SISWA_TGL_DAFTAR)
-                    ->format('d M Y')
+                //Carbon::parse($s->SISWA_TGL_DAFTAR)->format('d M Y')
+                $s->SISWA_SEKOLAH
             );
 
             // ─── DETAIL SKOR ────────────────────────────────────
 
+            $nilaiQuran = $detail[3] ?? 0; // Guna pengondisian status nanti
+
             $sheet->setCellValue("G{$row}", round($detail[0], 3));
             $sheet->setCellValue("H{$row}", round($detail[1], 3));
             $sheet->setCellValue("I{$row}", round($detail[2], 3));
-            $sheet->setCellValue("J{$row}", round($detail[3], 3));
+            $sheet->setCellValue("J{$row}", round($nilaiQuran, 3));
             $sheet->setCellValue("K{$row}", round($detail[4], 3));
             $sheet->setCellValue("L{$row}", round($detail[5], 3));
             $sheet->setCellValue("M{$row}", round($detail[6], 3));
             $sheet->setCellValue("N{$row}", round($detail[7], 3));
 
-            $sheet->setCellValue(
-                "O{$row}",
-                round($skor["TOTAL"], 3)
-            );
+            $sheet->setCellValue("O{$row}", round($skor["TOTAL"], 3));
 
-            // ─── STYLE ──────────────────────────────────────────
+            // ─── LOGIKA STATUS & COLOR KONDISIONAL ───────────────
 
-            $sheet->getStyle("A{$row}:O{$row}")
-                ->applyFromArray([
+            $statusText = 'Tidak Diterima';
+            $statusFontColor = 'DC2626'; // Merah Default (Hex Code standard)
 
-                    'fill' => [
-                        'fillType'   => Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => $bgRgb],
-                    ],
+            if ($s->SISWA_STATUS === 'STATUS_LOLOS') {
+                $statusText = 'Diterima';
+                $statusFontColor = '15803D'; // Hijau tua prasmanan
+            } elseif ($s->SISWA_STATUS === 'STATUS_CADANGAN') {
+                $statusText = 'Cadangan';
+                $statusFontColor = '1D4ED8'; // Biru solid
+            } elseif ($nilaiQuran < 71) {
+                $statusText = 'Tidak Lolos Baca Al-Qur`an';
+                $statusFontColor = 'B91C1C'; // Merah BTA keras
+            }
 
-                    'font' => [
-                        'size' => 9,
-                        'name' => 'Arial',
-                    ],
+            $sheet->setCellValue("P{$row}", $statusText);
 
-                    'alignment' => [
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ],
-                ]);
+            // ─── STYLE DATA ──────────────────────────────────────────
 
-            // alignment angka
+            $sheet->getStyle("A{$row}:P{$row}")->applyFromArray([
+                'fill' => [
+                    'fillType'   => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $bgRgb],
+                ],
+                'font' => [
+                    'size' => 9,
+                    'name' => 'Arial',
+                ],
+                'alignment' => [
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+            ]);
+
+            // Apply khusus warna teks font status di Kolom P
+            $sheet->getStyle("P{$row}")->applyFromArray([
+                'font' => [
+                    'bold'  => true,
+                    'color' => ['rgb' => $statusFontColor]
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ],
+            ]);
+
+            // alignment angka dan teks tertentu
             $sheet->getStyle("G{$row}:O{$row}")
                 ->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
@@ -670,46 +673,34 @@ class ExcelController extends Controller
                 ->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-            $sheet->getRowDimension($row)
-                ->setRowHeight(18);
+            $sheet->getRowDimension($row)->setRowHeight(18);
         }
 
         // ─── TOTAL ROW ──────────────────────────────────────────
 
         $totalRow = $totalRows + 5;
 
-        $sheet->mergeCells("A{$totalRow}:N{$totalRow}");
+        $sheet->mergeCells("A{$totalRow}:O{$totalRow}"); // Diperluas sampai O
 
-        $sheet->setCellValue(
-            "A{$totalRow}",
-            'Total Pendaftar'
-        );
+        $sheet->setCellValue("A{$totalRow}", 'Total Pendaftar');
+        $sheet->setCellValue("P{$totalRow}", $totalRows . ' siswa'); // Di P
 
-        $sheet->setCellValue(
-            "O{$totalRow}",
-            $totalRows . ' siswa'
-        );
-
-        $sheet->getStyle("A{$totalRow}:O{$totalRow}")
+        $sheet->getStyle("A{$totalRow}:P{$totalRow}")
             ->applyFromArray([
-
                 'font' => [
                     'bold'  => true,
                     'size'  => 9,
                     'name'  => 'Arial',
                     'color' => ['rgb' => $config['header_bg']],
                 ],
-
                 'fill' => [
                     'fillType'   => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => $config['accent']],
                 ],
-
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
                     'vertical'   => Alignment::VERTICAL_CENTER,
                 ],
-
                 'borders' => [
                     'top' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -722,20 +713,18 @@ class ExcelController extends Controller
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
-        $sheet->getStyle("O{$totalRow}")
+        $sheet->getStyle("P{$totalRow}")
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        $sheet->getRowDimension($totalRow)
-            ->setRowHeight(20);
+        $sheet->getRowDimension($totalRow)->setRowHeight(20);
 
         // ─── OUTER BORDER ──────────────────────────────────────
 
-        $lastDataCell = 'O' . $totalRow;
+        $lastDataCell = 'P' . $totalRow;
 
         $sheet->getStyle("A4:{$lastDataCell}")
             ->applyFromArray([
-
                 'borders' => [
                     'outline' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -744,15 +733,11 @@ class ExcelController extends Controller
                 ],
             ]);
 
-        // ─── FREEZE ─────────────────────────────────────────────
+        // ─── FREEZE & GRIDLINES ─────────────────────────────────
 
         $sheet->freezePane('A5');
-
-        // ─── GRIDLINES ──────────────────────────────────────────
-
         $sheet->setShowGridlines(false);
     }
-
 
 
 }

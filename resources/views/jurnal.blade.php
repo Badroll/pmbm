@@ -241,6 +241,7 @@ function renderModal(raw) {
                                                 </td>
                                             </tr>
                                         `;
+                                        extraWarning = ``;
                                     }
 
                                     return `

@@ -326,7 +326,7 @@ class ExcelController extends Controller
         abort(404, 'Data siswa tidak ditemukan');
     }
 
-    $template = new TemplateProcessor(public_path('word/templates/form-pendaftaran.docx'));
+    $template = new TemplateProcessor(public_path('word/templates/template-daftar-ulang-phpword.docx'));
 
     // Data Siswa
     $template->setValue('nomor_pendaftaran', $data->SD_NOMOR_PENDAFTARAN ?? '-');

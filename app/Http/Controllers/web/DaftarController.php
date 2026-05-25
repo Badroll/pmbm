@@ -439,22 +439,46 @@ class DaftarController extends Controller
 
 
     public function daftarUlang(Request $request){
-        $loginUser = $request->loginUser;
-        if($loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS"){
-            return redirect()->back()->with("info", "anda tidak lolos");
-        }
-        $viewData = [
-            "siswa" => ($loginUser->siswa),
-            "sd" => ($loginUser->siswa->siswaDaftar),
-            "formAction" => "/daftar-ulang",
-            "isEdit" => isset($loginUser->siswa->siswaDaftar) ? true : false,
-            "isLocked" => false
-        ];
-
-        //dd($viewData);
-
-        return view("daftar-ulang", $viewData);
+    $loginUser = $request->loginUser;
+    if($loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS"){
+        return redirect()->back()->with("info", "anda tidak lolos");
     }
+
+    $siswa = $loginUser->siswa;
+    $siswaDaftar = $siswa->siswaDaftar;
+
+    // Jika belum ada record di siswa_daftar, buat baru dengan data dari tabel siswa
+    if(!isset($siswaDaftar)){
+        $siswaDaftar = SiswaDaftar::create([
+            'SISWA_ID'              => $siswa->SISWA_ID,
+            'SD_NAMA_LENGKAP'       => $siswa->SISWA_NAMA,
+            'SD_NISN'               => $siswa->SISWA_NISN,
+            'SD_TEMPAT_LAHIR'       => $siswa->kotaTempatLahir->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
+            'SD_TANGGAL_LAHIR'      => $siswa->SISWA_TGL_LAHIR,
+            'SD_JENIS_KELAMIN'      => $siswa->SISWA_JENIS_KELAMIN == 'JENIS_KELAMIN_L' ? 'L' : 'P',
+            'SD_NO_HP'              => $siswa->SISWA_WA,
+            'SD_ASAL_SEKOLAH'       => $siswa->SISWA_SEKOLAH,
+            'SD_AYAH_NAMA'          => $siswa->SISWA_AYAH,
+            'SD_IBU_NAMA'           => $siswa->SISWA_IBU,
+            'SD_PROVINSI'           => $siswa->provinsiAlamat->PROV_NAMA,
+            'SD_KABUPATEN'          => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
+            'SD_KECAMATAN'          => $siswa->kecamatanAlamat->KEC_NAMA,
+            'SD_KELURAHAN'          => $siswa->kelurahanAlamat->KEL_NAMA,
+            'SD_ALAMAT'             => $siswa->SISWA_ALAMAT,
+            'SD_WAKTU_BUAT'         => now(),
+        ]);
+    }
+
+    $viewData = [
+        "siswa"      => $siswa,
+        "sd"         => $siswaDaftar,
+        "formAction" => "/daftar-ulang",
+        "isEdit"     => true, // sudah pasti ada setelah logic di atas
+        "isLocked"   => false
+    ];
+
+    return view("daftar-ulang", $viewData);
+}
 
     public function daftarUlangSave(Request $request)
     {

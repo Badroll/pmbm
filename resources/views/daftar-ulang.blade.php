@@ -73,20 +73,34 @@
 
                     <!-- Kelas Yang Diinginkan -->
                     <div>
-                        <label for="sd_kelas_diinginkan" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Kelas Yang Diinginkan <span class="text-red-500"></span>
-                        </label>
-                        <input type="text"
-                            id="sd_kelas_diinginkan"
-                            name="sd_kelas_diinginkan"
-                            value="{{ old('sd_kelas_diinginkan', $isEdit ? $sd->SD_KELAS_DIINGINKAN : '') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                            placeholder=""
-                            {{ $dis('section_siswa') }}>
-                        @error('sd_kelas_diinginkan')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+    <label for="sd_kelas_diinginkan" class="block text-sm font-semibold text-gray-700 mb-2">
+        Kelas Yang Diinginkan <span class="text-red-500"></span>
+    </label>
+    <select id="sd_kelas_diinginkan"
+        name="sd_kelas_diinginkan"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+        {{ $dis('section_siswa') }}>
+        <option value="">-- Pilih Kelas --</option>
+        @php
+            $kelasOptions = [
+                'Kelas Digital Tahfidz',
+                'Kelas Digital Sains',
+                'Kelas Digital ICT',
+                'Kelas Digital Bilingual (Bahasa Arab-Bahasa Inggris)',
+                'Kelas Digital Kewirausahaan',
+            ];
+            $selectedKelas = old('sd_kelas_diinginkan', $isEdit ? $sd->SD_KELAS_DIINGINKAN : '');
+        @endphp
+        @foreach ($kelasOptions as $kelas)
+            <option value="{{ $kelas }}" {{ $selectedKelas == $kelas ? 'selected' : '' }}>
+                {{ $kelas }}
+            </option>
+        @endforeach
+    </select>
+    @error('sd_kelas_diinginkan')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
 
                     <!-- NISN -->
                     <div>

@@ -329,7 +329,7 @@ class ExcelController extends Controller
     $template = new TemplateProcessor(public_path('word/templates/template-daftar-ulang-phpword.docx'));
 
     // Data Siswa
-    $template->setValue('nomor_pendaftaran', $data->SD_NOMOR_PENDAFTARAN ?? '-');
+    $template->setValue('nomor_pendaftaran', str_pad($data->SISWA_ID, 4, '0', STR_PAD_LEFT) ?? '-');
     $template->setValue('nama_lengkap', $data->SD_NAMA_LENGKAP ?? '-');
     $template->setValue('kelas_diinginkan', $data->SD_KELAS_DIINGINKAN ?? '-');
     $template->setValue('nisn', $data->SD_NISN ?? '-');
@@ -437,9 +437,11 @@ class ExcelController extends Controller
     $template->setValue('waktu_tempuh', $data->SD_WAKTU_TEMPUH ?? '-');
     $template->setValue('jarak', $data->SD_JARAK_KM ?? '-');
     $template->setValue('transportasi', $data->SD_TRANSPORTASI ?? '-');
+    
+    $template->setValue('tglNow', date("d") ?? '-');
 
     // Simpan & Download
-    $filename = 'form-pendaftaran-' . ($data->SD_NOMOR_PENDAFTARAN ?? $siswaId);
+    $filename = 'form-daftar-ulang';
     $docxPath = storage_path('app/' . $filename . '.docx');
     $template->saveAs($docxPath);
 

@@ -44,7 +44,7 @@
 
                 @if($isLoggedIn)
                 <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('pengumuman') }}">Pengumuman</a>
-                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar-ulang') }}">Daftar Ulang</a>
+                <!-- <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar-ulang') }}">Daftar Ulang</a> -->
 
                     @if($isSuperadmin || $isAdminAplikasi)
                         <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Akun</a>
@@ -97,7 +97,7 @@
 
             @if($isLoggedIn)
                 <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveMobile('pengumuman') }}">Pengumuman</a>
-                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar-ulang') }}">Daftar Ulang</a>
+                <!-- <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar-ulang') }}">Daftar Ulang</a> -->
 
                 @if($isSuperadmin || $isAdminAplikasi)
                     <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/manage*') }}">Akun</a>

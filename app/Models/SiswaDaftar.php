@@ -105,7 +105,6 @@ class SiswaDaftar extends Model
         'SD_WALI_KODE_POS',
 
         // ALAMAT SISWA
-        'SD_TEMPAT_TINGGAL',
         'SD_NAMA_YAYASAN',
         'SD_PROVINSI',
         'SD_KABUPATEN',

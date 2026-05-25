@@ -949,7 +949,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_ayah') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Orang Tua','Kontrak/Sewa','Dinas','Lainnya'] as $s)
+                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_ayah_status_rumah', $isEdit ? $sd->SD_AYAH_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
@@ -1021,7 +1021,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_ibu') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Orang Tua','Kontrak/Sewa','Dinas','Lainnya'] as $s)
+                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_ibu_status_rumah', $isEdit ? $sd->SD_IBU_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
@@ -1093,7 +1093,7 @@
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                                     {{ $dis('section_alamat_wali') }}>
                                 <option value="">-- Pilih Status --</option>
-                                @foreach(['Milik Sendiri','Milik Orang Tua','Kontrak/Sewa','Dinas','Lainnya'] as $s)
+                                @foreach(['Milik Sendiri','Milik Ortu','Kontrak'] as $s)
                                     <option value="{{ $s }}" {{ old('sd_wali_status_rumah', $isEdit ? $sd->SD_WALI_STATUS_RUMAH : '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
@@ -1121,52 +1121,69 @@
                     <div class="bg-indigo-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">8</div>
                     <h2 class="text-2xl font-bold text-gray-800">Alamat Siswa</h2>
                 </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    <!-- Tempat Tinggal Khusus -->
-                    <div class="md:col-span-2">
-                        <label for="sd_tempat_tinggal" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Tinggal Di (jika di asrama/pondok/panti)
-                        </label>
-                        <select id="sd_tempat_tinggal"
-                                name="sd_tempat_tinggal"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                                {{ $dis('section_alamat_siswa') }}>
-                            <option value="">-- Pilih Jika Sesuai --</option>
-                            @foreach(['Asrama','Pondok Pesantren','Panti Asuhan'] as $t)
-                                <option value="{{ $t }}" {{ old('sd_tempat_tinggal', $isEdit ? $sd->SD_TEMPAT_TINGGAL : '') == $t ? 'selected' : '' }}>{{ $t }}</option>
-                            @endforeach
-                        </select>
-                        @error('sd_tempat_tinggal')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+    {{-- ============================================ --}}
+    {{-- SECTION: Jika di Yayasan/Pondok/Panti --}}
+    {{-- ============================================ --}}
+    <div class="md:col-span-2 mt-4">
+        <div class="flex items-center gap-3 pb-2 border-b-2 border-indigo-200">
+            <div class="flex items-center justify-center w-8 h-8 bg-indigo-100 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            </div>
+            <div>
+                <h4 class="text-base font-bold text-gray-800">Jika di Yayasan/Pondok/Panti</h4>
+                <p class="text-xs text-gray-500">Isi bagian ini jika siswa tinggal di yayasan, pondok pesantren, atau panti asuhan</p>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Nama Yayasan -->
-                    <div class="md:col-span-2">
-                        <label for="sd_nama_yayasan" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Nama Yayasan/Pondok/Panti
-                        </label>
-                        <input type="text"
-                            id="sd_nama_yayasan"
-                            name="sd_nama_yayasan"
-                            value="{{ old('sd_nama_yayasan', $isEdit ? $sd->SD_NAMA_YAYASAN : '') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                            placeholder="Nama yayasan/pondok/panti (jika ada)"
-                            {{ $dis('section_alamat_siswa') }}>
-                        @error('sd_nama_yayasan')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+    <!-- Nama Yayasan -->
+    <div class="md:col-span-2">
+        <label for="sd_nama_yayasan" class="block text-sm font-semibold text-gray-700 mb-2">
+            Nama Yayasan/Pondok/Panti
+        </label>
+        <input type="text"
+            id="sd_nama_yayasan"
+            name="sd_nama_yayasan"
+            value="{{ old('sd_nama_yayasan', $isEdit ? $sd->SD_NAMA_YAYASAN : '') }}"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            placeholder="Nama yayasan/pondok/panti (jika ada)"
+            {{ $dis('section_alamat_siswa') }}>
+        @error('sd_nama_yayasan')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
 
-                    @include('partials.alamat-fields', [
-                        'prefix'  => 'sd',
-                        'section' => 'section_alamat_siswa',
-                        'data'    => $isEdit ? $sd : null,
-                        'fields'  => ['provinsi','kabupaten','kecamatan','kelurahan','rt_rw','alamat','kode_pos'],
-                    ])
+    {{-- ============================================ --}}
+    {{-- SECTION: Jika Lainnya (Alamat Detail) --}}
+    {{-- ============================================ --}}
+    <div class="md:col-span-2 mt-6">
+        <div class="flex items-center gap-3 pb-2 border-b-2 border-amber-200">
+            <div class="flex items-center justify-center w-8 h-8 bg-amber-100 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+</svg>
+            </div>
+            <div>
+                <h4 class="text-base font-bold text-gray-800">Jika Lainnya</h4>
+                <p class="text-xs text-gray-500">Isi data alamat lengkap siswa di bawah ini</p>
+            </div>
+        </div>
+    </div>
 
-                </div>
+    @include('partials.alamat-fields', [
+        'prefix' => 'sd',
+        'section' => 'section_alamat_siswa',
+        'data' => $isEdit ? $sd : null,
+        'fields' => ['provinsi','kabupaten','kecamatan','kelurahan','rt_rw','alamat','kode_pos'],
+    ])
+
+</div>
+
             </div>
 
             {{-- ================================================================ --}}

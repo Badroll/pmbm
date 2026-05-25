@@ -1135,8 +1135,8 @@
                 </svg>
             </div>
             <div>
-                <h4 class="text-base font-bold text-gray-800">Jika di Yayasan/Pondok/Panti</h4>
-                <p class="text-xs text-gray-500">Isi bagian ini jika siswa tinggal di yayasan, pondok pesantren, atau panti asuhan</p>
+                <h4 class="text-base font-bold text-gray-800">Jika di Asrama/Pondok/Panti</h4>
+                <p class="text-xs text-gray-500">Isi bagian ini jika siswa tinggal di asrama, pondok pesantren, atau panti asuhan</p>
             </div>
         </div>
     </div>
@@ -1144,14 +1144,14 @@
     <!-- Nama Yayasan -->
     <div class="md:col-span-2">
         <label for="sd_nama_yayasan" class="block text-sm font-semibold text-gray-700 mb-2">
-            Nama Yayasan/Pondok/Panti
+            Nama Asrama/Pondok/Panti
         </label>
         <input type="text"
             id="sd_nama_yayasan"
             name="sd_nama_yayasan"
             value="{{ old('sd_nama_yayasan', $isEdit ? $sd->SD_NAMA_YAYASAN : '') }}"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            placeholder="Nama yayasan/pondok/panti (jika ada)"
+            placeholder="Nama asrama/pondok/panti (jika ada)"
             {{ $dis('section_alamat_siswa') }}>
         @error('sd_nama_yayasan')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

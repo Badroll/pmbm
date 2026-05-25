@@ -25,7 +25,7 @@
             class="bg-white shadow-lg rounded-b-lg">
             @csrf
             @if($isEdit)
-                @method('PUT')
+                @method('POST')
                 <input type="hidden" name="sdId" value="{{ $sd->SD_ID }}">
             @endif
 

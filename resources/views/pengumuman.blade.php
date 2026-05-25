@@ -196,8 +196,8 @@
         {{-- Judul status --}}
         <div class="label-status label-{{ $status === 'tidak_diterima' ? 'tidak' : $status }}">
             @if($status === 'diterima')         Selamat, Anda Diterima
-            @elseif($status === 'tidak_diterima') Belum Diterima
-            @else                                Daftar Cadangan
+            @elseif($status === 'tidak_diterima') Tidak Diterima
+            @else                                Cadangan
             @endif
         </div>
 
@@ -224,6 +224,12 @@
         @if($status === 'cadangan')
         <div class="cadangan-box">
             <p>Anda masuk dalam daftar cadangan. Keputusan akhir akan diinformasikan lebih lanjut sesuai ketersediaan kuota.</p>
+        </div>
+        @endif
+
+        @if($status === 'diterima')
+        <div class="cadangan-box">
+            <p>Segera lakukan Daftar Ulang sesuai syarat dan ketentuan.</p>
         </div>
         @endif
 

@@ -41,7 +41,8 @@
             ?>
             <div class="hidden md:flex space-x-8">
                 <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
-                <a href="{{ url('/jurnal') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('jurnal') }}">Jurnal</a>
+                <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('pengumuman') }}">Pengumuman</a>
+                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar-ulang') }}">Daftar Ulang</a>
 
                 @if($isLoggedIn)
 
@@ -93,7 +94,8 @@
     <div id="mobile-menu" class="hidden md:hidden bg-blue-700">
         <div class="px-4 py-3 space-y-3">
             <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
-            <a href="{{ url('/jurnal') }}" class="{{ $navMenuClass }} {{ isActiveMobile('jurnal') }}">Jurnal</a>
+                <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveMobile('pengumuman') }}">Pengumuman</a>
+                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar-ulang') }}">Daftar Ulang</a>
 
             @if($isLoggedIn)
 

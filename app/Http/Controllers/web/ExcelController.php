@@ -423,7 +423,7 @@ class ExcelController extends Controller
     $template->setValue('kode_pos_wali', $data->SD_WALI_KODE_POS ?? '-');
 
     // Alamat Siswa
-    $template->setValue('tempat_tinggal', $data->SD_TEMPAT_TINGGAL ?? '-');
+    $template->setValue('tempat_tinggal', $data->SD_TEMPAT_TINGGAL ?? '-'); // GAK ADA!
     $template->setValue('nama_yayasan', $data->SD_NAMA_YAYASAN ?? '-');
     $template->setValue('provinsi', $data->SD_PROVINSI ?? '-');
     $template->setValue('kabupaten', $data->SD_KABUPATEN ?? '-');

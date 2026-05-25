@@ -201,7 +201,7 @@
             @endif
         </div>
 
-        <div class="sub-status">Pengumuman Kelulusan Seleksi</div>
+        <!-- <div class="sub-status">Pengumuman Kelulusan Seleksi</div> -->
 
         <hr class="divider">
 
@@ -210,11 +210,11 @@
             <span class="info-value">{{ $nama }}</span>
         </div>
         <div class="info-row" style="margin-top:0.75rem;">
-            <span class="info-label">No. Peserta</span>
+            <span class="info-label">No. Pendaftaran</span>
             <span class="info-value">{{ $nomor }}</span>
         </div>
 
-        @if($status === 'tidak_diterima')
+        @if($status === 'tidak_diterima' && $catatan != "")
         <div class="note-box">
             <div class="note-title">Catatan</div>
             <p class="note-text">{{ $catatan }}</p>

@@ -510,7 +510,7 @@ class DaftarController extends Controller
             return redirect()->back()->with("warning", "anda tidak mendaftar");
         }
 
-        $status = "ditolak";
+        $status = "tidak_diterima";
         if($loginUser->siswa->SISWA_STATUS == "STATUS_LOLOS"){
             $status = "diterima";
         }
@@ -519,14 +519,14 @@ class DaftarController extends Controller
         }
 
         $catatan = "";
-        if($loginUser->siswa->SISWA_TES_QURAN < 71){
+        if($status == "tidak_diterima" && $loginUser->siswa->SISWA_TES_QURAN < 71){
             $catatan = "Tidak lolos Baca Al-Qur`an";
         }
 
         return view('pengumuman', [
             'status'  => $status,      // 'diterima' | 'tidak_diterima' | 'cadangan'
             'nama'    => $loginUser->siswa->SISWA_NAMA,
-            'nomor'   => str_pad($loginUser->siswa->SISWA_NO, 4, '0', STR_PAD_LEFT),
+            'nomor'   => str_pad($loginUser->siswa->SISWA_ID, 4, '0', STR_PAD_LEFT),
             'catatan' => $catatan, // hanya ditampilkan jika status 'tidak_diterima'
         ]);
     }

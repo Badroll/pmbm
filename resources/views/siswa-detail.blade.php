@@ -180,7 +180,7 @@
             <div class="p-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @include('pendaftar._detail-item', ['label' => 'Provinsi', 'value' => $siswa->provinsiAlamat->PROV_NAMA])
-                    @include('pendaftar._detail-item', ['label' => 'Kota/Kabupaten', 'value' => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->provinsiAlamat->KOTA_NAMA])
+                    @include('pendaftar._detail-item', ['label' => 'Kota/Kabupaten', 'value' => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->kotaAlamat->KOTA_NAMA])
                     @include('pendaftar._detail-item', ['label' => 'Kecamatan', 'value' => $siswa->kecamatanAlamat->KEC_NAMA])
                     @include('pendaftar._detail-item', ['label' => 'Kelurahan', 'value' => $siswa->kelurahanAlamat->KEL_NAMA])
                 </div>

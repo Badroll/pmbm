@@ -440,6 +440,9 @@ class DaftarController extends Controller
 
     public function daftarUlang(Request $request){
         $loginUser = $request->loginUser;
+        if($loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS"){
+            return redirect()->back()->with("info", "anda tidak lolos");
+        }
         $viewData = [
             "siswa" => ($loginUser->siswa),
             "sd" => ($loginUser->siswa->siswaDaftar),

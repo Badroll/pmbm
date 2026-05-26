@@ -126,6 +126,7 @@ Route::prefix("public")->group(function () {
     Route::prefix("excel")->group(function () {
         Route::get("kartu-pendaftaran", [ExcelController::class, 'kartuPendaftaran']);
         Route::get("data-pendaftar", [ExcelController::class, 'dataPendaftar']);
+        Route::get("daftar-ulang/{id}", [ExcelController::class, 'daftarUlang']);
     });
 
 });

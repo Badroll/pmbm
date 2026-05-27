@@ -59,14 +59,10 @@
                     @endif
 
                     @if($isSiswa)
-                        <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a>
-                        <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a>
+                        <!-- <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar') }}">Pendaftaran</a> -->
+                        <!-- <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a> -->
                         <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
-
-                        
-                            <a href="{{ url('/exam') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">CBT</a>
-                        
-                        
+                        <!-- <a href="{{ url('/exam') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">CBT</a> -->
                     @endif
                     
                     @if($isSuperadmin || $isAdminCBT || $isAdminAplikasi)
@@ -112,8 +108,8 @@
                 @endif
 
                 @if($isSiswa)
-                    <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a>
-                    <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a>
+                    <!-- <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a> -->
+                    <!-- <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a> -->
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
                 @endif
 

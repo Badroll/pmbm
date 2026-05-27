@@ -101,6 +101,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 // Phpword
 use PhpOffice\PhpWord\TemplateProcessor;
+use PhpOffice\PhpWord\Shared\XMLWriter;
 
 
 class ExcelController extends Controller
@@ -328,117 +329,131 @@ class ExcelController extends Controller
 
     $template = new TemplateProcessor(public_path('word/templates/template-daftar-ulang-phpword.docx'));
 
-    // Data Siswa
-    $template->setValue('nomor_pendaftaran', str_pad($data->SISWA_ID, 4, '0', STR_PAD_LEFT) ?? '-');
-    $template->setValue('nama_lengkap', $data->SD_NAMA_LENGKAP ?? '-');
-    $template->setValue('kelas_diinginkan', $data->SD_KELAS_DIINGINKAN ?? '-');
-    $template->setValue('nisn', $data->SD_NISN ?? '-');
-    $template->setValue('nik', $data->SD_NIK ?? '-');
-    $template->setValue('asal_sekolah', $data->SD_ASAL_SEKOLAH ?? '-');
-    $template->setValue('npsn_sekolah', $data->SD_NPSN_ASAL ?? '-');
-    $template->setValue('tempat_lahir', $data->SD_TEMPAT_LAHIR ?? '-');
-    $template->setValue('tanggal_lahir', $data->SD_TANGGAL_LAHIR
-        ? \Carbon\Carbon::parse($data->SD_TANGGAL_LAHIR)->translatedFormat('d F Y')
-        : '-');
-    $template->setValue('jenis_kelamin', $data->SD_JENIS_KELAMIN === 'L' ? 'Laki-Laki' : ($data->SD_JENIS_KELAMIN === 'P' ? 'Perempuan' : '-'));
-    $template->setValue('jumlah_saudara', $data->SD_JUMLAH_SAUDARA ?? '-');
-    $template->setValue('anak_ke', $data->SD_ANAK_KE ?? '-');
-    $template->setValue('agama', $data->SD_AGAMA ?? '-');
-    $template->setValue('cita_cita', $data->SD_CITA_CITA ?? '-');
-    $template->setValue('no_hp', $data->SD_NO_HP ?? '-');
-    $template->setValue('email_siswa', $data->SD_EMAIL ?? '-');
-    $template->setValue('hobby', $data->SD_HOBBY ?? '-');
-    $template->setValue('yang_membiayai', $data->SD_PEMBIAYA ?? '-');
-    $template->setValue('nomor_kip', $data->SD_NOMOR_KIP ?? '-');
-    $template->setValue('nomor_kk', $data->SD_NOMOR_KK ?? '-');
-    $template->setValue('nama_kepala_keluarga', $data->SD_NAMA_KEPALA_KELUARGA ?? '-');
+    $x = function ($val) {
+        return htmlspecialchars($val ?? '-', ENT_XML1 | ENT_QUOTES, 'UTF-8');
+    };
+
+    $template->setValue('nomor_pendaftaran',    $x(str_pad($data->SISWA_ID, 4, '0', STR_PAD_LEFT)));
+    $template->setValue('nama_lengkap',         $x($data->SD_NAMA_LENGKAP));
+    $template->setValue('kelas_diinginkan',     $x($data->SD_KELAS_DIINGINKAN));
+    $template->setValue('nisn',                 $x($data->SD_NISN));
+    $template->setValue('nik',                  $x($data->SD_NIK));
+    $template->setValue('asal_sekolah',         $x($data->SD_ASAL_SEKOLAH));
+    $template->setValue('npsn_sekolah',         $x($data->SD_NPSN_ASAL));
+    $template->setValue('tempat_lahir',         $x($data->SD_TEMPAT_LAHIR));
+    $template->setValue('tanggal_lahir', $x(
+        $data->SD_TANGGAL_LAHIR
+            ? Carbon::parse($data->SD_TANGGAL_LAHIR)->translatedFormat('d F Y')
+            : null
+    ));
+    $template->setValue('jenis_kelamin', $x(
+        $data->SD_JENIS_KELAMIN === 'L' ? 'Laki-Laki'
+        : ($data->SD_JENIS_KELAMIN === 'P' ? 'Perempuan' : null)
+    ));
+    $template->setValue('jumlah_saudara',       $x($data->SD_JUMLAH_SAUDARA));
+    $template->setValue('anak_ke',              $x($data->SD_ANAK_KE));
+    $template->setValue('agama',                $x($data->SD_AGAMA));
+    $template->setValue('cita_cita',            $x($data->SD_CITA_CITA));
+    $template->setValue('no_hp',                $x($data->SD_NO_HP));
+    $template->setValue('email_siswa',          $x($data->SD_EMAIL));
+    $template->setValue('hobby',                $x($data->SD_HOBBY));
+    $template->setValue('yang_membiayai',       $x($data->SD_PEMBIAYA));
+    $template->setValue('nomor_kip',            $x($data->SD_NOMOR_KIP));
+    $template->setValue('nomor_kk',             $x($data->SD_NOMOR_KK));
+    $template->setValue('nama_kepala_keluarga', $x($data->SD_NAMA_KEPALA_KELUARGA));
 
     // Data Ayah
-    $template->setValue('nama_ayah', $data->SD_AYAH_NAMA ?? '-');
-    $template->setValue('status_ayah', $data->SD_AYAH_STATUS ?? '-');
-    $template->setValue('kewarganegaraan_ayah', $data->SD_AYAH_KEWARGANEGARAAN ?? '-');
-    $template->setValue('nik_ayah', $data->SD_AYAH_NIK ?? '-');
-    $template->setValue('tempat_lahir_ayah', $data->SD_AYAH_TEMPAT_LAHIR ?? '-');
-    $template->setValue('tanggal_lahir_ayah', $data->SD_AYAH_TANGGAL_LAHIR
-        ? \Carbon\Carbon::parse($data->SD_AYAH_TANGGAL_LAHIR)->translatedFormat('d F Y')
-        : '-');
-    $template->setValue('pendidikan_ayah', $data->SD_AYAH_PENDIDIKAN ?? '-');
-    $template->setValue('pekerjaan_ayah', $data->SD_AYAH_PEKERJAAN ?? '-');
+    $template->setValue('nama_ayah',            $x($data->SD_AYAH_NAMA));
+    $template->setValue('status_ayah',          $x($data->SD_AYAH_STATUS));
+    $template->setValue('kewarganegaraan_ayah', $x($data->SD_AYAH_KEWARGANEGARAAN));
+    $template->setValue('nik_ayah',             $x($data->SD_AYAH_NIK));
+    $template->setValue('tempat_lahir_ayah',    $x($data->SD_AYAH_TEMPAT_LAHIR));
+    $template->setValue('tanggal_lahir_ayah',   $x(
+        $data->SD_AYAH_TANGGAL_LAHIR
+            ? Carbon::parse($data->SD_AYAH_TANGGAL_LAHIR)->translatedFormat('d F Y')
+            : null
+    ));
+    $template->setValue('pendidikan_ayah',      $x($data->SD_AYAH_PENDIDIKAN));
+    $template->setValue('pekerjaan_ayah',       $x($data->SD_AYAH_PEKERJAAN));
 
     // Alamat Ayah
-    $template->setValue('ln_alamat_ayah', $data->SD_AYAH_LN_ALAMAT ?? '-');
-    $template->setValue('status_rumah_ayah', $data->SD_AYAH_STATUS_RUMAH ?? '-');
-    $template->setValue('provinsi_ayah', $data->SD_AYAH_PROVINSI ?? '-');
-    $template->setValue('kabupaten_ayah', $data->SD_AYAH_KABUPATEN ?? '-');
-    $template->setValue('kecamatan_ayah', $data->SD_AYAH_KECAMATAN ?? '-');
-    $template->setValue('kelurahan_ayah', $data->SD_AYAH_KELURAHAN ?? '-');
-    $template->setValue('rt_rw_ayah', $data->SD_AYAH_RT_RW ?? '-');
-    $template->setValue('alamat_ayah', $data->SD_AYAH_ALAMAT ?? '-');
-    $template->setValue('kode_pos_ayah', $data->SD_AYAH_KODE_POS ?? '-');
+    $template->setValue('ln_alamat_ayah',       $x($data->SD_AYAH_LN_ALAMAT));
+    $template->setValue('status_rumah_ayah',    $x($data->SD_AYAH_STATUS_RUMAH));
+    $template->setValue('provinsi_ayah',        $x($data->SD_AYAH_PROVINSI));
+    $template->setValue('kabupaten_ayah',       $x($data->SD_AYAH_KABUPATEN));
+    $template->setValue('kecamatan_ayah',       $x($data->SD_AYAH_KECAMATAN));
+    $template->setValue('kelurahan_ayah',       $x($data->SD_AYAH_KELURAHAN));
+    $template->setValue('rt_rw_ayah',           $x($data->SD_AYAH_RT_RW));
+    $template->setValue('alamat_ayah',          $x($data->SD_AYAH_ALAMAT));
+    $template->setValue('kode_pos_ayah',        $x($data->SD_AYAH_KODE_POS));
 
     // Data Ibu
-    $template->setValue('nama_ibu', $data->SD_IBU_NAMA ?? '-');
-    $template->setValue('status_ibu', $data->SD_IBU_STATUS ?? '-');
-    $template->setValue('kewarganegaraan_ibu', $data->SD_IBU_KEWARGANEGARAAN ?? '-');
-    $template->setValue('nik_ibu', $data->SD_IBU_NIK ?? '-');
-    $template->setValue('tempat_lahir_ibu', $data->SD_IBU_TEMPAT_LAHIR ?? '-');
-    $template->setValue('tanggal_lahir_ibu', $data->SD_IBU_TANGGAL_LAHIR
-        ? \Carbon\Carbon::parse($data->SD_IBU_TANGGAL_LAHIR)->translatedFormat('d F Y')
-        : '-');
-    $template->setValue('pendidikan_ibu', $data->SD_IBU_PENDIDIKAN ?? '-');
-    $template->setValue('pekerjaan_ibu', $data->SD_IBU_PEKERJAAN ?? '-');
+    $template->setValue('nama_ibu',             $x($data->SD_IBU_NAMA));
+    $template->setValue('status_ibu',           $x($data->SD_IBU_STATUS));
+    $template->setValue('kewarganegaraan_ibu',  $x($data->SD_IBU_KEWARGANEGARAAN));
+    $template->setValue('nik_ibu',              $x($data->SD_IBU_NIK));
+    $template->setValue('tempat_lahir_ibu',     $x($data->SD_IBU_TEMPAT_LAHIR));
+    $template->setValue('tanggal_lahir_ibu',    $x(
+        $data->SD_IBU_TANGGAL_LAHIR
+            ? Carbon::parse($data->SD_IBU_TANGGAL_LAHIR)->translatedFormat('d F Y')
+            : null
+    ));
+    $template->setValue('pendidikan_ibu',       $x($data->SD_IBU_PENDIDIKAN));
+    $template->setValue('pekerjaan_ibu',        $x($data->SD_IBU_PEKERJAAN));
 
     // Alamat Ibu
-    $template->setValue('ln_alamat_ibu', $data->SD_IBU_LN_ALAMAT ?? '-');
-    $template->setValue('status_rumah_ibu', $data->SD_IBU_STATUS_RUMAH ?? '-');
-    $template->setValue('provinsi_ibu', $data->SD_IBU_PROVINSI ?? '-');
-    $template->setValue('kabupaten_ibu', $data->SD_IBU_KABUPATEN ?? '-');
-    $template->setValue('kecamatan_ibu', $data->SD_IBU_KECAMATAN ?? '-');
-    $template->setValue('kelurahan_ibu', $data->SD_IBU_KELURAHAN ?? '-');
-    $template->setValue('rt_rw_ibu', $data->SD_IBU_RT_RW ?? '-');
-    $template->setValue('alamat_ibu', $data->SD_IBU_ALAMAT ?? '-');
-    $template->setValue('kode_pos_ibu', $data->SD_IBU_KODE_POS ?? '-');
+    $template->setValue('ln_alamat_ibu',        $x($data->SD_IBU_LN_ALAMAT));
+    $template->setValue('status_rumah_ibu',     $x($data->SD_IBU_STATUS_RUMAH));
+    $template->setValue('provinsi_ibu',         $x($data->SD_IBU_PROVINSI));
+    $template->setValue('kabupaten_ibu',        $x($data->SD_IBU_KABUPATEN));
+    $template->setValue('kecamatan_ibu',        $x($data->SD_IBU_KECAMATAN));
+    $template->setValue('kelurahan_ibu',        $x($data->SD_IBU_KELURAHAN));
+    $template->setValue('rt_rw_ibu',            $x($data->SD_IBU_RT_RW));
+    $template->setValue('alamat_ibu',           $x($data->SD_IBU_ALAMAT));
+    $template->setValue('kode_pos_ibu',         $x($data->SD_IBU_KODE_POS));
 
     // Data Wali
-    $template->setValue('nama_wali', $data->SD_WALI_NAMA ?? '-');
-    $template->setValue('kewarganegaraan_wali', $data->SD_WALI_KEWARGANEGARAAN ?? '-');
-    $template->setValue('nik_wali', $data->SD_WALI_NIK ?? '-');
-    $template->setValue('tempat_lahir_wali', $data->SD_WALI_TEMPAT_LAHIR ?? '-');
-    $template->setValue('tanggal_lahir_wali', $data->SD_WALI_TANGGAL_LAHIR
-        ? \Carbon\Carbon::parse($data->SD_WALI_TANGGAL_LAHIR)->translatedFormat('d F Y')
-        : '-');
-    $template->setValue('pendidikan_wali', $data->SD_WALI_PENDIDIKAN ?? '-');
-    $template->setValue('pekerjaan_wali', $data->SD_WALI_PEKERJAAN ?? '-');
-    $template->setValue('penghasilan_ortu', $data->SD_PENGHASILAN_ORTU_WALI ?? '-');
+    $template->setValue('nama_wali',            $x($data->SD_WALI_NAMA));
+    $template->setValue('kewarganegaraan_wali', $x($data->SD_WALI_KEWARGANEGARAAN));
+    $template->setValue('nik_wali',             $x($data->SD_WALI_NIK));
+    $template->setValue('tempat_lahir_wali',    $x($data->SD_WALI_TEMPAT_LAHIR));
+    $template->setValue('tanggal_lahir_wali',   $x(
+        $data->SD_WALI_TANGGAL_LAHIR
+            ? Carbon::parse($data->SD_WALI_TANGGAL_LAHIR)->translatedFormat('d F Y')
+            : null
+    ));
+    $template->setValue('pendidikan_wali',      $x($data->SD_WALI_PENDIDIKAN));
+    $template->setValue('pekerjaan_wali',       $x($data->SD_WALI_PEKERJAAN));
+    $template->setValue('penghasilan_ortu',     $x($data->SD_PENGHASILAN_ORTU_WALI));
 
     // Alamat Wali
-    $template->setValue('ln_alamat_wali', $data->SD_WALI_LN_ALAMAT ?? '-');
-    $template->setValue('status_rumah_wali', $data->SD_WALI_STATUS_RUMAH ?? '-');
-    $template->setValue('provinsi_wali', $data->SD_WALI_PROVINSI ?? '-');
-    $template->setValue('kabupaten_wali', $data->SD_WALI_KABUPATEN ?? '-');
-    $template->setValue('kecamatan_wali', $data->SD_WALI_KECAMATAN ?? '-');
-    $template->setValue('kelurahan_wali', $data->SD_WALI_KELURAHAN ?? '-');
-    $template->setValue('rt_rw_wali', $data->SD_WALI_RT_RW ?? '-');
-    $template->setValue('alamat_wali', $data->SD_WALI_ALAMAT ?? '-');
-    $template->setValue('kode_pos_wali', $data->SD_WALI_KODE_POS ?? '-');
+    $template->setValue('ln_alamat_wali',       $x($data->SD_WALI_LN_ALAMAT));
+    $template->setValue('status_rumah_wali',    $x($data->SD_WALI_STATUS_RUMAH));
+    $template->setValue('provinsi_wali',        $x($data->SD_WALI_PROVINSI));
+    $template->setValue('kabupaten_wali',       $x($data->SD_WALI_KABUPATEN));
+    $template->setValue('kecamatan_wali',       $x($data->SD_WALI_KECAMATAN));
+    $template->setValue('kelurahan_wali',       $x($data->SD_WALI_KELURAHAN));
+    $template->setValue('rt_rw_wali',           $x($data->SD_WALI_RT_RW));
+    $template->setValue('alamat_wali',          $x($data->SD_WALI_ALAMAT));
+    $template->setValue('kode_pos_wali',        $x($data->SD_WALI_KODE_POS));
 
     // Alamat Siswa
-    $template->setValue('tempat_tinggal', $data->SD_TEMPAT_TINGGAL ?? '-'); // GAK ADA!
-    $template->setValue('nama_yayasan', $data->SD_NAMA_YAYASAN ?? '-');
-    $template->setValue('provinsi', $data->SD_PROVINSI ?? '-');
-    $template->setValue('kabupaten', $data->SD_KABUPATEN ?? '-');
-    $template->setValue('kecamatan', $data->SD_KECAMATAN ?? '-');
-    $template->setValue('kelurahan', $data->SD_KELURAHAN ?? '-');
-    $template->setValue('rt_rw', $data->SD_RT_RW ?? '-');
-    $template->setValue('alamat', $data->SD_ALAMAT ?? '-');
-    $template->setValue('kode_pos', $data->SD_KODE_POS ?? '-');
+    //$template->setValue('tempat_tinggal',       $x($data->SD_TEMPAT_TINGGAL));
+    $template->setValue('nama_yayasan',         $x($data->SD_NAMA_YAYASAN));
+    $template->setValue('provinsi',             $x($data->SD_PROVINSI));
+    $template->setValue('kabupaten',            $x($data->SD_KABUPATEN));
+    $template->setValue('kecamatan',            $x($data->SD_KECAMATAN));
+    $template->setValue('kelurahan',            $x($data->SD_KELURAHAN));
+    $template->setValue('rt_rw',                $x($data->SD_RT_RW));
+    $template->setValue('alamat',               $x($data->SD_ALAMAT));
+    $template->setValue('kode_pos',             $x($data->SD_KODE_POS));
 
     // Transportasi
-    $template->setValue('waktu_tempuh', $data->SD_WAKTU_TEMPUH ?? '-');
-    $template->setValue('jarak', $data->SD_JARAK_KM ?? '-');
-    $template->setValue('transportasi', $data->SD_TRANSPORTASI ?? '-');
-    
-    $template->setValue('tglNow', date("d") ?? '-');
+    $template->setValue('waktu_tempuh',         $x($data->SD_WAKTU_TEMPUH));
+    $template->setValue('jarak',               $x($data->SD_JARAK_KM));
+    $template->setValue('transportasi',         $x($data->SD_TRANSPORTASI));
+
+    $template->setValue('tglNow',               $x(date("d")));
 
     // Simpan & Download
     $filename = 'form-daftar-ulang';

@@ -440,9 +440,17 @@ class DaftarController extends Controller
 
     public function daftarUlang(Request $request){
     $loginUser = $request->loginUser;
-    if($loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS" && $loginUser->U_ID != 1){
-        return redirect()->back()->with("info", "anda tidak lolos");
-    }
+
+    if (
+    $loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS" &&
+    $loginUser->U_ID != 1 &&
+    !in_array($loginUser->siswa->SISWA_ID, [92, 193, 113, 376, 252, 514, 178, 498, 151, 102, 484
+])
+) {
+    return redirect()->back()->with("info", "anda tidak lolos");
+}
+
+// lanjut kodenta
 
     $siswa = $loginUser->siswa;
     $siswaDaftar = $siswa->siswaDaftar;

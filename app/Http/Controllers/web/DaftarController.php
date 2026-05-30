@@ -439,54 +439,77 @@ class DaftarController extends Controller
 
 
     public function daftarUlang(Request $request){
-    $loginUser = $request->loginUser;
+        $loginUser = $request->loginUser;
 
-    if (
-    $loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS" &&
-    $loginUser->U_ID != 1 &&
-    !in_array($loginUser->siswa->SISWA_ID, [92, 193, 113, 376, 252, 514, 178, 498, 151, 102, 484
-])
-) {
-    return redirect()->back()->with("info", "anda tidak lolos");
-}
+        if (
+            $loginUser->siswa->SISWA_STATUS != "STATUS_LOLOS" &&
+            $loginUser->U_ID != 1 &&
+            !in_array($loginUser->siswa->SISWA_ID, [92, 193, 113, 376, 252, 514, 178, 498, 151, 102, 484
+        ])
+        ) {
+            return redirect()->back()->with("info", "anda tidak lolos");
+        }
 
-// lanjut kodenta
+        // lanjut kodenta
 
-    $siswa = $loginUser->siswa;
-    $siswaDaftar = $siswa->siswaDaftar;
+        $siswa = $loginUser->siswa;
+        $siswaDaftar = $siswa->siswaDaftar;
 
-    // Jika belum ada record di siswa_daftar, buat baru dengan data dari tabel siswa
-    if(!isset($siswaDaftar)){
-        $siswaDaftar = SiswaDaftar::create([
-            'SISWA_ID'              => $siswa->SISWA_ID,
-            'SD_NAMA_LENGKAP'       => $siswa->SISWA_NAMA,
-            'SD_NISN'               => $siswa->SISWA_NISN,
-            'SD_TEMPAT_LAHIR'       => $siswa->kotaTempatLahir->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
-            'SD_TANGGAL_LAHIR'      => $siswa->SISWA_TGL_LAHIR,
-            'SD_JENIS_KELAMIN'      => $siswa->SISWA_JENIS_KELAMIN == 'JENIS_KELAMIN_L' ? 'L' : 'P',
-            'SD_NO_HP'              => $siswa->SISWA_WA,
-            'SD_ASAL_SEKOLAH'       => $siswa->SISWA_SEKOLAH,
-            'SD_AYAH_NAMA'          => $siswa->SISWA_AYAH,
-            'SD_IBU_NAMA'           => $siswa->SISWA_IBU,
-            'SD_PROVINSI'           => $siswa->provinsiAlamat->PROV_NAMA,
-            'SD_KABUPATEN'          => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
-            'SD_KECAMATAN'          => $siswa->kecamatanAlamat->KEC_NAMA,
-            'SD_KELURAHAN'          => $siswa->kelurahanAlamat->KEL_NAMA,
-            'SD_ALAMAT'             => $siswa->SISWA_ALAMAT,
-            'SD_WAKTU_BUAT'         => now(),
-        ]);
+        // Jika belum ada record di siswa_daftar, buat baru dengan data dari tabel siswa
+        if(!isset($siswaDaftar)){
+            $siswaDaftar = SiswaDaftar::create([
+                'SISWA_ID'              => $siswa->SISWA_ID,
+                'SD_NAMA_LENGKAP'       => $siswa->SISWA_NAMA,
+                'SD_NISN'               => $siswa->SISWA_NISN,
+                'SD_TEMPAT_LAHIR'       => $siswa->kotaTempatLahir->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
+                'SD_TANGGAL_LAHIR'      => $siswa->SISWA_TGL_LAHIR,
+                'SD_JENIS_KELAMIN'      => $siswa->SISWA_JENIS_KELAMIN == 'JENIS_KELAMIN_L' ? 'L' : 'P',
+                'SD_NO_HP'              => $siswa->SISWA_WA,
+                'SD_ASAL_SEKOLAH'       => $siswa->SISWA_SEKOLAH,
+                'SD_AYAH_NAMA'          => $siswa->SISWA_AYAH,
+                'SD_IBU_NAMA'           => $siswa->SISWA_IBU,
+                'SD_PROVINSI'           => $siswa->provinsiAlamat->PROV_NAMA,
+                'SD_KABUPATEN'          => $siswa->kotaAlamat->KOTA_JENIS . " " . $siswa->kotaTempatLahir->KOTA_NAMA,
+                'SD_KECAMATAN'          => $siswa->kecamatanAlamat->KEC_NAMA,
+                'SD_KELURAHAN'          => $siswa->kelurahanAlamat->KEL_NAMA,
+                'SD_ALAMAT'             => $siswa->SISWA_ALAMAT,
+                'SD_WAKTU_BUAT'         => now(),
+            ]);
+        }
+
+        $viewData = [
+            "siswa"      => $siswa,
+            "sd"         => $siswaDaftar,
+            "formAction" => "/daftar-ulang",
+            "isEdit"     => true, // sudah pasti ada setelah logic di atas
+            "viewOnly" => false,
+            "isLocked"   => false
+        ];
+
+        return view("daftar-ulang", $viewData);
     }
 
-    $viewData = [
-        "siswa"      => $siswa,
-        "sd"         => $siswaDaftar,
-        "formAction" => "/daftar-ulang",
-        "isEdit"     => true, // sudah pasti ada setelah logic di atas
-        "isLocked"   => false
-    ];
+    public function daftarUlangView(Request $request){
+        $loginUser = $request->loginUser;
 
-    return view("daftar-ulang", $viewData);
-}
+        if (!in_array($loginUser->U_ROLE, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])) {
+            return compose("ERROR", "Anda tidak berhak mengakses");
+        }
+
+        $siswa = mSiswa::find($request->siswaId);
+        $siswaDaftar = $siswa->siswaDaftar;
+
+        $viewData = [
+            "siswa"      => $siswa,
+            "sd"         => $siswaDaftar,
+            "formAction" => "/daftar-ulang",
+            "isEdit"     => true, // sudah pasti ada setelah logic di atas
+            "viewOnly" => true,
+            "isLocked"   => false
+        ];
+
+        return view("daftar-ulang", $viewData);
+    }
 
     public function daftarUlangSave(Request $request)
     {
@@ -575,13 +598,16 @@ class DaftarController extends Controller
             return compose("ERROR", "Anda tidak berhak mengakses");
         }
 
-        $query = mSiswa::query();
+        $query = mSiswa::query()
+            ->withCount('siswaDaftar');
 
         if ($request->filled('search')) {
             $search = $request->search;
+
             $query->where(function ($q) use ($search) {
                 $q->where('SISWA_NAMA', 'like', "%{$search}%")
-                ->orWhere('SISWA_NISN', 'like', "%{$search}%");
+                    ->orWhere('SISWA_NISN', 'like', "%{$search}%");
+
                 if (ctype_digit($search)) {
                     $q->orWhere('SISWA_ID', (int) $search);
                 }
@@ -596,7 +622,9 @@ class DaftarController extends Controller
             $query->where('SISWA_STATUS', $request->status);
         }
 
-        $siswa = $query->orderBy('SISWA_TGL_DAFTAR', 'desc')->get();
+        $siswa = $query
+            ->orderBy('SISWA_TGL_DAFTAR', 'desc')
+            ->get();
 
         return view("siswa", [
             "siswa" => $siswa,

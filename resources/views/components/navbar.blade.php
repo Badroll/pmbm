@@ -43,8 +43,6 @@
                 <a href="{{ url('/') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('/') }}">Beranda</a>
 
                 @if($isLoggedIn)
-                <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('pengumuman') }}">Pengumuman</a>
-                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar-ulang') }}">Daftar Ulang</a>
 
                     @if($isSuperadmin || $isAdminAplikasi)
                         <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('admin/manage*') }}">Akun</a>
@@ -63,6 +61,8 @@
                         <!-- <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('kartu') }}">Cetak Kartu</a> -->
                         <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('inbox') }}">Notifikasi</a>
                         <!-- <a href="{{ url('/exam') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('exam') }}">CBT</a> -->
+                        <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('pengumuman') }}">Pengumuman</a>
+                        <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveDesktop('daftar-ulang') }}">Daftar Ulang</a>
                     @endif
                     
                     @if($isSuperadmin || $isAdminCBT || $isAdminAplikasi)
@@ -92,8 +92,6 @@
             <a href="{{ url('/') }}" class="{{ $navMenuClass }}{{ isActiveMobile('/') }}">Beranda</a>
 
             @if($isLoggedIn)
-                <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveMobile('pengumuman') }}">Pengumuman</a>
-                <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar-ulang') }}">Daftar Ulang</a>
 
                 @if($isSuperadmin || $isAdminAplikasi)
                     <a href="{{ url('/admin/manage') }}" class="{{ $navMenuClass }} {{ isActiveMobile('admin/manage*') }}">Akun</a>
@@ -111,6 +109,8 @@
                     <!-- <a href="{{ url('/daftar') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar') }}">Pendaftaran</a> -->
                     <!-- <a href="{{ url('/kartu') }}" class="{{ $navMenuClass }} {{ isActiveMobile('kartu') }}">Cetak Kartu</a> -->
                     <a href="{{ url('/inbox') }}" class="{{ $navMenuClass }} {{ isActiveMobile('inbox') }}">Notifikasi</a>
+                    <a href="{{ url('/pengumuman') }}" class="{{ $navMenuClass }} {{ isActiveMobile('pengumuman') }}">Pengumuman</a>
+                    <a href="{{ url('/daftar-ulang') }}" class="{{ $navMenuClass }} {{ isActiveMobile('daftar-ulang') }}">Daftar Ulang</a>
                 @endif
 
                 @if($isSuperadmin || $isAdminCBT || $isAdminAplikasi)

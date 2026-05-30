@@ -64,6 +64,8 @@ Route::middleware("loggedin")->group(function () {
         // Route::put("/", [DaftarController::class, "updateDaftar"]);
     });
 
+    Route::get("daftar-ulang-view", [DaftarController::class, "daftarUlangView"]);
+
     Route::get("pengumuman", [DaftarController::class, "pengumuman"]);
 
     Route::prefix("inbox")->group(function () {

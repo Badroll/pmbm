@@ -333,19 +333,19 @@
                                     <span class="w-1.5 h-1.5 rounded-full {{ $status['dot'] }}"></span>
                                     {{ $status['label'] }}
                                 </span>
-                                @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]) && $s->SISWA_STATUS == "STATUS_PENDING")
-                                <a href=""
-                                    onclick="verif({{ $s->SISWA_ID }}); return false;"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition whitespace-nowrap">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M9 12l2 2 4-4"/>
-                                    </svg>
-                                    Verifikasi
-                                </a>
-                                @endif
+                                <!-- @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]) && $s->SISWA_STATUS == "STATUS_PENDING")
+                                    <a href=""
+                                        onclick="verif({{ $s->SISWA_ID }}); return false;"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M9 12l2 2 4-4"/>
+                                        </svg>
+                                        Verifikasi
+                                    </a>
+                                @endif -->
                             </div>
                         </td>
                         <td class="px-5 py-4 text-center">
@@ -357,7 +357,7 @@
                                 </svg>
                                 Detail
                             </a>
-                            @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI", "ROLE_ADMIN_BTA"]))
+                            <!-- @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS", "ROLE_ADMIN_PRESTASI", "ROLE_ADMIN_AFIRMASI", "ROLE_ADMIN_BTA"]))
                                 <a href="/daftar?userId={{ $s->U_ID }}" target="_blank"
                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition whitespace-nowrap">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,7 +366,7 @@
                                     </svg>
                                     Edit
                                 </a>
-                            @endif
+                            @endif -->
                             @if(in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"]))
                                 <a href="{{ url('/public/excel') }}/kartu-pendaftaran?siswaId={{ $s->SISWA_ID }}" target="_blank"
                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition whitespace-nowrap">
@@ -375,6 +375,22 @@
                                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                                     </svg>
                                     Kartu
+                                </a>
+                            @endif
+                            @if(
+                                in_array($role, ["ROLE_SUPERADMIN", "ROLE_ADMIN_BERKAS"])
+                                && $s->siswa_daftar_count > 0
+                            )
+                                <a href="{{ url('/daftar-ulang-view') }}?siswaId={{ $s->SISWA_ID }}" target="_blank"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition whitespace-nowrap">
+
+                                    {{-- icon form/checklist daftar ulang --}}
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m1-5H8a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7l-4-4z"/>
+                                    </svg>
+
+                                    Daftar Ulang
                                 </a>
                             @endif
                         </td>

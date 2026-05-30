@@ -586,7 +586,7 @@ class ExcelController extends Controller
                     ->get()
                     ->pluck('siswa')
                     ->filter()
-                    ->sortByDesc('SISWA_ID')
+                    ->sortByDesc('SISWA_SKOR')
                     ->values();
 
             } else {

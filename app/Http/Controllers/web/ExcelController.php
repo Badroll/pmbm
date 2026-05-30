@@ -660,10 +660,11 @@ class ExcelController extends Controller
 
         $sheet->mergeCells('A1:P1'); // Diperluas ke P1
 
-        $sheet->setCellValue(
-            'A1',
-            'DATA PENDAFTAR - JALUR ' . strtoupper($config['label'])
-        );
+       $judul = ($config['label'] === 'Daftar Ulang')
+            ? 'DATA SISWA DAFTAR ULANG'
+            : 'DATA PENDAFTAR - JALUR ' . strtoupper($config['label']);
+
+        $sheet->setCellValue('A1', $judul);
 
         $sheet->getStyle('A1')->applyFromArray([
             'font' => [

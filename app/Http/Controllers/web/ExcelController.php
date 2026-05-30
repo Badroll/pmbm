@@ -16,6 +16,7 @@ use App\Models\Kecamatan as mKecamatan;
 use App\Models\Kelurahan as mKelurahan;
 use App\Models\_reference as _reference;
 use App\Models\Siswa as mSiswa;
+use App\Models\SiswaDaftar as mSiswaDaftar;
 
 
 // ===========================================
@@ -481,10 +482,35 @@ class ExcelController extends Controller
 
 
     // ================================== DATA PENDAFTAR ==================================
-private const JALUR_CONFIG = [
-        'JALUR_REGULER'  => ['label' => 'Reguler',  'header_bg' => '3B4FCD', 'accent' => 'EEF0FD', 'tab' => '3B4FCD'],
-        'JALUR_AFIRMASI' => ['label' => 'Afirmasi', 'header_bg' => 'D97706', 'accent' => 'FEF3C7', 'tab' => 'D97706'],
-        'JALUR_PRESTASI' => ['label' => 'Prestasi', 'header_bg' => '7C3AED', 'accent' => 'F3EEFF', 'tab' => '7C3AED'],
+    private const JALUR_CONFIG = [
+        'JALUR_REGULER'  => [
+            'label' => 'Reguler',
+            'header_bg' => '3B4FCD',
+            'accent' => 'EEF0FD',
+            'tab' => '3B4FCD'
+        ],
+
+        'JALUR_AFIRMASI' => [
+            'label' => 'Afirmasi',
+            'header_bg' => 'D97706',
+            'accent' => 'FEF3C7',
+            'tab' => 'D97706'
+        ],
+
+        'JALUR_PRESTASI' => [
+            'label' => 'Prestasi',
+            'header_bg' => '7C3AED',
+            'accent' => 'F3EEFF',
+            'tab' => '7C3AED'
+        ],
+
+        // TAMBAHAN BARU
+        'DAFTAR_ULANG' => [
+            'label' => 'Daftar Ulang',
+            'header_bg' => '059669',
+            'accent' => 'ECFDF5',
+            'tab' => '059669'
+        ],
     ];
  
     private const GENDER_MAP = [
@@ -553,16 +579,28 @@ private const JALUR_CONFIG = [
 
         foreach (self::JALUR_CONFIG as $jalurKey => $config) {
 
-            $data = mSiswa::where('SISWA_JALUR', $jalurKey)
-                ->orderByRaw("
-                    CASE SISWA_STATUS
-                        WHEN 'STATUS_LOLOS' THEN 1
-                        WHEN 'STATUS_CADANGAN' THEN 2
-                        ELSE 3
-                    END ASC
-                ")
-                ->orderByDesc('SISWA_SKOR')
-                ->get();
+         // ─── KHUSUS SHEET DAFTAR ULANG ───────────────────────
+
+            if ($jalurKey === 'DAFTAR_ULANG') {
+                $data = mSiswaDaftar::with('siswa')
+                    ->get()
+                    ->pluck('siswa')
+                    ->filter()
+                    ->sortByDesc('SISWA_ID')
+                    ->values();
+
+            } else {
+                $data = mSiswa::where('SISWA_JALUR', $jalurKey)
+                    ->orderByRaw("
+                        CASE SISWA_STATUS
+                            WHEN 'STATUS_LOLOS' THEN 1
+                            WHEN 'STATUS_CADANGAN' THEN 2
+                            ELSE 3
+                        END ASC
+                    ")
+                    ->orderByDesc('SISWA_SKOR')
+                    ->get();
+            }
 
             $sheet = ($sheetIndex === 0)
                 ? $spreadsheet->getActiveSheet()
@@ -579,7 +617,7 @@ private const JALUR_CONFIG = [
             // ─── SEMBUNYIKAN KOLOM KHUSUS PER JALUR (Gunakan setVisible untuk keamanan data) ───
 
             // Reguler → Sembunyikan K (Afirmasi), L (Prest. Akademik), M (Prest. Keagamaan)
-            if ($jalurKey === 'JALUR_REGULER') {
+            if ($jalurKey === 'JALUR_REGULER'|| $jalurKey === 'DAFTAR_ULANG') {
                 $sheet->getColumnDimension('K')->setVisible(false);
                 $sheet->getColumnDimension('L')->setVisible(false);
                 $sheet->getColumnDimension('M')->setVisible(false);
